@@ -19,12 +19,5 @@ namespace Oldmansoft.ClassicDomain
         /// <param name="id"></param>
         /// <returns></returns>
         TDomain Load(TKey id);
-
-        /// <summary>
-        /// 加载多个
-        /// </summary>
-        /// <param name="ids"></param>
-        /// <returns></returns>
-        TDomain[] Load(TKey[] ids);
     }
 }

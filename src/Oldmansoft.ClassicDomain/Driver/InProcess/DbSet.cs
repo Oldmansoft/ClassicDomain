@@ -37,7 +37,6 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
         /// <summary>
         /// 将添加
         /// </summary>
-        /// <typeparam name="TDomain"></typeparam>
         /// <param name="domain"></param>
         public void WillAdd(TDomain domain)
         {
