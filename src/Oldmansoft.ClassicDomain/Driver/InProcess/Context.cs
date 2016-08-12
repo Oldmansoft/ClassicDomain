@@ -10,7 +10,7 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
     /// <summary>
     /// 进程内上下文
     /// </summary>
-    public class Context : UnitOfWorkItem
+    public class Context : UnitOfWorkManagedItem
     {
         private ConcurrentDictionary<Type, IDbSet> DbSet { get; set; }
 

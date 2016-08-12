@@ -71,7 +71,7 @@
     <Compile Include="IUnitOfWorkItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UniqueException.cs" />
-    <Compile Include="UnitOfWorkItem.cs" />
+    <Compile Include="UnitOfWorkManagedItem.cs" />
     <Compile Include="UnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup />

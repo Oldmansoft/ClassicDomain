@@ -9,7 +9,7 @@ namespace Oldmansoft.ClassicDomain
     /// <summary>
     /// 工作单元管理项
     /// </summary>
-    public abstract class UnitOfWorkItem : IUnitOfWorkItem
+    public abstract class UnitOfWorkManagedItem : IUnitOfWorkItem
     {
         /// <summary>
         /// 配置读取的连接串名称
@@ -19,7 +19,7 @@ namespace Oldmansoft.ClassicDomain
         /// <summary>
         /// 创建工作单元管理项
         /// </summary>
-        public UnitOfWorkItem()
+        public UnitOfWorkManagedItem()
         {
             ConnectionName = GetType().FullName;
         }
