@@ -51,6 +51,11 @@ namespace Oldmansoft.ClassicDomain
         }
 
         /// <summary>
+        /// 在创建实体时
+        /// </summary>
+        public abstract void OnModelCreating();
+
+        /// <summary>
         /// 提交
         /// </summary>
         /// <returns></returns>

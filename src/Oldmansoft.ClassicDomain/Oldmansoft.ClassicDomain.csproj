@@ -73,6 +73,10 @@
     <Compile Include="UniqueException.cs" />
     <Compile Include="UnitOfWorkManagedItem.cs" />
     <Compile Include="UnitOfWork.cs" />
+    <Compile Include="Util\DataMapper.cs" />
+    <Compile Include="Util\ExpressionHelper.cs" />
+    <Compile Include="Util\_Extend.cs" />
+    <Compile Include="Util\TypePublicInstanceStore.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -22,5 +22,10 @@ namespace Oldmansoft.ClassicDomain
         /// </summary>
         /// <returns></returns>
         string GetHost();
+
+        /// <summary>
+        /// 在创建实体时
+        /// </summary>
+        void OnModelCreating();
     }
 }

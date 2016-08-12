@@ -77,11 +77,13 @@ namespace Oldmansoft.ClassicDomain
             Type type = typeof(TUnitOfWork);
             if (!UnitOfWorks.ContainsKey(type))
             {
+                var context = new TUnitOfWork();
+                context.OnModelCreating();
                 lock (UnitOfWorks)
                 {
                     if (!UnitOfWorks.ContainsKey(type))
                     {
-                        UnitOfWorks.Add(type, new TUnitOfWork());
+                        UnitOfWorks.Add(type, context);
                     }
                 }
             }
