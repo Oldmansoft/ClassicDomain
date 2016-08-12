@@ -24,7 +24,7 @@ namespace Oldmansoft.ClassicDomain
         /// </summary>
         /// <param name="uow"></param>
         /// <returns></returns>
-        public string GetHost(IUnitOfWorkItem uow)
+        public string GetHost(IUnitOfWorkManagedItem uow)
         {
             if (uow == null) throw new ArgumentNullException("uow");
             var name = uow.GetConnectionName();

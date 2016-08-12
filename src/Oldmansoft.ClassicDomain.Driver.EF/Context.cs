@@ -9,7 +9,7 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
     /// <summary>
     /// Entity Framework 的实体上下文
     /// </summary>
-    public class Context : System.Data.Entity.DbContext, IUnitOfWorkItem
+    public class Context : System.Data.Entity.DbContext, IUnitOfWorkManagedItem
     {
         /// <summary>
         /// 配置读取的连接串名称

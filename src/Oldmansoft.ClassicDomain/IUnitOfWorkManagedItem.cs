@@ -9,7 +9,7 @@ namespace Oldmansoft.ClassicDomain
     /// <summary>
     /// 工作单元管理项
     /// </summary>
-    public interface IUnitOfWorkItem : IUnitOfWork
+    public interface IUnitOfWorkManagedItem : IUnitOfWork
     {
         /// <summary>
         /// 获取配置读取的连接串名称

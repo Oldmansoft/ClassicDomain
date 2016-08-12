@@ -36,7 +36,7 @@ namespace Oldmansoft.ClassicDomain
         /// <summary>
         /// 工作单元集
         /// </summary>
-        private Dictionary<Type, IUnitOfWorkItem> UnitOfWorks { get; set; }
+        private Dictionary<Type, IUnitOfWorkManagedItem> UnitOfWorks { get; set; }
 
         /// <summary>
         /// 创建工作单元管理
@@ -44,7 +44,7 @@ namespace Oldmansoft.ClassicDomain
         public UnitOfWork()
         {
             IsParallelCommit = true;
-            UnitOfWorks = new Dictionary<Type, IUnitOfWorkItem>();
+            UnitOfWorks = new Dictionary<Type, IUnitOfWorkManagedItem>();
         }
 
         /// <summary>
@@ -52,15 +52,15 @@ namespace Oldmansoft.ClassicDomain
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        private Dictionary<string, List<IUnitOfWorkItem>> SortUnitOfWork(IEnumerable<IUnitOfWorkItem> source)
+        private Dictionary<string, List<IUnitOfWorkManagedItem>> SortUnitOfWork(IEnumerable<IUnitOfWorkManagedItem> source)
         {
-            Dictionary<string, List<IUnitOfWorkItem>> result = new Dictionary<string, List<IUnitOfWorkItem>>();
+            Dictionary<string, List<IUnitOfWorkManagedItem>> result = new Dictionary<string, List<IUnitOfWorkManagedItem>>();
             foreach (var uow in source)
             {
                 string host = HostMapping.GetHost(uow);
                 if (!result.ContainsKey(host))
                 {
-                    result.Add(host, new List<IUnitOfWorkItem>());
+                    result.Add(host, new List<IUnitOfWorkManagedItem>());
                 }
                 result[host].Add(uow);
             }
@@ -72,7 +72,7 @@ namespace Oldmansoft.ClassicDomain
         /// </summary>
         /// <typeparam name="TUnitOfWork">工作单元类型</typeparam>
         /// <returns>工作单元</returns>
-        public TUnitOfWork Get<TUnitOfWork>() where TUnitOfWork : class, IUnitOfWorkItem, new()
+        public TUnitOfWork Get<TUnitOfWork>() where TUnitOfWork : class, IUnitOfWorkManagedItem, new()
         {
             Type type = typeof(TUnitOfWork);
             if (!UnitOfWorks.ContainsKey(type))

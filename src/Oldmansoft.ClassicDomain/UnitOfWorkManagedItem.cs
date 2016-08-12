@@ -9,7 +9,7 @@ namespace Oldmansoft.ClassicDomain
     /// <summary>
     /// 工作单元管理项
     /// </summary>
-    public abstract class UnitOfWorkManagedItem : IUnitOfWorkItem
+    public abstract class UnitOfWorkManagedItem : IUnitOfWorkManagedItem
     {
         /// <summary>
         /// 配置读取的连接串名称
