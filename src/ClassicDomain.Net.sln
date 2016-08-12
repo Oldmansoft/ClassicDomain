@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oldmansoft.ClassicDomain", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oldmansoft.ClassicDomain.Driver.EF", "Oldmansoft.ClassicDomain.Driver.EF\Oldmansoft.ClassicDomain.Driver.EF.csproj", "{9870AD2F-6FBB-4CF4-944E-40AE3FE8BFE5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oldmansoft.ClassicDomain.Driver.Mongo", "Oldmansoft.ClassicDomain.Driver.Mongo\Oldmansoft.ClassicDomain.Driver.Mongo.csproj", "{4932C605-579E-49D1-9696-A1FD904A3DCC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{9870AD2F-6FBB-4CF4-944E-40AE3FE8BFE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9870AD2F-6FBB-4CF4-944E-40AE3FE8BFE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9870AD2F-6FBB-4CF4-944E-40AE3FE8BFE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4932C605-579E-49D1-9696-A1FD904A3DCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4932C605-579E-49D1-9696-A1FD904A3DCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4932C605-579E-49D1-9696-A1FD904A3DCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4932C605-579E-49D1-9696-A1FD904A3DCC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,7 +8,7 @@ namespace UnitTest.ClassicDomain.Drvier.InProcess
 {
     class Mapping : Oldmansoft.ClassicDomain.Driver.InProcess.Context
     {
-        public Mapping()
+        public override void OnModelCreating()
         {
             Add<Domain, Guid>(o => o.Id);
         }

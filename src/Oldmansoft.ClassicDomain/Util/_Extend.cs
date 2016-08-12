@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Util
 {
-    static class Extend
+    /// <summary>
+    /// 扩展方法
+    /// </summary>
+    public static class Extend
     {
         /// <summary>
         /// 是否为非字符串的类

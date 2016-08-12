@@ -51,6 +51,7 @@
     <Compile Include="ConnectionNameMapHost.cs" />
     <Compile Include="Driver\ChangeList.cs" />
     <Compile Include="Driver\IDbSet.cs" />
+    <Compile Include="Driver\IdentityMap.cs" />
     <Compile Include="Driver\InProcess\Context.cs" />
     <Compile Include="Driver\InProcess\DbSet.cs" />
     <Compile Include="Driver\InProcess\Repository.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="UnitOfWork.cs" />
     <Compile Include="Util\DataMapper.cs" />
     <Compile Include="Util\ExpressionHelper.cs" />
+    <Compile Include="Util\OnceSet.cs" />
     <Compile Include="Util\_Extend.cs" />
     <Compile Include="Util\TypePublicInstanceStore.cs" />
   </ItemGroup>

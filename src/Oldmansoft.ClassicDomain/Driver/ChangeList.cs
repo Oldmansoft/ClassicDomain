@@ -27,12 +27,7 @@ namespace Oldmansoft.ClassicDomain.Driver
         /// 删除
         /// </summary>
         public ConcurrentQueue<TDomain> Deleteds { get; private set; }
-
-        /// <summary>
-        /// 刷新
-        /// </summary>
-        public ConcurrentQueue<TDomain> Refreshs { get; private set; }
-
+        
         /// <summary>
         /// 创建更改列表
         /// </summary>
@@ -41,7 +36,6 @@ namespace Oldmansoft.ClassicDomain.Driver
             Addeds = new ConcurrentQueue<TDomain>();
             Updateds = new ConcurrentQueue<TDomain>();
             Deleteds = new ConcurrentQueue<TDomain>();
-            Refreshs = new ConcurrentQueue<TDomain>();
         }
     }
 }
