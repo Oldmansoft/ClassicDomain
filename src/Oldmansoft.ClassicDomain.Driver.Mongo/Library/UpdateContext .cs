@@ -9,9 +9,20 @@ using MongoDB.Bson;
 
 namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
 {
-    internal class UpdateContextHelper
+    /// <summary>
+    /// 更新内容上下文
+    /// </summary>
+    internal class UpdateContext
     {
-        public static UpdatedItem GetUpdateContext(object id, Type type, object compareSource, object compareTarget)
+        /// <summary>
+        /// 获取上下文
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="type"></param>
+        /// <param name="compareSource"></param>
+        /// <param name="compareTarget"></param>
+        /// <returns></returns>
+        public static UpdatedItem GetContext(object id, Type type, object compareSource, object compareTarget)
         {
             var result = new UpdatedItem(id.ToBsonValue());
             GetUpdateContext(type, result, string.Empty, compareSource, compareTarget);
@@ -93,22 +104,19 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
 
             for (var i = 0; i < targetList.Count; i++)
             {
-                if (i < sourceList.Count)
-                {
-                    if (isNormalClass)
-                    {
-                        DealNormalClass(itemType, result, GetListKey(name, i), sourceList[i], targetList[i]);
-                        continue;
-                    }
-
-                    if (!sourceList[i].IsEquals(targetList[i]))
-                    {
-                        result.Add(Update.Set(GetListKey(name, i), GetBsonValue(itemType, targetList[i])));
-                    }
-                }
-                else
+                if (i >= sourceList.Count)
                 {
                     result.AddOther(Update.Push(name, GetBsonValue(itemType, targetList[i], isNormalClass)));
+                    continue;
+                }
+                if (isNormalClass)
+                {
+                    DealNormalClass(itemType, result, GetListKey(name, i), sourceList[i], targetList[i]);
+                    continue;
+                }
+                if (!sourceList[i].IsEquals(targetList[i]))
+                {
+                    result.Add(Update.Set(GetListKey(name, i), GetBsonValue(itemType, targetList[i])));
                 }
             }
             for (var i = targetList.Count; i < sourceList.Count; i++)
@@ -130,10 +138,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
             {
                 return BsonDocumentWrapper.Create(type, value);
             }
-            else
-            {
-                return value.ToBsonValue();
-            }
+            return value.ToBsonValue();
         }
 
         private static void DealDictionary(UpdatedItem result, object compareTarget, Type propertyType, string name, object sourceValue, object targetValue)
@@ -142,7 +147,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
             {
                 return;
             }
-            else if (sourceValue != null && targetValue != null)
+            if (sourceValue != null && targetValue != null)
             {
                 DealDictionaryChange(result, propertyType, name, sourceValue, targetValue);
                 return;
@@ -158,20 +163,18 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
             var sourceDictionary = sourceValue as System.Collections.IDictionary;
             var targetDictionary = targetValue as System.Collections.IDictionary;
             foreach (var key in targetDictionary.Keys)
-            {
-                if (sourceDictionary.Contains(key))
+            {   
+                if (!sourceDictionary.Contains(key))
                 {
-                    if (isNormalClass)
-                    {
-                        DealNormalClass(valueType, result, GetHashKey(name, key.ToString()), sourceDictionary[key], targetDictionary[key]);
-                        continue;
-                    }
-                    if (!sourceDictionary[key].IsEquals(targetDictionary[key]))
-                    {
-                        result.Add(Update.Set(GetHashKey(name, key.ToString()), GetBsonValue(valueType, targetDictionary[key], isNormalClass)));
-                    }
+                    result.Add(Update.Set(GetHashKey(name, key.ToString()), GetBsonValue(valueType, targetDictionary[key], isNormalClass)));
+                    continue;
                 }
-                else
+                if (isNormalClass)
+                {
+                    DealNormalClass(valueType, result, GetHashKey(name, key.ToString()), sourceDictionary[key], targetDictionary[key]);
+                    continue;
+                }
+                if (!sourceDictionary[key].IsEquals(targetDictionary[key]))
                 {
                     result.Add(Update.Set(GetHashKey(name, key.ToString()), GetBsonValue(valueType, targetDictionary[key], isNormalClass)));
                 }

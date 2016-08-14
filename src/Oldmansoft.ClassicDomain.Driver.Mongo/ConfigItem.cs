@@ -10,7 +10,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
     /// <summary>
     /// 配置项
     /// </summary>
-    class ConfigItem
+    internal class ConfigItem
     {
         /// <summary>
         /// 服务

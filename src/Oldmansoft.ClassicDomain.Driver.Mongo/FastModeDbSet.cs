@@ -14,7 +14,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
     /// </summary>
     /// <typeparam name="TDomain"></typeparam>
     /// <typeparam name="TKey"></typeparam>
-    public class FastModeDbSet<TDomain, TKey> : IDbSet
+    internal class FastModeDbSet<TDomain, TKey> : IDbSet
     {
         private MongoDatabase Database { get; set; }
 

@@ -36,7 +36,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// <typeparam name="TKey"></typeparam>
         /// <param name="keyExpression"></param>
         /// <returns></returns>
-        protected virtual FastModeDbSet<TDomain, TKey> CreateDbSet<TDomain, TKey>(System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
+        internal virtual FastModeDbSet<TDomain, TKey> CreateDbSet<TDomain, TKey>(System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
         {
             return new FastModeDbSet<TDomain, TKey>(FastServer.GetDatabase(ConnectionName), keyExpression);
         }

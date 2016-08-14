@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Oldmansoft.ClassicDomain.Driver.Mongo.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -59,7 +60,7 @@
     <Compile Include="Config.cs" />
     <Compile Include="ConfigItem.cs" />
     <Compile Include="Context.cs" />
-    <Compile Include="DbSet.cs" />
+    <Compile Include="IdentityMap.cs" />
     <Compile Include="Repository.cs" />
     <Compile Include="SafeModeDbSet.cs" />
     <Compile Include="FastModeContext.cs" />
@@ -70,7 +71,7 @@
     <Compile Include="Library\MongoCursorEnumerator.cs" />
     <Compile Include="Library\MongoDatabase.cs" />
     <Compile Include="Library\MongoServer.cs" />
-    <Compile Include="Library\UpdateContextHelper .cs" />
+    <Compile Include="Library\UpdateContext .cs" />
     <Compile Include="Library\UpdatedItem.cs" />
     <Compile Include="Library\_Extend.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

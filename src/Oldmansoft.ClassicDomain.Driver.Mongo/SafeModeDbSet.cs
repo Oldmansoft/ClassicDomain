@@ -40,7 +40,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
             {
                 throw new ArgumentException("修改的实例必须经过加载。", "entity");
             }
-            var context = Library.UpdateContextHelper.GetUpdateContext(key, typeof(TDomain), source, domain);
+            var context = Library.UpdateContext.GetContext(key, typeof(TDomain), source, domain);
             if (!context.HasValue()) return false;
             return context.Execute(collection);
         }

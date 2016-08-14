@@ -10,7 +10,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
     /// <summary>
     /// 快速模式配置
     /// </summary>
-    class FastModeConfig
+    internal class FastModeConfig
     {
         private Dictionary<string, ConfigItem> Items { get; set; }
 

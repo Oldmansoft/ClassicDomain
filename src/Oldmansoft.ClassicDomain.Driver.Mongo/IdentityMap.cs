@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oldmansoft.ClassicDomain.Driver
+namespace Oldmansoft.ClassicDomain.Driver.Mongo
 {
     /// <summary>
     /// 标识映射
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
-    public class IdentityMap<TEntity>
+    internal class IdentityMap<TEntity>
     {
         private Dictionary<string, TEntity> Store;
 

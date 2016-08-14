@@ -25,7 +25,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// <typeparam name="TKey"></typeparam>
         /// <param name="keyExpression"></param>
         /// <returns></returns>
-        protected override FastModeDbSet<TDomain, TKey> CreateDbSet<TDomain, TKey>(System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
+        internal override FastModeDbSet<TDomain, TKey> CreateDbSet<TDomain, TKey>(System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
         {
             var database = Server.GetDatabase(ConnectionName) as Library.MongoDatabase;
             var result = new SafeModeDbSet<TDomain, TKey>(database, keyExpression);
