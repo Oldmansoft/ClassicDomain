@@ -15,13 +15,13 @@ namespace Oldmansoft.ClassicDomain
         IAdd<TDomain>,
         IReplace<TDomain>,
         IRemove<TDomain>,
-        ILoad<TDomain, TKey>,
+        IGet<TDomain, TKey>,
         IQuery<TDomain>,
         IRepositoryAdd<TDomain, TKey>,
         IRepositoryAddReplace<TDomain, TKey>,
-        IRepositoryLoad<TDomain, TKey>,
-        IRepositoryLoadAdd<TDomain, TKey>,
-        IRepositoryLoadAddReplace<TDomain, TKey>
+        IRepositoryGet<TDomain, TKey>,
+        IRepositoryGetAdd<TDomain, TKey>,
+        IRepositoryGetAddReplace<TDomain, TKey>
         where TDomain : class
     {
     }

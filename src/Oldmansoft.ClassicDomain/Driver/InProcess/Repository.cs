@@ -11,7 +11,7 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
     /// </summary>
     /// <typeparam name="TDomain"></typeparam>
     /// <typeparam name="TKey"></typeparam>
-    public class Repository<TDomain, TKey> : IRepositoryLoad<TDomain, TKey> where TDomain : class
+    public class Repository<TDomain, TKey> : IRepositoryGet<TDomain, TKey> where TDomain : class
     {
         private Context Context { get; set; }
 
@@ -25,12 +25,12 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
         }
 
         /// <summary>
-        /// 加载
+        /// 获取
         /// </summary>
         /// <returns></returns>
-        public TDomain Load(TKey id)
+        public TDomain Get(TKey id)
         {
-            return Context.Set<TDomain, TKey>().Load(id);
+            return Context.Set<TDomain, TKey>().Get(id);
         }
         
         /// <summary>

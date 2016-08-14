@@ -116,11 +116,11 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         }
 
         /// <summary>
-        /// 加载
+        /// 获取
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public TDomain Load(TKey id)
+        public TDomain Get(TKey id)
         {
             var query = MongoDB.Driver.Builders.Query.EQ("_id", Library.Extend.ToBsonValue(id));
             return GetCollection().FindOne(query);

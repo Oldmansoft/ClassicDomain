@@ -20,7 +20,7 @@ namespace UnitTest.ClassicDomain.Drvier.InProcess
             return Uow;
         }
 
-        public Oldmansoft.ClassicDomain.IRepositoryLoad<Domain, Guid> CreateDomain()
+        public Oldmansoft.ClassicDomain.IRepositoryGet<Domain, Guid> CreateDomain()
         {
             return new Oldmansoft.ClassicDomain.Driver.InProcess.Repository<Domain, Guid>(Uow.Get<Mapping>());
         }

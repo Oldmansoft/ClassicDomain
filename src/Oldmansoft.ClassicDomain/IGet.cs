@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 namespace Oldmansoft.ClassicDomain
 {
     /// <summary>
-    /// 加载
+    /// 获取
     /// </summary>
     /// <typeparam name="TDomain"></typeparam>
     /// <typeparam name="TKey"></typeparam>
-    public interface ILoad<TDomain, TKey> where TDomain : class
+    public interface IGet<TDomain, TKey> where TDomain : class
     {
         /// <summary>
-        /// 加载
+        /// 获取
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        TDomain Load(TKey id);
+        TDomain Get(TKey id);
     }
 }

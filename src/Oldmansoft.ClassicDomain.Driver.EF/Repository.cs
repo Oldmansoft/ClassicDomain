@@ -26,13 +26,13 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
         {
             Context = context;
         }
-        
+
         /// <summary>
-        /// 加载
+        /// 获取
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public TDomain Load(TKey id)
+        public TDomain Get(TKey id)
         {
             return Context.Set<TDomain>().Find(id);
         }

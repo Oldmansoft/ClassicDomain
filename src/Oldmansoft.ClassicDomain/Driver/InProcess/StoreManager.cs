@@ -64,7 +64,7 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
         public bool Replace(TDomain domain)
         {
             var key = GetKey(domain);
-            var oldDomain = Load(key);
+            var oldDomain = Get(key);
             if (oldDomain == null) return false;
             Store.TryUpdate(key, domain, oldDomain);
             return true;
@@ -83,11 +83,11 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
         }
 
         /// <summary>
-        /// 加载
+        /// 获取
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public TDomain Load(TKey id)
+        public TDomain Get(TKey id)
         {
             TDomain result;
             if (Store.TryGetValue(id, out result))

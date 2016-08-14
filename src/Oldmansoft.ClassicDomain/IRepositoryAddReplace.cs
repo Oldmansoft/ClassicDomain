@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 namespace Oldmansoft.ClassicDomain
 {
     /// <summary>
-    /// 加载，查询，添加，替换
+    /// 获取，查询，添加，替换
     /// </summary>
     /// <typeparam name="TDomain"></typeparam>
     /// <typeparam name="TKey"></typeparam>
     public interface IRepositoryAddReplace<TDomain, TKey> :
-        ILoad<TDomain, TKey>,
+        IGet<TDomain, TKey>,
         IQuery<TDomain>,
         IAdd<TDomain>,
         IReplace<TDomain>,

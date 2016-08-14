@@ -16,7 +16,7 @@ namespace UnitTest.ClassicDomain.Drvier
             factory.CreateDomain().Add(domain);
             factory.GetUnitOfWork().Commit();
 
-            var loadDomain = factory.CreateDomain().Load(domain.Id);
+            var loadDomain = factory.CreateDomain().Get(domain.Id);
             Assert.IsNotNull(loadDomain);
             Assert.AreEqual("hello", domain.Name);
         }

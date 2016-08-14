@@ -25,13 +25,13 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         }
 
         /// <summary>
-        /// 加载
+        /// 获取
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public TDomain Load(TKey id)
+        public TDomain Get(TKey id)
         {
-            return Context.Set<TDomain, TKey>().Load(id);
+            return Context.Set<TDomain, TKey>().Get(id);
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         }
 
         /// <summary>
-        /// 插入
+        /// 添加
         /// </summary>
         /// <param name="domain"></param>
         public void Add(TDomain domain)

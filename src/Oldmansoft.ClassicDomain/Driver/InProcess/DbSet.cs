@@ -62,13 +62,13 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
         }
 
         /// <summary>
-        /// 加载
+        /// 获取
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public TDomain Load(TKey id)
+        public TDomain Get(TKey id)
         {
-            return Store.Load(id);
+            return Store.Get(id);
         }
 
         /// <summary>
