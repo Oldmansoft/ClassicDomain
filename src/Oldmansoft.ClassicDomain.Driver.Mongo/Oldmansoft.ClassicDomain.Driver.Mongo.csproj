@@ -57,6 +57,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Oldmansoft.ClassicDomain.Shared\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Config.cs" />
     <Compile Include="ConfigItem.cs" />
     <Compile Include="Context.cs" />

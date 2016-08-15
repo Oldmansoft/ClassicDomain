@@ -37,10 +37,9 @@ namespace Oldmansoft.ClassicDomain.Util
         /// 添加忽略属性
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
-        /// <typeparam name="TMember"></typeparam>
         /// <param name="keyExpression"></param>
         /// <returns></returns>
-        public DataMapper AddIgnore<TEntity, TMember>(Expression<Func<TEntity, TMember>> keyExpression)
+        public DataMapper AddIgnore<TEntity>(Expression<Func<TEntity, object>> keyExpression)
         {
             IgnoreProperty.Add(keyExpression.GetProperty().Name);
             return this;

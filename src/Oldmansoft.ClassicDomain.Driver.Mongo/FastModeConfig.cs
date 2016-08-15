@@ -24,14 +24,23 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
 
         private ConfigItem InitItem(string name)
         {
-            MongoServerSettings setting = new MongoServerSettings();
             var connectionString = Configuration.Config.GetConnectionString(name, 27017);
-            setting.Server = new MongoServerAddress(connectionString.DataSource.Host, connectionString.DataSource.Port);
-            setting.WriteConcern = WriteConcern.Acknowledged;
+
+            var builder = new MongoUrlBuilder();
+            var servers = new List<MongoServerAddress>();
+            foreach (var dataSource in connectionString.DataSource)
+            {
+                servers.Add(new MongoServerAddress(dataSource.Host, dataSource.Port));
+            }
+            builder.Servers = servers;
             if (!string.IsNullOrEmpty(connectionString.UserID))
             {
-                setting.Credentials = new[] { MongoCredential.CreateMongoCRCredential(connectionString.InitialCatalog, connectionString.UserID, connectionString.Password) };
+                builder.Username = connectionString.UserID;
+                builder.Password = connectionString.Password;
             }
+
+            var setting = MongoServerSettings.FromUrl(builder.ToMongoUrl());
+            setting.WriteConcern = WriteConcern.Acknowledged;
 
             return new ConfigItem(CreateMongoServer(setting), connectionString.InitialCatalog);
         }
