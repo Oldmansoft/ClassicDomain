@@ -68,11 +68,11 @@ namespace Oldmansoft.ClassicDomain
         }
 
         /// <summary>
-        /// 获取子工作单元
+        /// 获取被管理的子工作单元
         /// </summary>
         /// <typeparam name="TUnitOfWork">工作单元类型</typeparam>
         /// <returns>工作单元</returns>
-        public TUnitOfWork Get<TUnitOfWork>() where TUnitOfWork : class, IUnitOfWorkManagedItem, new()
+        public TUnitOfWork GetManaged<TUnitOfWork>() where TUnitOfWork : class, IUnitOfWorkManagedItem, new()
         {
             Type type = typeof(TUnitOfWork);
             if (!UnitOfWorks.ContainsKey(type))

@@ -22,7 +22,7 @@ namespace UnitTest.ClassicDomain.Drvier.InProcess
 
         public Oldmansoft.ClassicDomain.IRepositoryGet<Domain, Guid> CreateDomain()
         {
-            return new Oldmansoft.ClassicDomain.Driver.InProcess.Repository<Domain, Guid>(Uow.Get<Mapping>());
+            return new Oldmansoft.ClassicDomain.Driver.InProcess.Repository<Domain, Guid, Mapping>(Uow);
         }
     }
 }

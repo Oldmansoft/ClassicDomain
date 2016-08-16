@@ -9,9 +9,10 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
     /// <summary>
     /// Entity Framework 仓储
     /// </summary>
-    /// <typeparam name="TDomain"></typeparam>
-    /// <typeparam name="TKey"></typeparam>
-    public class Repository<TDomain, TKey> : IRepository<TDomain, TKey> where TDomain : class
+    /// <typeparam name="TDomain">领域</typeparam>
+    /// <typeparam name="TKey">主键</typeparam>
+    /// <typeparam name="TContext">上下文</typeparam>
+    public class Repository<TDomain, TKey, TContext> : IRepository<TDomain, TKey> where TDomain : class where TContext : Context, new()
     {
         /// <summary>
         /// 实体上下文
@@ -21,10 +22,10 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
         /// <summary>
         /// 创建仓储
         /// </summary>
-        /// <param name="context"></param>
-        public Repository(Context context)
+        /// <param name="uow"></param>
+        public Repository(UnitOfWork uow)
         {
-            Context = context;
+            Context = uow.GetManaged<TContext>();
         }
 
         /// <summary>

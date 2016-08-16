@@ -9,21 +9,22 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
     /// <summary>
     /// 进程内仓储
     /// </summary>
-    /// <typeparam name="TDomain"></typeparam>
-    /// <typeparam name="TKey"></typeparam>
-    public class Repository<TDomain, TKey> : IRepositoryGet<TDomain, TKey> where TDomain : class
+    /// <typeparam name="TDomain">领域</typeparam>
+    /// <typeparam name="TKey">主键</typeparam>
+    /// <typeparam name="TContext">上下文</typeparam>
+    public class Repository<TDomain, TKey, TContext> : IRepositoryGet<TDomain, TKey> where TDomain : class where TContext : Context, new()
     {
         private Context Context { get; set; }
 
         /// <summary>
-        /// 创建 In Process 仓储库
+        /// 创建仓储
         /// </summary>
-        /// <param name="context"></param>
-        public Repository(Context context)
+        /// <param name="uow"></param>
+        public Repository(UnitOfWork uow)
         {
-            Context = context;
+            Context = uow.GetManaged<TContext>();
         }
-
+        
         /// <summary>
         /// 获取
         /// </summary>

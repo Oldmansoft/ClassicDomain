@@ -9,19 +9,20 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
     /// <summary>
     /// 仓储库
     /// </summary>
-    /// <typeparam name="TDomain"></typeparam>
-    /// <typeparam name="TKey"></typeparam>
-    public class Repository<TDomain, TKey> : IRepository<TDomain, TKey> where TDomain : class
+    /// <typeparam name="TDomain">领域</typeparam>
+    /// <typeparam name="TKey">主键</typeparam>
+    /// <typeparam name="TContext">上下文</typeparam>
+    public class Repository<TDomain, TKey, TContext> : IRepository<TDomain, TKey> where TDomain : class where TContext : Context, new()
     {
         private FastModeContext Context { get; set; }
 
         /// <summary>
-        /// 创建 Mongo 仓储库
+        /// 创建仓储
         /// </summary>
-        /// <param name="context">Mongo 上下文</param>
-        public Repository(FastModeContext context)
+        /// <param name="uow"></param>
+        public Repository(UnitOfWork uow)
         {
-            Context = context;
+            Context = uow.GetManaged<TContext>();
         }
 
         /// <summary>
