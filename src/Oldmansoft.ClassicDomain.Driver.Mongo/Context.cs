@@ -8,6 +8,8 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
 {
     /// <summary>
     /// 实体上下文
+    /// 数据库连接串格式 mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database][?options]]
+    /// 更多请参考 https://docs.mongodb.com/manual/reference/connection-string/
     /// </summary>
     public abstract class Context : FastModeContext
     {
@@ -27,7 +29,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// <returns></returns>
         internal override FastModeDbSet<TDomain, TKey> CreateDbSet<TDomain, TKey>(System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
         {
-            var database = Server.GetDatabase(ConnectionName) as Library.MongoDatabase;
+            var database = Server.Get(ConnectionName).GetDatabase() as Library.MongoDatabase;
             var result = new SafeModeDbSet<TDomain, TKey>(database, keyExpression);
             result.IdentityMap.SetKey(keyExpression.Compile());
             database.SetIdentityMap(result.IdentityMap);

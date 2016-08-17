@@ -16,9 +16,8 @@ namespace Oldmansoft.ClassicDomain.Configuration
         /// 获取连接字符串
         /// </summary>
         /// <param name="name">名称</param>
-        /// <param name="defaultPort">默认端口</param>
         /// <returns></returns>
-        public static ConnectionString GetConnectionString(string name, int defaultPort)
+        public static string GetConnectionString(string name)
         {
             var settings = ConfigurationManager.ConnectionStrings[name];
             if (settings == null)
@@ -29,16 +28,15 @@ namespace Oldmansoft.ClassicDomain.Configuration
             {
                 throw new ConfigItemException(string.Format("config 文件的配置项 {0} ConnectionString 为空", name));
             }
-            return new ConnectionString(name, settings.ProviderName, settings.ConnectionString, defaultPort);
+            return settings.ConnectionString;
         }
 
         /// <summary>
         /// 根据类别，继承式获取连接字符串
         /// </summary>
         /// <param name="type">实体类型</param>
-        /// <param name="defaultPort">默认端口</param>
         /// <returns></returns>
-        public static ConnectionString GetConnectionString(Type type, int defaultPort)
+        public static string GetConnectionString(Type type)
         {
             string[] domains = type.FullName.Split('.');
             string currentKey = null;
@@ -61,7 +59,7 @@ namespace Oldmansoft.ClassicDomain.Configuration
             {
                 throw new ConfigItemException(string.Format("config 文件的配置项 {0} ConnectionString 为空", type.FullName));
             }
-            return new ConnectionString(currentKey, settings.ProviderName, settings.ConnectionString, defaultPort);
+            return settings.ConnectionString;
         }
     }
 }

@@ -38,7 +38,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// <returns></returns>
         internal virtual FastModeDbSet<TDomain, TKey> CreateDbSet<TDomain, TKey>(System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
         {
-            return new FastModeDbSet<TDomain, TKey>(FastServer.GetDatabase(ConnectionName), keyExpression);
+            return new FastModeDbSet<TDomain, TKey>(FastServer.Get(ConnectionName).GetDatabase(), keyExpression);
         }
 
         /// <summary>
@@ -88,6 +88,15 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
                 throw new ClassicDomainException("Set 获取的主键类型与 Add 添加的主键类型不一致。");
             }
             return result;
+        }
+
+        /// <summary>
+        /// 获取 commit 的主机
+        /// </summary>
+        /// <returns></returns>
+        public override string GetHost()
+        {
+            return FastServer.Get(ConnectionName).GetHost();
         }
 
         /// <summary>

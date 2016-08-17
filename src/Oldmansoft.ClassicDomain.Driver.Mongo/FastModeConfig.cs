@@ -24,37 +24,27 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
 
         private ConfigItem InitItem(string name)
         {
-            var connectionString = Configuration.Config.GetConnectionString(name, 27017);
-
-            var builder = new MongoUrlBuilder();
-            var servers = new List<MongoServerAddress>();
-            foreach (var dataSource in connectionString.DataSource)
+            var connectionString = Configuration.Config.GetConnectionString(name);
+            var url = new MongoUrl(connectionString);
+            var setting = MongoServerSettings.FromUrl(url);
+            var uri = new Uri(connectionString);
+            if (uri.GetDatabase() == string.Empty)
             {
-                servers.Add(new MongoServerAddress(dataSource.Host, dataSource.Port));
+                throw new ConfigItemException(string.Format("config 文件的配置项 {0} ConnectionString 需要指定数据库名称", name));
             }
-            builder.Servers = servers;
-            if (!string.IsNullOrEmpty(connectionString.UserID))
-            {
-                builder.Username = connectionString.UserID;
-                builder.Password = connectionString.Password;
-            }
-
-            var setting = MongoServerSettings.FromUrl(builder.ToMongoUrl());
-            setting.WriteConcern = WriteConcern.Acknowledged;
-
-            return new ConfigItem(CreateMongoServer(setting), connectionString.InitialCatalog);
+            return new ConfigItem(CreateMongoServer(setting), setting.GetHost(), uri.GetDatabase());
         }
 
         /// <summary>
-        /// 获取数据库
+        /// 获取配置项
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public MongoDatabase GetDatabase(string name)
+        public ConfigItem Get(string name)
         {
             if (Items.ContainsKey(name))
             {
-                return Items[name].GetDatabase();
+                return Items[name];
             }
 
             ConfigItem item = InitItem(name);
@@ -62,11 +52,11 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
             {
                 if (Items.ContainsKey(name))
                 {
-                    return Items[name].GetDatabase();
+                    return Items[name];
                 }
 
                 Items.Add(name, item);
-                return item.GetDatabase();
+                return item;
             }
         }
 

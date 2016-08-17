@@ -39,15 +39,7 @@ namespace Oldmansoft.ClassicDomain
         /// <returns></returns>
         public virtual string GetHost()
         {
-            var connectionString = Configuration.Config.GetConnectionString(ConnectionName, 0);
-            if (connectionString.DataSource.Count() == 1)
-            {
-                return connectionString.DataSource.Host;
-            }
-            else
-            {
-                return Guid.NewGuid().ToString("N");
-            }
+            return Guid.NewGuid().ToString("N");
         }
 
         /// <summary>

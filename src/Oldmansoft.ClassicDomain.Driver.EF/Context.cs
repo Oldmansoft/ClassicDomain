@@ -39,8 +39,8 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
         /// <returns></returns>
         public virtual string GetHost()
         {
-            var connectionString = ClassicDomain.Configuration.Config.GetConnectionString(ConnectionName, 0);
-            return connectionString.DataSource.Host;
+            var connectionString = ClassicDomain.Configuration.Config.GetConnectionString(ConnectionName);
+            return new Configuration.ConnectionString(ConnectionName, connectionString, 1433).DataSource.Host;
         }
 
         /// <summary>

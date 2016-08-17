@@ -19,3 +19,5 @@ using System.Runtime.InteropServices;
 
 // 如果此项目向 COM 公开，则下列 GUID 用于类型库的 ID
 [assembly: Guid("4932c605-579e-49d1-9696-a1fd904a3dcc")]
+
+[assembly: InternalsVisibleTo("UnitTest.ClassicDomain")]

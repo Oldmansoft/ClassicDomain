@@ -31,12 +31,7 @@ namespace Oldmansoft.ClassicDomain.Configuration
         /// 名称
         /// </summary>
         public string Name { get; set; }
-
-        /// <summary>
-        /// 提供者名称
-        /// </summary>
-        public string ProviderName { get; set; }
-
+        
         /// <summary>
         /// 数据源
         /// </summary>
@@ -61,13 +56,11 @@ namespace Oldmansoft.ClassicDomain.Configuration
         /// 创建连接串
         /// </summary>
         /// <param name="name">名称</param>
-        /// <param name="providerName">提供者名称</param>
         /// <param name="context">内容</param>
         /// <param name="defaultPort">默认端口</param>
-        public ConnectionString(string name, string providerName, string context, int defaultPort)
+        public ConnectionString(string name, string context, int defaultPort)
         {
             Name = name;
-            ProviderName = providerName;
             if (string.IsNullOrWhiteSpace(context)) return;
 
             string[] contexts = context.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
