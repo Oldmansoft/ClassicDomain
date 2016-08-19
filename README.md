@@ -54,6 +54,15 @@ public class RepositoryFactory
 }
 ```
 
+```C#
+var factory = new Repositories.RepositoryFactory();
+var repository = factory.CreatePerson();
+var domain = new Person();
+domain.Name = "Oldman";
+repository.Add(domain);
+factory.GetUnitOfWork().Commit();
+```
+
 ### Maintainers:
 * Oldman                    https://github.com/Oldmansoft
 
