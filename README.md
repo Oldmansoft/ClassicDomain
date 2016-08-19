@@ -54,11 +54,6 @@ public class RepositoryFactory
 }
 ```
 
-Contributing
-------------
-
-Please see our [guidelines](CONTRIBUTING.md) for contributing to the driver.
-
 ### Maintainers:
 * Oldman                    https://github.com/Oldmansoft
 
