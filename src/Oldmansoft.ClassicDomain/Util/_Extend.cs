@@ -131,6 +131,7 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <returns></returns>
         public static TTarget CopyTo<TSource, TTarget>(this TSource source, TTarget target, bool isDeepCopy = true)
         {
+            if (source is DataMapper) throw new ArgumentException("请不要直接使用 DataMapper.CopyTo(target) 方法", "source");
             return new DataMapper(isDeepCopy).CopyTo(source, target);
         }
     }
