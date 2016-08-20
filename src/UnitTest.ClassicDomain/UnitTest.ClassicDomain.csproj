@@ -35,6 +35,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MongoDB.Bson, Version=2.2.4.26, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MongoDB.Bson.2.2.4\lib\net45\MongoDB.Bson.dll</HintPath>
       <Private>True</Private>
@@ -52,6 +60,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -69,10 +78,14 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Drvier\Domain\Book.cs" />
+    <Compile Include="Drvier\EntityFramework\BookConfiguration.cs" />
+    <Compile Include="Drvier\EntityFramework\Factory.cs" />
+    <Compile Include="Drvier\EntityFramework\Mapping.cs" />
     <Compile Include="Drvier\InProcess\Factory.cs" />
     <Compile Include="Drvier\InProcess\Mapping.cs" />
     <Compile Include="Drvier\Mongo\Factory.cs" />
     <Compile Include="Drvier\Mongo\Mapping.cs" />
+    <Compile Include="Drvier\UtEntityFrameworkDomainOperate.cs" />
     <Compile Include="Drvier\UtMongoDomainOperate.cs" />
     <Compile Include="Drvier\Mongo\UtConnectionString.cs" />
     <Compile Include="Drvier\UtInProcessDomainOperate.cs" />
@@ -82,6 +95,10 @@
     <Compile Include="Util\UtCopyTo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Oldmansoft.ClassicDomain.Driver.EF\Oldmansoft.ClassicDomain.Driver.EF.csproj">
+      <Project>{9870ad2f-6fbb-4cf4-944e-40ae3fe8bfe5}</Project>
+      <Name>Oldmansoft.ClassicDomain.Driver.EF</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Oldmansoft.ClassicDomain.Driver.Mongo\Oldmansoft.ClassicDomain.Driver.Mongo.csproj">
       <Project>{4932c605-579e-49d1-9696-a1fd904a3dcc}</Project>
       <Name>Oldmansoft.ClassicDomain.Driver.Mongo</Name>
@@ -95,6 +112,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
