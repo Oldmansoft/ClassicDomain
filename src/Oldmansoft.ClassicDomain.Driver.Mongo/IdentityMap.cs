@@ -46,6 +46,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// <param name="entity"></param>
         public void Set(TEntity entity)
         {
+            if (entity == null) return;
             var domain = Activator.CreateInstance<TEntity>();
             Store[GetKey(entity).ToString()] = Mapper.CopyTo(entity, domain);
         }

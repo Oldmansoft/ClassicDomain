@@ -73,9 +73,9 @@
     <Compile Include="Drvier\InProcess\Mapping.cs" />
     <Compile Include="Drvier\Mongo\Factory.cs" />
     <Compile Include="Drvier\Mongo\Mapping.cs" />
-    <Compile Include="Drvier\Mongo\UtDomainOperate.cs" />
+    <Compile Include="Drvier\UtMongoDomainOperate.cs" />
     <Compile Include="Drvier\Mongo\UtConnectionString.cs" />
-    <Compile Include="Drvier\UtInProcess.cs" />
+    <Compile Include="Drvier\UtInProcessDomainOperate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\CopySourceModel.cs" />
     <Compile Include="Util\CopyTargetModel.cs" />

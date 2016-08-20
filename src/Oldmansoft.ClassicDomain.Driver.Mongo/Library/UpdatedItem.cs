@@ -49,11 +49,13 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
             bool result = false;
             if (NormalUpdate != null)
             {
-                result = collection.Update(Query, NormalUpdate).DocumentsAffected > 0;
+                collection.Update(Query, NormalUpdate);
+                result = true;
             }
             foreach (var update in UpdateList)
             {
-                result = collection.Update(Query, update).DocumentsAffected > 0 || result;
+                collection.Update(Query, update);
+                result = true;
             }
             return result;
         }

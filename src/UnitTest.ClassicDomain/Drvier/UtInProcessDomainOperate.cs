@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace UnitTest.ClassicDomain.Drvier
 {
     [TestClass]
-    public class UtInProcess
+    public class UtInProcessDomainOperate
     {
         [TestMethod]
         public void TestAdd()

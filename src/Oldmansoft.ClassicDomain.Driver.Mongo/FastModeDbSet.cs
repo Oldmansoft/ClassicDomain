@@ -122,8 +122,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// <returns></returns>
         public TDomain Get(TKey id)
         {
-            var query = MongoDB.Driver.Builders.Query.EQ("_id", Library.Extend.ToBsonValue(id));
-            return GetCollection().FindOne(query);
+            return GetCollection().FindOneById(Library.Extend.ToBsonValue(id));
         }
 
         /// <summary>
@@ -186,7 +185,8 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         protected virtual bool Remove(MongoCollection<TDomain> collection, TKey id)
         {
             var query = MongoDB.Driver.Builders.Query<TDomain>.EQ(KeyExpression, id);
-            return collection.Remove(query).DocumentsAffected > 0;
+            collection.Remove(query);
+            return true;
         }
     }
 }

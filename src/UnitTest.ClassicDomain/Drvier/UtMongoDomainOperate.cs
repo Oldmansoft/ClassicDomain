@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace UnitTest.ClassicDomain.Drvier.Mongo
 {
     [TestClass]
-    public class UtDomainOperate
+    public class UtMongoDomainOperate
     {
         [TestMethod]
         public void TestAddReplaceRemove()
@@ -29,6 +29,8 @@ namespace UnitTest.ClassicDomain.Drvier.Mongo
 
             repository.Remove(domain);
             factory.GetUnitOfWork().Commit();
+
+            domain = repository.Get(domain.Id);
             Assert.IsNull(domain);
         }
     }
