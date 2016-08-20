@@ -74,6 +74,9 @@
     <Compile Include="Drvier\Mongo\UtConnectionString.cs" />
     <Compile Include="Drvier\UtInProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\CopySourceModel.cs" />
+    <Compile Include="Util\CopyTargetModel.cs" />
+    <Compile Include="Util\UtCopyTo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Oldmansoft.ClassicDomain.Driver.Mongo\Oldmansoft.ClassicDomain.Driver.Mongo.csproj">

@@ -61,6 +61,7 @@
     <Compile Include="IAdd.cs" />
     <Compile Include="IGet.cs" />
     <Compile Include="Driver\InProcess\StoreManager.cs" />
+    <Compile Include="IPageResult.cs" />
     <Compile Include="IQuery.cs" />
     <Compile Include="IRemove.cs" />
     <Compile Include="IReplace.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="IRepositoryAddReplace.cs" />
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="IUnitOfWorkManagedItem.cs" />
+    <Compile Include="PageResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UniqueException.cs" />
     <Compile Include="UnitOfWorkManagedItem.cs" />

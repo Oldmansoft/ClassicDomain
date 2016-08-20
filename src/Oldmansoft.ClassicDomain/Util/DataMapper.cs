@@ -52,7 +52,21 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <param name="source">源对象</param>
         /// <param name="target">目标对象</param>
         /// <returns>返回目标对象</returns>
+        [Obsolete("请使用 CopyTo 方法代替")]
         public TTarget Copy<TTarget>(object source, TTarget target)
+        {
+            return Copy(source, target, string.Empty);
+        }
+
+        /// <summary>
+        /// 分页列表复制到
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TTarget"></typeparam>
+        /// <param name="source">源对象</param>
+        /// <param name="target">目标对象</param>
+        /// <returns>返回目标对象</returns>
+        public TTarget CopyTo<TSource, TTarget>(TSource source, TTarget target)
         {
             return Copy(source, target, string.Empty);
         }
@@ -80,35 +94,50 @@ namespace Oldmansoft.ClassicDomain.Util
                 var targetPropertyInfo = targetType.GetProperty(sourcePropertyInfo.Name, BindingFlags.Public | BindingFlags.Instance);
                 if (targetPropertyInfo == null) continue;
                 if (!targetPropertyInfo.CanWrite) continue;
-
-                if (sourcePropertyInfo.PropertyType.IsNormalClass() && targetPropertyInfo.PropertyType.IsNormalClass())
+                
+                if (sourcePropertyInfo.PropertyType.IsArray && targetPropertyInfo.PropertyType.IsArray)
                 {
                     if (!IsDeepCopy) continue;
                     object sourceValue = sourcePropertyInfo.GetValue(source);
                     if (sourceValue == null) continue;
                     if (ArrayClassCopy(sourcePropertyInfo, targetPropertyInfo, sourceValue, target)) continue;
+                }
+
+                if (new Type[] { sourcePropertyInfo.PropertyType, targetPropertyInfo.PropertyType }.IsGenericEnumerable())
+                {
+                    if (!IsDeepCopy) continue;
+                    object sourceValue = sourcePropertyInfo.GetValue(source);
+                    if (sourceValue == null) continue;
                     if (ListClassCopy(sourcePropertyInfo, targetPropertyInfo, sourceValue, target)) continue;
                     if (DictionaryClassCopy(sourcePropertyInfo, targetPropertyInfo, sourceValue, target)) continue;
-                    NormalClassCopy(target, refPropertyName, sourcePropertyInfo, targetPropertyInfo, sourceValue);
                 }
-                else
+
+                if (new Type[] { sourcePropertyInfo.PropertyType, targetPropertyInfo.PropertyType }.IsNormalClass())
                 {
-                    if (sourcePropertyInfo.PropertyType.IsEnum && targetPropertyInfo.PropertyType.IsEnum)
-                    {
-                        targetPropertyInfo.SetValue(target, (int)sourcePropertyInfo.GetValue(source));
-                        continue;
-                    }
-                    if (sourcePropertyInfo.PropertyType.IsNullableEnum() && targetPropertyInfo.PropertyType.IsNullableEnum())
-                    {
-                        var sourceValue = sourcePropertyInfo.GetValue(source);
-                        if (sourceValue == null) continue;
-                        var targetValue = Enum.ToObject(targetPropertyInfo.PropertyType.GenericTypeArguments[0], (int)sourceValue);
-                        targetPropertyInfo.SetValue(target, Activator.CreateInstance(targetPropertyInfo.PropertyType, targetValue));
-                        continue;
-                    }
-                    if (sourcePropertyInfo.PropertyType != targetPropertyInfo.PropertyType) continue;
-                    targetPropertyInfo.SetValue(target, sourcePropertyInfo.GetValue(source));
+                    if (!IsDeepCopy) continue;
+                    object sourceValue = sourcePropertyInfo.GetValue(source);
+                    if (sourceValue == null) continue;
+                    NormalClassCopy(target, refPropertyName, sourcePropertyInfo, targetPropertyInfo, sourceValue);
+                    continue;
                 }
+
+                if (sourcePropertyInfo.PropertyType.IsEnum && targetPropertyInfo.PropertyType.IsEnum)
+                {
+                    targetPropertyInfo.SetValue(target, (int)sourcePropertyInfo.GetValue(source));
+                    continue;
+                }
+
+                if (sourcePropertyInfo.PropertyType.IsNullableEnum() && targetPropertyInfo.PropertyType.IsNullableEnum())
+                {
+                    var sourceValue = sourcePropertyInfo.GetValue(source);
+                    if (sourceValue == null) continue;
+                    var targetValue = Enum.ToObject(targetPropertyInfo.PropertyType.GenericTypeArguments[0], (int)sourceValue);
+                    targetPropertyInfo.SetValue(target, Activator.CreateInstance(targetPropertyInfo.PropertyType, targetValue));
+                    continue;
+                }
+
+                if (sourcePropertyInfo.PropertyType != targetPropertyInfo.PropertyType) continue;
+                targetPropertyInfo.SetValue(target, sourcePropertyInfo.GetValue(source));
             }
 
             return target;
@@ -128,7 +157,7 @@ namespace Oldmansoft.ClassicDomain.Util
                 {
                     return null;
                 }
-                return Copy(source, targetValue);
+                return CopyTo(source, targetValue);
             }
             if (sourceItemType.IsEnum && targetItemType.IsEnum)
             {
@@ -173,14 +202,14 @@ namespace Oldmansoft.ClassicDomain.Util
         {
             if (!sourcePropertyInfo.PropertyType.GetInterfaces().Contains(typeof(System.Collections.IEnumerable))) return false;
             if (!sourcePropertyInfo.PropertyType.IsGenericType) return false;
-            if (!targetPropertyInfo.PropertyType.GetInterfaces().Contains(typeof(System.Collections.IList))) return false;
+            if (!targetPropertyInfo.PropertyType.GetInterfaces().Contains(typeof(System.Collections.IEnumerable))) return false;
             if (!targetPropertyInfo.PropertyType.IsGenericType) return false;
 
             var sourceItemType = sourcePropertyInfo.PropertyType.GetGenericArguments()[0];
             var targetItemType = targetPropertyInfo.PropertyType.GetGenericArguments()[0];
             var targetType = typeof(List<>).MakeGenericType(targetItemType);
 
-            if (targetType != targetPropertyInfo.PropertyType) return false;
+            if (targetType != targetPropertyInfo.PropertyType && !targetType.GetInterfaces().Contains(targetPropertyInfo.PropertyType)) return false;
             var source = (sourceValue as System.Collections.IEnumerable);
             if (source == null) return true;
 
@@ -210,7 +239,7 @@ namespace Oldmansoft.ClassicDomain.Util
 
             var targetType = typeof(Dictionary<,>).MakeGenericType(targetKeyType, targetValueType);
 
-            if (targetType != targetPropertyInfo.PropertyType) return false;
+            if (!targetType.GetInterfaces().Contains(targetPropertyInfo.PropertyType)) return false;
 
             var isNormalClass = sourceValueType.IsNormalClass() && targetValueType.IsNormalClass();
             var targetValue = Activator.CreateInstance(targetType) as System.Collections.IDictionary;
