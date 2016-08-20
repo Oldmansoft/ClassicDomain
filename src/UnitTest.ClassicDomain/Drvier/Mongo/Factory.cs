@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnitTest.ClassicDomain.Drvier.InProcess
+namespace UnitTest.ClassicDomain.Drvier.Mongo
 {
     class Factory
     {
@@ -20,9 +20,9 @@ namespace UnitTest.ClassicDomain.Drvier.InProcess
             return Uow;
         }
 
-        public Oldmansoft.ClassicDomain.IRepositoryGet<Domain.Book, Guid> CreateBook()
+        public Oldmansoft.ClassicDomain.IRepository<Domain.Book, Guid> CreateBook()
         {
-            return new Oldmansoft.ClassicDomain.Driver.InProcess.Repository<Domain.Book, Guid, Mapping>(Uow);
+            return new Oldmansoft.ClassicDomain.Driver.Mongo.Repository<Domain.Book, Guid, Mapping>(Uow);
         }
     }
 }

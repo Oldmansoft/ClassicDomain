@@ -9,14 +9,14 @@ namespace UnitTest.ClassicDomain.Drvier
         [TestMethod]
         public void TestAdd()
         {
-            var domain = new InProcess.Domain();
+            var domain = new Domain.Book();
             domain.Id = Guid.NewGuid();
             domain.Name = "hello";
             var factory = new InProcess.Factory();
-            factory.CreateDomain().Add(domain);
+            factory.CreateBook().Add(domain);
             factory.GetUnitOfWork().Commit();
 
-            var loadDomain = factory.CreateDomain().Get(domain.Id);
+            var loadDomain = factory.CreateBook().Get(domain.Id);
             Assert.IsNotNull(loadDomain);
             Assert.AreEqual("hello", domain.Name);
         }
@@ -24,14 +24,14 @@ namespace UnitTest.ClassicDomain.Drvier
         [TestMethod]
         public void TestAddSameId()
         {
-            var domain = new InProcess.Domain();
+            var domain = new Domain.Book();
             domain.Id = Guid.NewGuid();
             domain.Name = "hello";
             var factory = new InProcess.Factory();
-            factory.CreateDomain().Add(domain);
+            factory.CreateBook().Add(domain);
             factory.GetUnitOfWork().Commit();
 
-            factory.CreateDomain().Add(domain);
+            factory.CreateBook().Add(domain);
             try
             {
                 factory.GetUnitOfWork().Commit();

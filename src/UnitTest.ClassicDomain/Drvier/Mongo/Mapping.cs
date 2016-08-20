@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnitTest.ClassicDomain.Drvier.InProcess
+namespace UnitTest.ClassicDomain.Drvier.Mongo
 {
-    class Mapping : Oldmansoft.ClassicDomain.Driver.InProcess.Context
+    class Mapping : Oldmansoft.ClassicDomain.Driver.Mongo.Context
     {
         public override void OnModelCreating()
         {

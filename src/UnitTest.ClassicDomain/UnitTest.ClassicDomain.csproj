@@ -68,9 +68,12 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Drvier\InProcess\Domain.cs" />
+    <Compile Include="Drvier\Domain\Book.cs" />
     <Compile Include="Drvier\InProcess\Factory.cs" />
     <Compile Include="Drvier\InProcess\Mapping.cs" />
+    <Compile Include="Drvier\Mongo\Factory.cs" />
+    <Compile Include="Drvier\Mongo\Mapping.cs" />
+    <Compile Include="Drvier\Mongo\UtDomainOperate.cs" />
     <Compile Include="Drvier\Mongo\UtConnectionString.cs" />
     <Compile Include="Drvier\UtInProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -89,6 +92,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Choose>
