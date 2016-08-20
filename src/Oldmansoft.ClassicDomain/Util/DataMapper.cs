@@ -25,9 +25,8 @@ namespace Oldmansoft.ClassicDomain.Util
 
         /// <summary>
         /// 创建数据映射
-        /// 默认不进入深拷贝
         /// </summary>
-        public DataMapper(bool isDeepCopy = false)
+        public DataMapper(bool isDeepCopy = true)
         {
             IgnoreProperty = new HashSet<string>();
             IsDeepCopy = isDeepCopy;
