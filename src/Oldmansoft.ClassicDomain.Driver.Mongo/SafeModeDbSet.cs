@@ -38,7 +38,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
             var source = IdentityMap.Get(key);
             if (source == null)
             {
-                throw new ArgumentException("修改的实例必须经过加载。", "entity");
+                throw new ArgumentException("修改的实例必须经过加载。", "domain");
             }
             var context = Library.UpdateContext.GetContext(key, typeof(TDomain), source, domain);
             if (!context.HasValue()) return false;
