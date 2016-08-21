@@ -173,7 +173,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         {
             var query = MongoDB.Driver.Builders.Query<TDomain>.EQ(KeyExpression, KeyExpressionCompile(entity));
             var update = MongoDB.Driver.Builders.Update<TDomain>.Replace(entity);
-            return collection.Update(query, update).DocumentsAffected > 0;
+            var writeResult = collection.Update(query, update);
+            if (writeResult == null) return true;
+            return writeResult.DocumentsAffected > 0;
         }
 
         /// <summary>
@@ -185,8 +187,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         protected virtual bool Remove(MongoCollection<TDomain> collection, TKey id)
         {
             var query = MongoDB.Driver.Builders.Query<TDomain>.EQ(KeyExpression, id);
-            collection.Remove(query);
-            return true;
+            var writeResult = collection.Remove(query);
+            if (writeResult == null) return true;
+            return writeResult.DocumentsAffected > 0;
         }
     }
 }
