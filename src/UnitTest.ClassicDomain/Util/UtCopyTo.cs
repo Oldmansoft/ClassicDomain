@@ -46,5 +46,40 @@ namespace UnitTest.ClassicDomain.Util
             Assert.AreEqual(source.TotalCount, target.TotalCount);
             Assert.AreEqual(source.List.Count(), target.List.Count());
         }
+
+        [TestMethod]
+        public void TestCopyArray()
+        {
+            var source = new CopySourceModel[1];
+            source[0] = new CopySourceModel() { Name = "hello" };
+
+            var target = source.CopyTo(new CopyTargetModel[1]);
+
+            Assert.AreEqual(source.Length, target.Length);
+            Assert.AreEqual("hello", target[0].Name);
+        }
+
+        [TestMethod]
+        public void TestCopyList()
+        {
+            var source = new List<CopySourceModel>();
+            source.Add(new CopySourceModel() { Name = "hello" });
+
+            var target = source.CopyTo(new List<CopyTargetModel>());
+
+            Assert.AreEqual(source.Count, target.Count);
+            Assert.AreEqual("hello", target[0].Name);
+        }
+
+        [TestMethod]
+        public void TestCopyDictionary()
+        {
+            var source = new Dictionary<string, CopySourceModel>();
+            source.Add("hello", new CopySourceModel() { Name = "world" });
+            var target = source.CopyTo(new Dictionary<string, CopyTargetModel>());
+
+            Assert.AreEqual(source.Count, target.Count);
+            Assert.AreEqual("world", target["hello"].Name);
+        }
     }
 }

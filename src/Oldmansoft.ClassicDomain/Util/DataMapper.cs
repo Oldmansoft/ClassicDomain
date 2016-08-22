@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -54,7 +55,7 @@ namespace Oldmansoft.ClassicDomain.Util
         [Obsolete("请使用 CopyTo 方法代替")]
         public TTarget Copy<TTarget>(object source, TTarget target)
         {
-            return Copy(source, target, string.Empty);
+            return CopyTo(source, target);
         }
 
         /// <summary>
@@ -67,7 +68,102 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <returns>返回目标对象</returns>
         public TTarget CopyTo<TSource, TTarget>(TSource source, TTarget target)
         {
+            if (source == null || target == null) return default(TTarget);
+            if (source is Array)
+            {
+                if (target is Array)
+                {
+                    CopyArray(source as Array, target as Array);
+                    return target;
+                }
+                throw new ArgumentException("必须是数组", "target");
+            }
+            if (source is IEnumerable && target is IList)
+            {
+                CopyList(source as IEnumerable, target as IList);
+                return target;
+            }
+            if (source is IDictionary && target is IDictionary)
+            {
+                CopyDictionary(source as IDictionary, target as IDictionary);
+                return target;
+            }
             return Copy(source, target, string.Empty);
+        }
+
+        /// <summary>
+        /// 复制数组
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        private void CopyArray(Array source, Array target)
+        {
+            var sourceType = source.GetType();
+            var targetType = target.GetType();
+
+            var sourceItemType = sourceType.GetMethod("Set").GetParameters()[1].ParameterType;
+            var targetItemType = targetType.GetMethod("Set").GetParameters()[1].ParameterType;
+
+            if (sourceItemType.IsNormalClass() != targetItemType.IsNormalClass()) return;
+            var isNormalClass = sourceItemType.IsNormalClass();
+            int index = 0;
+            foreach (var item in source)
+            {
+                if (target.Length == index) break;
+                target.SetValue(ValueCopy(sourceItemType, targetItemType, isNormalClass, item), index);
+                index++;
+            }
+        }
+
+        /// <summary>
+        /// 复制列表
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        private void CopyList(IEnumerable source, IList target)
+        {
+            var sourceType = source.GetType();
+            var targetType = target.GetType();
+            if (!sourceType.IsGenericType || !targetType.IsGenericType) return;
+
+            var sourceItemType = sourceType.GetGenericArguments()[0];
+            var targetItemType = targetType.GetGenericArguments()[0];
+
+            if (sourceItemType.IsNormalClass() != targetItemType.IsNormalClass()) return;
+            var isNormalClass = sourceItemType.IsNormalClass();
+            foreach (var item in source)
+            {
+                target.Add(ValueCopy(sourceItemType, targetItemType, isNormalClass, item));
+            }
+        }
+
+        /// <summary>
+        /// 复制键值集
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        private void CopyDictionary(IDictionary source, IDictionary target)
+        {
+            var sourceType = source.GetType();
+            var targetType = target.GetType();
+            if (!sourceType.IsGenericType || !targetType.IsGenericType) return;
+
+            var sourceKeyType = sourceType.GetGenericArguments()[0];
+            var sourceValueType = sourceType.GetGenericArguments()[1];
+            var targetKeyType = targetType.GetGenericArguments()[0];
+            var targetValueType = targetType.GetGenericArguments()[1];
+
+            if (sourceKeyType != targetKeyType) return;
+
+            if (sourceValueType.IsNormalClass() != targetValueType.IsNormalClass()) return;
+            var isNormalClass = sourceValueType.IsNormalClass();
+            foreach (var key in source.Keys)
+            {
+                target.Add(key, ValueCopy(sourceValueType, targetValueType, isNormalClass, source[key]));
+            }
         }
 
         /// <summary>
@@ -80,8 +176,7 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <returns></returns>
         private TTarget Copy<TTarget>(object source, TTarget target, string refPropertyName)
         {
-            if (source == null || target == null) return default(TTarget);
-
+            if (source == null || target == null) return target;
             var sourceType = source.GetType();
             var targetType = target.GetType();
 
