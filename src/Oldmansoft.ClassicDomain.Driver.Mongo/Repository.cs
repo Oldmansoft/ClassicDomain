@@ -77,10 +77,21 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// <summary>
         /// 执行
         /// </summary>
-        /// <param name="fun"></param>
-        protected void Execute(Func<MongoDB.Driver.MongoCollection<TDomain>, bool> fun)
+        /// <param name="func"></param>
+        protected void Execute(Func<MongoDB.Driver.MongoCollection<TDomain>, bool> func)
         {
-            Context.Set<TDomain, TKey>().RegisterExecute(fun);
+            Context.Set<TDomain, TKey>().RegisterExecute(func);
+        }
+
+        /// <summary>
+        /// 立即执行并返回结果
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        protected TResult Execute<TResult>(Func<MongoDB.Driver.MongoCollection<TDomain>, TResult> func)
+        {
+            return func(Context.Set<TDomain, TKey>().GetCollection());
         }
     }
 }
