@@ -64,6 +64,7 @@
     <Compile Include="ConfigItem.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="IdentityMap.cs" />
+    <Compile Include="Library\RemoveObject.cs" />
     <Compile Include="Repository.cs" />
     <Compile Include="SafeModeDbSet.cs" />
     <Compile Include="FastModeContext.cs" />

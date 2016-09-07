@@ -33,7 +33,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
         {
             foreach (var property in TypePublicInstanceStore.GetPropertys(type))
             {
-                var name = string.Format("{0}{1}", prefixName, property.Name);
+                var propertyName = property.Name;
+                if (propertyName.ToLower() == "id") propertyName = "_id";
+                var name = string.Format("{0}{1}", prefixName, propertyName);
                 var sourceValue = compareSource == null ? null : property.GetValue(compareSource);
                 var targetValue = compareTarget == null ? null : property.GetValue(compareTarget);
                 var propertyType = property.PropertyType;
@@ -121,15 +123,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
             }
             for (var i = targetList.Count; i < sourceList.Count; i++)
             {
-                if (isNormalClass)
-                {
-                    result.AddOther(new UpdateBuilder().PullObjectWrapped(name, sourceList[i]));
-                }
-                else
-                {
-                    result.AddOther(Update.Pull(name, sourceList[i].ToBsonValue()));
-                }
+                result.AddOther(new UpdateBuilder().SetObjectWrapped(GetListKey(name, i), RemoveObject.Instance));
             }
+            result.AddOther(new UpdateBuilder().PullObjectWrapped(name, RemoveObject.Instance));
         }
 
         private static BsonValue GetBsonValue(Type type, object value, bool isNormalClass = false)

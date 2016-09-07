@@ -12,7 +12,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
     /// <typeparam name="TDomain">领域</typeparam>
     /// <typeparam name="TKey">主键</typeparam>
     /// <typeparam name="TContext">上下文</typeparam>
-    public class Repository<TDomain, TKey, TContext> : IRepository<TDomain, TKey> where TDomain : class where TContext : Context, new()
+    public class Repository<TDomain, TKey, TContext> : IRepository<TDomain, TKey> where TDomain : class where TContext : FastModeContext, new()
     {
         private FastModeContext Context { get; set; }
 
