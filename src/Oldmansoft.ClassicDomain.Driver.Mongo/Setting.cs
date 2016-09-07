@@ -46,6 +46,17 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         }
 
         /// <summary>
+        /// 定义实体的映射数据表名
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <returns></returns>
+        public Setting<TEntity, TMember> ToTable(string tableName)
+        {
+            DbSet.SetTableName(tableName);
+            return this;
+        }
+
+        /// <summary>
         /// 设置索引
         /// </summary>
         /// <param name="keyExpressions">索引键表达式</param>

@@ -36,6 +36,17 @@ namespace UnitTest.ClassicDomain.Drvier.Mongo
         }
 
         [TestMethod]
+        public void TestCustomConnectionName()
+        {
+            var factory = new Factory();
+            var repository = factory.CreateBook("CustomBook");
+            var domain = new Domain.Book();
+            domain.Name = "hello";
+            repository.Add(domain);
+            factory.GetUnitOfWork().Commit();
+        }
+
+        [TestMethod]
         public void TestListObjectRemoveFirst()
         {
             var factory = new Factory();

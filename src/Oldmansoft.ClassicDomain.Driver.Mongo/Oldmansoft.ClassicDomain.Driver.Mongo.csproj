@@ -63,6 +63,8 @@
     <Compile Include="Config.cs" />
     <Compile Include="ConfigItem.cs" />
     <Compile Include="Context.cs" />
+    <Compile Include="IContext.cs" />
+    <Compile Include="IDbSet.cs" />
     <Compile Include="IdentityMap.cs" />
     <Compile Include="Library\RemoveObject.cs" />
     <Compile Include="Repository.cs" />

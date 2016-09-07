@@ -28,4 +28,17 @@ namespace Oldmansoft.ClassicDomain
         /// </summary>
         void OnModelCreating();
     }
+
+    /// <summary>
+    /// 工作单元管理项
+    /// </summary>
+    /// <typeparam name="TInit">初始化参数类型</typeparam>
+    public interface IUnitOfWorkManagedItem<TInit> : IUnitOfWorkManagedItem
+    {
+        /// <summary>
+        /// 初始化方法，此方法由 UnitOfWork 调用
+        /// </summary>
+        /// <param name="parameter">初始化参数</param>
+        void OnModelCreating(TInit parameter);
+    }
 }

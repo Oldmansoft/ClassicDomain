@@ -14,7 +14,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
     /// </summary>
     /// <typeparam name="TDomain"></typeparam>
     /// <typeparam name="TKey"></typeparam>
-    internal class FastModeDbSet<TDomain, TKey> : IDbSet
+    internal class FastModeDbSet<TDomain, TKey> : IDbSet<TDomain, TKey>
     {
         private MongoDatabase Database { get; set; }
 
@@ -22,9 +22,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// 表名
         /// </summary>
         protected string TableName { get; private set; }
-
-        private string OriginTableName { get; set; }
-
+        
         private ChangeList<TDomain> List { get; set; }
 
         private ConcurrentQueue<Func<MongoCollection<TDomain>, bool>> ExecuteList { get; set; }
@@ -44,8 +42,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         public FastModeDbSet(MongoDatabase database, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
         {
             Database = database;
-            OriginTableName = typeof(TDomain).Name;
-            TableName = OriginTableName;
+            TableName = typeof(TDomain).Name;
             List = new ChangeList<TDomain>();
             ExecuteList = new ConcurrentQueue<Func<MongoCollection<TDomain>, bool>>();
             KeyExpression = keyExpression;
@@ -56,7 +53,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// 注册移除
         /// </summary>
         /// <param name="entity"></param>
-        internal void RegisterRemove(TDomain entity)
+        void IDbSet<TDomain, TKey>.RegisterRemove(TDomain entity)
         {
             List.Deleteds.Enqueue(entity);
         }
@@ -65,7 +62,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// 注册替换
         /// </summary>
         /// <param name="entity"></param>
-        internal void RegisterReplace(TDomain entity)
+        void IDbSet<TDomain, TKey>.RegisterReplace(TDomain entity)
         {
             List.Updateds.Enqueue(entity);
         }
@@ -74,7 +71,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// 注册添加
         /// </summary>
         /// <param name="entity"></param>
-        internal void RegisterAdd(TDomain entity)
+        void IDbSet<TDomain, TKey>.RegisterAdd(TDomain entity)
         {
             List.Addeds.Enqueue(entity);
         }
@@ -83,7 +80,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// 注册执行
         /// </summary>
         /// <param name="execute"></param>
-        internal void RegisterExecute(Func<MongoCollection<TDomain>, bool> execute)
+        void IDbSet<TDomain, TKey>.RegisterExecute(Func<MongoCollection<TDomain>, bool> execute)
         {
             ExecuteList.Enqueue(execute);
         }
@@ -104,6 +101,15 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         internal string GetTableName()
         {
             return TableName;
+        }
+
+        /// <summary>
+        /// 设置表名
+        /// </summary>
+        /// <param name="tableName"></param>
+        internal void SetTableName(string tableName)
+        {
+            TableName = tableName;
         }
 
         /// <summary>

@@ -10,7 +10,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
     /// <summary>
     /// 快速模式实体上下文
     /// </summary>
-    public abstract class FastModeContext : UnitOfWorkManagedItem
+    public abstract class FastModeContext : UnitOfWorkManagedItem, IContext
     {
         private static FastModeConfig FastServer { get; set; }
 
@@ -69,13 +69,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
             return new Setting<TDomain, TKey>(dbSet);
         }
 
-        /// <summary>
-        /// 获取 Mongo 实体集
-        /// </summary>
-        /// <typeparam name="TDomain"></typeparam>
-        /// <typeparam name="TKey"></typeparam>
-        /// <returns></returns>
-        internal FastModeDbSet<TDomain, TKey> Set<TDomain, TKey>()
+        IDbSet<TDomain, TKey> IContext.Set<TDomain, TKey>()
         {
             Type type = typeof(TDomain);
             if (!DbSet.ContainsKey(type))
@@ -118,6 +112,26 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
             {
                 throw new UniqueException(ex);
             }
+        }
+    }
+
+    /// <summary>
+    /// 快速模式实体上下文
+    /// </summary>
+    /// <typeparam name="TInit"></typeparam>
+    public abstract class FastModeContext<TInit> : FastModeContext, IContext<TInit>
+    {
+        /// <summary>
+        /// 初始化方法，此方法由 UnitOfWork 调用
+        /// </summary>
+        /// <param name="parameter">初始化参数</param>
+        public abstract void OnModelCreating(TInit parameter);
+
+        /// <summary>
+        /// 隐藏此方法
+        /// </summary>
+        public override void OnModelCreating()
+        {
         }
     }
 }

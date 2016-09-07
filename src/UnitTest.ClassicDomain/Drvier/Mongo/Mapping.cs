@@ -13,4 +13,13 @@ namespace UnitTest.ClassicDomain.Drvier.Mongo
             Add<Domain.Book, Guid>(o => o.Id);
         }
     }
+
+    class MappingCustomConnectionName : Oldmansoft.ClassicDomain.Driver.Mongo.Context<string>
+    {
+        public override void OnModelCreating(string parameter)
+        {
+            ConnectionName = parameter;
+            Add<Domain.Book, Guid>(o => o.Id);
+        }
+    }
 }

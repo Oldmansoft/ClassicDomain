@@ -12,9 +12,19 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
     /// <typeparam name="TDomain">领域</typeparam>
     /// <typeparam name="TKey">主键</typeparam>
     /// <typeparam name="TContext">上下文</typeparam>
-    public class Repository<TDomain, TKey, TContext> : IRepository<TDomain, TKey> where TDomain : class where TContext : FastModeContext, new()
+    public class Repository<TDomain, TKey, TContext> : IRepository<TDomain, TKey> where TDomain : class where TContext : class, IContext, new()
     {
-        private FastModeContext Context { get; set; }
+        /// <summary>
+        /// 上下文
+        /// </summary>
+        protected IContext Context { get; set; }
+
+        /// <summary>
+        /// 创建仓储
+        /// </summary>
+        protected Repository()
+        {
+        }
 
         /// <summary>
         /// 创建仓储
@@ -22,6 +32,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// <param name="uow"></param>
         public Repository(UnitOfWork uow)
         {
+            if (typeof(TContext).IsGenericType) throw new ArgumentNullException("不能用此类调用泛型类型");
             Context = uow.GetManaged<TContext>();
         }
 
@@ -92,6 +103,32 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         protected TResult Execute<TResult>(Func<MongoDB.Driver.MongoCollection<TDomain>, TResult> func)
         {
             return func(Context.Set<TDomain, TKey>().GetCollection());
+        }
+    }
+
+    /// <summary>
+    /// 仓储库
+    /// </summary>
+    /// <typeparam name="TDomain">领域</typeparam>
+    /// <typeparam name="TKey">主键</typeparam>
+    /// <typeparam name="TContext">上下文</typeparam>
+    /// <typeparam name="TInit"></typeparam>
+    public class Repository<TDomain, TKey, TContext, TInit> : Repository<TDomain, TKey, TContext> where TDomain : class where TContext : class, IContext<TInit>, new()
+    {
+        /// <summary>
+        /// 上下文
+        /// </summary>
+        protected IContext<TInit> InitContext { get; set; }
+
+        /// <summary>
+        /// 创建仓储
+        /// </summary>
+        /// <param name="uow"></param>
+        /// <param name="parameter"></param>
+        public Repository(UnitOfWork uow, TInit parameter)
+        {
+            InitContext = uow.GetManaged<TContext, TInit>(parameter);
+            Context = InitContext;
         }
     }
 }

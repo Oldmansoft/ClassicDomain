@@ -89,7 +89,31 @@ namespace Oldmansoft.ClassicDomain
             }
             return UnitOfWorks[type] as TUnitOfWork;
         }
-        
+
+        /// <summary>
+        /// 获取被管理的子工作单元
+        /// </summary>
+        /// <typeparam name="TUnitOfWork">工作单元类型</typeparam>
+        /// <typeparam name="TInit"></typeparam>
+        /// <returns>工作单元</returns>
+        public TUnitOfWork GetManaged<TUnitOfWork, TInit>(TInit parameter) where TUnitOfWork : class, IUnitOfWorkManagedItem<TInit>, new()
+        {
+            Type type = typeof(TUnitOfWork);
+            if (!UnitOfWorks.ContainsKey(type))
+            {
+                var context = new TUnitOfWork();
+                context.OnModelCreating(parameter);
+                lock (UnitOfWorks)
+                {
+                    if (!UnitOfWorks.ContainsKey(type))
+                    {
+                        UnitOfWorks.Add(type, context);
+                    }
+                }
+            }
+            return UnitOfWorks[type] as TUnitOfWork;
+        }
+
         private object Locker_CommitCount = new object();
 
         /// <summary>
