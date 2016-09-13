@@ -121,11 +121,14 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
                     result.Add(Update.Set(GetListKey(name, i), GetBsonValue(itemType, targetList[i])));
                 }
             }
+
+            var isRemoveObject = false;
             for (var i = targetList.Count; i < sourceList.Count; i++)
             {
+                isRemoveObject = true;
                 result.AddOther(new UpdateBuilder().SetObjectWrapped(GetListKey(name, i), RemoveObject.Instance));
             }
-            result.AddOther(new UpdateBuilder().PullObjectWrapped(name, RemoveObject.Instance));
+            if (isRemoveObject) result.AddOther(new UpdateBuilder().PullObjectWrapped(name, RemoveObject.Instance));
         }
 
         private static BsonValue GetBsonValue(Type type, object value, bool isNormalClass = false)
