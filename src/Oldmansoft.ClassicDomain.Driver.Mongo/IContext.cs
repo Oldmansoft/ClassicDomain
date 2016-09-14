@@ -9,22 +9,15 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
     /// <summary>
     /// 实体上下文接口
     /// </summary>
-    public interface IContext : IUnitOfWorkManagedItem
+    public interface IContext : Core.IContext
     {
-        /// <summary>
-        /// 获取实体集
-        /// </summary>
-        /// <typeparam name="TDomain"></typeparam>
-        /// <typeparam name="TKey"></typeparam>
-        /// <returns></returns>
-        IDbSet<TDomain, TKey> Set<TDomain, TKey>();
     }
 
     /// <summary>
-    /// 实体上下文接口
+    /// 可传入初始化参数的实体上下文接口
     /// </summary>
-    /// <typeparam name="TInit"></typeparam>
-    public interface IContext<TInit> : IContext, IUnitOfWorkManagedItem<TInit>
+    /// <typeparam name="TInit">初始化参数类型</typeparam>
+    public interface IContext<TInit> : Core.IContext, IUnitOfWorkManagedItem<TInit>
     {
     }
 }

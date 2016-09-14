@@ -77,7 +77,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Drvier\Domain\Author.cs" />
     <Compile Include="Drvier\Domain\Book.cs" />
+    <Compile Include="Drvier\EntityFramework\AuthorConfiguration.cs" />
     <Compile Include="Drvier\EntityFramework\BookConfiguration.cs" />
     <Compile Include="Drvier\EntityFramework\Factory.cs" />
     <Compile Include="Drvier\EntityFramework\Mapping.cs" />

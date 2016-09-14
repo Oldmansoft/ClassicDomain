@@ -56,5 +56,17 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// </summary>
         /// <returns></returns>
         MongoCollection<TDomain> GetCollection();
+
+        /// <summary>
+        /// 设置表名
+        /// </summary>
+        /// <param name="tableName"></param>
+        void SetTableName(string tableName);
+
+        /// <summary>
+        /// 获取表名
+        /// </summary>
+        /// <returns></returns>
+        string GetTableName();
     }
 }

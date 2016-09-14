@@ -98,7 +98,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// 获取表名
         /// </summary>
         /// <returns></returns>
-        internal string GetTableName()
+        string IDbSet<TDomain, TKey>.GetTableName()
         {
             return TableName;
         }
@@ -107,7 +107,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// 设置表名
         /// </summary>
         /// <param name="tableName"></param>
-        internal void SetTableName(string tableName)
+        void IDbSet<TDomain, TKey>.SetTableName(string tableName)
         {
             TableName = tableName;
         }

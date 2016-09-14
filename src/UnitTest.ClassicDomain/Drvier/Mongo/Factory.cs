@@ -22,7 +22,6 @@ namespace UnitTest.ClassicDomain.Drvier.Mongo
 
         public Oldmansoft.ClassicDomain.IRepository<Domain.Book, Guid> CreateBook()
         {
-            //TODO: 需要判断 Context 的类型是否符合
             return new Oldmansoft.ClassicDomain.Driver.Mongo.Repository<Domain.Book, Guid, Mapping>(Uow);
         }
 

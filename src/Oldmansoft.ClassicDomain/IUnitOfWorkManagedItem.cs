@@ -30,7 +30,7 @@ namespace Oldmansoft.ClassicDomain
     }
 
     /// <summary>
-    /// 工作单元管理项
+    /// 可传入初始化参数的工作单元管理项
     /// </summary>
     /// <typeparam name="TInit">初始化参数类型</typeparam>
     public interface IUnitOfWorkManagedItem<TInit> : IUnitOfWorkManagedItem

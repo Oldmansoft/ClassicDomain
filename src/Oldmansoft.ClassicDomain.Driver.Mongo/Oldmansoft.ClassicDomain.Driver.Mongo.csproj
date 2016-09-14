@@ -63,6 +63,11 @@
     <Compile Include="Config.cs" />
     <Compile Include="ConfigItem.cs" />
     <Compile Include="Context.cs" />
+    <Compile Include="Core\Context.cs" />
+    <Compile Include="Core\SafeModeContext.cs" />
+    <Compile Include="Core\FastModeContext.cs" />
+    <Compile Include="Core\Repository.cs" />
+    <Compile Include="Core\IContext.cs" />
     <Compile Include="IContext.cs" />
     <Compile Include="IDbSet.cs" />
     <Compile Include="IdentityMap.cs" />

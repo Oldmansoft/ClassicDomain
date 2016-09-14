@@ -23,9 +23,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
             OnceSet = new OnceSet<string>();
         }
 
-        private FastModeDbSet<TEntity, TMember> DbSet { get; set; }
+        private IDbSet<TEntity, TMember> DbSet { get; set; }
 
-        internal Setting(FastModeDbSet<TEntity, TMember> dbSet)
+        internal Setting(IDbSet<TEntity, TMember> dbSet)
         {
             DbSet = dbSet;
         }

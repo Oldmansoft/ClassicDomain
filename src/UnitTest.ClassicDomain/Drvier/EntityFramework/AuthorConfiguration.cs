@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 
 namespace UnitTest.ClassicDomain.Drvier.EntityFramework
 {
-    class BookConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Domain.Book>
+    class AuthorConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Domain.Author>
     {
-        public BookConfiguration()
+        public AuthorConfiguration()
         {
             Property(m => m.Id).HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
             Property(m => m.Name).IsRequired().HasMaxLength(50).IsUnicode(false);
-            HasMany(m => m.Authors).WithRequired().WillCascadeOnDelete();
         }
     }
 }

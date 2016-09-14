@@ -6,14 +6,10 @@ using System.Threading.Tasks;
 
 namespace UnitTest.ClassicDomain.Drvier.Domain
 {
-    class Book
+    class Author
     {
         public Guid Id { get; set; }
 
         public string Name { get; set; }
-
-        public List<Author> Authors { get; set; }
-
-        public List<string> Tags { get; set; }
     }
 }

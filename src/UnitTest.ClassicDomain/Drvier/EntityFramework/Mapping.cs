@@ -14,6 +14,7 @@ namespace UnitTest.ClassicDomain.Drvier.EntityFramework
             modelBuilder.Conventions.Remove<System.Data.Entity.ModelConfiguration.Conventions.PluralizingTableNameConvention>();
 
             modelBuilder.Configurations.Add(new BookConfiguration());
+            modelBuilder.Configurations.Add(new AuthorConfiguration());
         }
     }
 }
