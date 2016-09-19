@@ -11,11 +11,14 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
     /// </summary>
     public abstract class SafeModeContext : Context
     {
+        /// <summary>
+        /// 配置
+        /// </summary>
         private static Config Server { get; set; }
 
         static SafeModeContext()
         {
-            Server = new Config();
+            Server = new SafeModeConfig();
         }
 
         /// <summary>

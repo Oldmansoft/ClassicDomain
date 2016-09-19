@@ -11,7 +11,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
     /// </summary>
     /// <typeparam name="TDomain"></typeparam>
     /// <typeparam name="TKey"></typeparam>
-    internal class SafeModeDbSet<TDomain, TKey> : FastModeDbSet<TDomain, TKey>
+    internal class SafeModeDbSet<TDomain, TKey> : Core.DbSet<TDomain, TKey>
     {
         public IdentityMap<TDomain> IdentityMap { get; private set; }
 

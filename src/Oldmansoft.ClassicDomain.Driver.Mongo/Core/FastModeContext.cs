@@ -12,7 +12,10 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
     /// </summary>
     public abstract class FastModeContext : Context
     {
-        private static FastModeConfig Server { get; set; }
+        /// <summary>
+        /// 配置
+        /// </summary>
+        private static Config Server { get; set; }
 
         static FastModeContext()
         {

@@ -10,7 +10,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
     /// <summary>
     /// 配置
     /// </summary>
-    internal class Config : FastModeConfig
+    internal class SafeModeConfig : Core.Config
     {
         /// <summary>
         /// 创建服务器

@@ -66,7 +66,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
             {
                 throw new ClassicDomainException(string.Format("{0} 类型没有添加到 {1} 上下文中。", type.FullName, this.GetType().FullName));
             }
-            var result = DbSet[type] as FastModeDbSet<TDomain, TKey>;
+            var result = DbSet[type] as IDbSet<TDomain, TKey>;
             if (result == null)
             {
                 throw new ClassicDomainException("Set 获取的主键类型与 Add 添加的主键类型不一致。");
