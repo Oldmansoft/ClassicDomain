@@ -47,28 +47,28 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// <summary>
         /// 注册移除
         /// </summary>
-        /// <param name="entity"></param>
-        void IDbSet<TDomain, TKey>.RegisterRemove(TDomain entity)
+        /// <param name="domain"></param>
+        void IDbSet<TDomain, TKey>.RegisterRemove(TDomain domain)
         {
-            List.Deleteds.Enqueue(entity);
+            List.Deleteds.Enqueue(domain);
         }
 
         /// <summary>
         /// 注册替换
         /// </summary>
-        /// <param name="entity"></param>
-        void IDbSet<TDomain, TKey>.RegisterReplace(TDomain entity)
+        /// <param name="domain"></param>
+        void IDbSet<TDomain, TKey>.RegisterReplace(TDomain domain)
         {
-            List.Updateds.Enqueue(entity);
+            List.Updateds.Enqueue(domain);
         }
 
         /// <summary>
         /// 注册添加
         /// </summary>
-        /// <param name="entity"></param>
-        void IDbSet<TDomain, TKey>.RegisterAdd(TDomain entity)
+        /// <param name="domain"></param>
+        void IDbSet<TDomain, TKey>.RegisterAdd(TDomain domain)
         {
-            List.Addeds.Enqueue(entity);
+            List.Addeds.Enqueue(domain);
         }
 
         /// <summary>
@@ -135,11 +135,11 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
             var collection = GetCollection();
 
             int result = 0;
-            TDomain entity;
+            TDomain domain;
             List<TDomain> addeds = new List<TDomain>();
-            while (List.Addeds.TryDequeue(out entity))
+            while (List.Addeds.TryDequeue(out domain))
             {
-                addeds.Add(entity);
+                addeds.Add(domain);
                 result++;
             }
             if (addeds.Count > 0)
@@ -147,13 +147,13 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
                 collection.InsertBatch(addeds);
             }
 
-            while (List.Updateds.TryDequeue(out entity))
+            while (List.Updateds.TryDequeue(out domain))
             {
-                if (Replace(collection, entity)) result++;
+                if (Replace(collection, domain)) result++;
             }
-            while (List.Deleteds.TryDequeue(out entity))
+            while (List.Deleteds.TryDequeue(out domain))
             {
-                if (Remove(collection, KeyExpressionCompile(entity))) result++;
+                if (Remove(collection, KeyExpressionCompile(domain))) result++;
             }
 
             Func<MongoCollection<TDomain>, bool> execute;

@@ -36,6 +36,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         public ConfigItem(MongoServer server, string host, string databaseName)
         {
             Server = server;
+            Host = host;
             DatabaseName = databaseName;
         }
 

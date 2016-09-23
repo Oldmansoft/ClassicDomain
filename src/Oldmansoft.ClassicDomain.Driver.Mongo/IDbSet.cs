@@ -30,20 +30,20 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// <summary>
         /// 注册添加
         /// </summary>
-        /// <param name="entity"></param>
-        void RegisterAdd(TDomain entity);
+        /// <param name="domain"></param>
+        void RegisterAdd(TDomain domain);
 
         /// <summary>
         /// 注册替换
         /// </summary>
-        /// <param name="entity"></param>
-        void RegisterReplace(TDomain entity);
+        /// <param name="domain"></param>
+        void RegisterReplace(TDomain domain);
 
         /// <summary>
         /// 注册移除
         /// </summary>
-        /// <param name="entity"></param>
-        void RegisterRemove(TDomain entity);
+        /// <param name="domain"></param>
+        void RegisterRemove(TDomain domain);
 
         /// <summary>
         /// 注册执行
