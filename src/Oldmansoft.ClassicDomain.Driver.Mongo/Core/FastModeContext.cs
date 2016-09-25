@@ -21,7 +21,20 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         {
             Server = new FastModeConfig();
         }
-        
+
+        /// <summary>
+        /// 配置项
+        /// </summary>
+        private ConfigItem Config { get; set; }
+
+        /// <summary>
+        /// 创建上下文
+        /// </summary>
+        public FastModeContext()
+        {
+            Config = Server.Get(ConnectionName);
+        }
+
         /// <summary>
         /// 创建实体集
         /// </summary>
@@ -31,7 +44,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// <returns></returns>
         internal override IDbSet<TDomain, TKey> CreateDbSet<TDomain, TKey>(System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
         {
-            return new FastModeDbSet<TDomain, TKey>(Server.Get(ConnectionName).GetDatabase(), keyExpression);
+            return new FastModeDbSet<TDomain, TKey>(Config.GetDatabase(), keyExpression);
         }
         
         /// <summary>
@@ -40,7 +53,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// <returns></returns>
         public override string GetHost()
         {
-            return Server.Get(ConnectionName).GetHost();
+            return Config.GetHost();
         }
     }
 }

@@ -20,8 +20,6 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
             {
                 if (builder.Length > 0) builder.Append(",");
                 builder.Append(item.Host);
-                builder.Append(":");
-                builder.Append(item.Port);
             }
             return builder.ToString();
         }

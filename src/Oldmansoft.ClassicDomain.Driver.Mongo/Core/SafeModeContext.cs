@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MongoDB.Driver;
 
 namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
 {
@@ -22,6 +23,19 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         }
 
         /// <summary>
+        /// 配置项
+        /// </summary>
+        private ConfigItem Config { get; set; }
+        
+        /// <summary>
+        /// 创建上下文
+        /// </summary>
+        public SafeModeContext()
+        {
+            Config = Server.Get(ConnectionName);
+        }
+
+        /// <summary>
         /// 创建实体集
         /// </summary>
         /// <typeparam name="TDomain"></typeparam>
@@ -30,7 +44,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// <returns></returns>
         internal override IDbSet<TDomain, TKey> CreateDbSet<TDomain, TKey>(System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
         {
-            var database = Server.Get(ConnectionName).GetDatabase() as Library.MongoDatabase;
+            var database = Config.GetDatabase() as Library.MongoDatabase;
             var result = new SafeModeDbSet<TDomain, TKey>(database, keyExpression);
             result.IdentityMap.SetKey(keyExpression.Compile());
             database.SetIdentityMap(result.IdentityMap);
@@ -43,7 +57,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// <returns></returns>
         public override string GetHost()
         {
-            return Server.Get(ConnectionName).GetHost();
+            return Config.GetHost();
         }
     }
 }

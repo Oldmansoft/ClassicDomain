@@ -13,7 +13,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
     public abstract class Context : UnitOfWorkManagedItem, IContext
     {
         private Dictionary<Type, IDbSet> DbSet { get; set; }
-
+        
         /// <summary>
         /// 创建 Mongo 的实体上下文
         /// </summary>

@@ -61,8 +61,8 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Core\DbSet.cs" />
-    <Compile Include="SafeModeConfig.cs" />
-    <Compile Include="ConfigItem.cs" />
+    <Compile Include="Core\SafeModeConfig.cs" />
+    <Compile Include="Core\ConfigItem.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="Core\Config.cs" />
     <Compile Include="Core\Context.cs" />
@@ -78,7 +78,7 @@
     <Compile Include="SafeModeDbSet.cs" />
     <Compile Include="FastModeContext.cs" />
     <Compile Include="FastModeDbSet.cs" />
-    <Compile Include="FastModeConfig.cs" />
+    <Compile Include="Core\FastModeConfig.cs" />
     <Compile Include="Library\MongoCollection.cs" />
     <Compile Include="Library\MongoCursor.cs" />
     <Compile Include="Library\MongoCursorEnumerator.cs" />

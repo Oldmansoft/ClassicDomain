@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 
-namespace Oldmansoft.ClassicDomain.Driver.Mongo
+namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
 {
     /// <summary>
     /// 配置
     /// </summary>
-    internal class SafeModeConfig : Core.Config
+    internal class SafeModeConfig : Config
     {
         /// <summary>
         /// 创建服务器

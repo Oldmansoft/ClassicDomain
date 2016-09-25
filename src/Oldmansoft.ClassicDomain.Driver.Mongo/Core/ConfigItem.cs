@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 
-namespace Oldmansoft.ClassicDomain.Driver.Mongo
+namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
 {
     /// <summary>
     /// 配置项

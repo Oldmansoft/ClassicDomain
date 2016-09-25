@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 
-namespace Oldmansoft.ClassicDomain.Driver.Mongo
+namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
 {
     /// <summary>
     /// 快速模式配置
     /// </summary>
-    internal class FastModeConfig : Core.Config
+    internal class FastModeConfig : Config
     {
         /// <summary>
         /// 创建服务器
