@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oldmansoft.ClassicDomain.Dr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oldmansoft.ClassicDomain.Driver.Mongo", "Oldmansoft.ClassicDomain.Driver.Mongo\Oldmansoft.ClassicDomain.Driver.Mongo.csproj", "{4932C605-579E-49D1-9696-A1FD904A3DCC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oldmansoft.ClassicDomain.Driver.Redis", "Oldmansoft.ClassicDomain.Driver.Redis\Oldmansoft.ClassicDomain.Driver.Redis.csproj", "{FCBFD2DE-8923-4D4D-BCA0-644A61484DC4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{4932C605-579E-49D1-9696-A1FD904A3DCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4932C605-579E-49D1-9696-A1FD904A3DCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4932C605-579E-49D1-9696-A1FD904A3DCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCBFD2DE-8923-4D4D-BCA0-644A61484DC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCBFD2DE-8923-4D4D-BCA0-644A61484DC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCBFD2DE-8923-4D4D-BCA0-644A61484DC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCBFD2DE-8923-4D4D-BCA0-644A61484DC4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

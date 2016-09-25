@@ -87,6 +87,9 @@
     <Compile Include="Drvier\InProcess\Mapping.cs" />
     <Compile Include="Drvier\Mongo\Factory.cs" />
     <Compile Include="Drvier\Mongo\Mapping.cs" />
+    <Compile Include="Drvier\Redis\Factory.cs" />
+    <Compile Include="Drvier\Redis\Mapping.cs" />
+    <Compile Include="Drvier\UnitRedisDomainOperate.cs" />
     <Compile Include="Drvier\UtEntityFrameworkDomainOperate.cs" />
     <Compile Include="Drvier\UtMongoDomainOperate.cs" />
     <Compile Include="Drvier\Mongo\UtConnectionString.cs" />
@@ -104,6 +107,10 @@
     <ProjectReference Include="..\Oldmansoft.ClassicDomain.Driver.Mongo\Oldmansoft.ClassicDomain.Driver.Mongo.csproj">
       <Project>{4932c605-579e-49d1-9696-a1fd904a3dcc}</Project>
       <Name>Oldmansoft.ClassicDomain.Driver.Mongo</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Oldmansoft.ClassicDomain.Driver.Redis\Oldmansoft.ClassicDomain.Driver.Redis.csproj">
+      <Project>{fcbfd2de-8923-4d4d-bca0-644a61484dc4}</Project>
+      <Name>Oldmansoft.ClassicDomain.Driver.Redis</Name>
     </ProjectReference>
     <ProjectReference Include="..\Oldmansoft.ClassicDomain\Oldmansoft.ClassicDomain.csproj">
       <Project>{c3feeacf-f84a-469f-8be8-573dfd9fdec1}</Project>

@@ -19,6 +19,16 @@ namespace Oldmansoft.ClassicDomain.Configuration
         /// <returns></returns>
         public static string GetConnectionString(string name)
         {
+            return GetConnectionStringSettings(name).ConnectionString;
+        }
+
+        /// <summary>
+        /// 获取迦接字符串配置
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static ConnectionStringSettings GetConnectionStringSettings(string name)
+        {
             var settings = ConfigurationManager.ConnectionStrings[name];
             if (settings == null)
             {
@@ -28,7 +38,7 @@ namespace Oldmansoft.ClassicDomain.Configuration
             {
                 throw new ConfigItemException(string.Format("config 文件的配置项 {0} ConnectionString 为空", name));
             }
-            return settings.ConnectionString;
+            return settings;
         }
 
         /// <summary>
