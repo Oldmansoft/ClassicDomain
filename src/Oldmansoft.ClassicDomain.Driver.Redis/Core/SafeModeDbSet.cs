@@ -107,7 +107,21 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
             Library.UpdatedItem<TKey> command;
             while (ChangeList.Addes.TryDequeue(out command))
             {
-                if (!Db.HashSet(MergeKey(command.Key), "this", typeof(TDomain).FullName)) continue;
+                try
+                {
+                    if (!Db.HashSet(MergeKey(command.Key), "this", typeof(TDomain).FullName)) continue;
+                }
+                catch (RedisServerException ex)
+                {
+                    if (ex.Message == "ERR Operation against a key holding the wrong kind of value")
+                    {
+                        throw new ClassicDomainException("数据冲突：存在着相同记录的不同类型数据，可能是之前使用过快速模式保存过。");
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
                 ExecuteCommand(Db, command);
                 result++;
             }
@@ -151,8 +165,11 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
             {
                 foreach(var item in line.Value)
                 {
-                    //TODO: 测试范围异常
-                    db.ListSetByIndex(MergeKey(command.Key, line.Key), item.Key, item.Value);
+                    try
+                    {
+                        db.ListSetByIndex(MergeKey(command.Key, line.Key), item.Key, item.Value);
+                    }
+                    catch (RedisServerException) { }
                 }
             }
             foreach(var item in command.RemoveItemFromList)

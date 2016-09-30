@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UnitTest.ClassicDomain.Drvier.Redis
 {
-    class Mapping : Oldmansoft.ClassicDomain.Driver.Redis.FastModeContext
+    class Mapping : Oldmansoft.ClassicDomain.Driver.Redis.Context
     {
         public override void OnModelCreating()
         {

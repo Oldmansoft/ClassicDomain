@@ -14,6 +14,9 @@ namespace UnitTest.ClassicDomain.Drvier.Redis
 
             var domain = new Domain.Book();
             domain.Name = "hello";
+            domain.Authors = new System.Collections.Generic.List<Domain.Author>();
+            domain.Tags = new System.Collections.Generic.List<string>();
+            domain.Tags.Add("hello");
             repository.Add(domain);
             factory.GetUnitOfWork().Commit();
 

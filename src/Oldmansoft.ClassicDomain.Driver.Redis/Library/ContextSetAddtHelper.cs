@@ -35,9 +35,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
                 var propertyType = property.PropertyType;
                 var name = string.Format("{0}{1}", prefixName, property.Name);
 
-                result.SetRangeInHash.Add(name, propertyType.FullName);
                 if (propertyType.IsArrayOrGenericList())
                 {
+                    result.SetRangeInHash.Add(name, propertyType.FullName);
                     if (propertyType.IsDictionary())
                     {
                         result.SetRangeInHashes.Add(name, propertyType.ConvertToDictionary(value));
