@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oldmansoft.ClassicDomain.Driver.Mongo
+namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
 {
     /// <summary>
     /// 标识映射

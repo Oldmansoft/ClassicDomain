@@ -71,13 +71,13 @@
     <Compile Include="Core\Repository.cs" />
     <Compile Include="Core\IContext.cs" />
     <Compile Include="IContext.cs" />
-    <Compile Include="IDbSet.cs" />
-    <Compile Include="IdentityMap.cs" />
+    <Compile Include="Core\IDbSet.cs" />
+    <Compile Include="Core\IdentityMap.cs" />
     <Compile Include="Library\RemoveObject.cs" />
     <Compile Include="Repository.cs" />
-    <Compile Include="SafeModeDbSet.cs" />
+    <Compile Include="Core\SafeModeDbSet.cs" />
     <Compile Include="FastModeContext.cs" />
-    <Compile Include="FastModeDbSet.cs" />
+    <Compile Include="Core\FastModeDbSet.cs" />
     <Compile Include="Core\FastModeConfig.cs" />
     <Compile Include="Library\MongoCollection.cs" />
     <Compile Include="Library\MongoCursor.cs" />

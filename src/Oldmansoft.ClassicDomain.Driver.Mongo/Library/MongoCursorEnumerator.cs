@@ -10,9 +10,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
     {
         private IEnumerator<TDocument> Source;
 
-        private IdentityMap<TDocument> IdentityMap;
+        private Core.IdentityMap<TDocument> IdentityMap;
 
-        public MongoCursorEnumerator(IEnumerator<TDocument> source, IdentityMap<TDocument> identityMap)
+        public MongoCursorEnumerator(IEnumerator<TDocument> source, Core.IdentityMap<TDocument> identityMap)
         {
             Source = source;
             IdentityMap = identityMap;

@@ -9,13 +9,13 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
 {
     internal class MongoCollection<TDocument> : MongoDB.Driver.MongoCollection<TDocument>
     {
-        private IdentityMap<TDocument> IdentityMap;
+        private Core.IdentityMap<TDocument> IdentityMap;
 
         public MongoCollection(
             MongoDatabase database,
             string name,
             MongoDB.Driver.MongoCollectionSettings settings,
-            IdentityMap<TDocument> identityMap
+            Core.IdentityMap<TDocument> identityMap
         )
             : base(database, name, settings)
         {
@@ -34,7 +34,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
             return CreateMongoCursor(documentType, this, query, Settings.ReadConcern, Settings.ReadPreference, MongoDB.Bson.Serialization.BsonSerializer.LookupSerializer(documentType), IdentityMap);
         }
 
-        private static MongoDB.Driver.MongoCursor CreateMongoCursor(Type documentType, MongoDB.Driver.MongoCollection collection, MongoDB.Driver.IMongoQuery query, MongoDB.Driver.ReadConcern readConcern, MongoDB.Driver.ReadPreference readPreference, MongoDB.Bson.Serialization.IBsonSerializer serializer, IdentityMap<TDocument> store)
+        private static MongoDB.Driver.MongoCursor CreateMongoCursor(Type documentType, MongoDB.Driver.MongoCollection collection, MongoDB.Driver.IMongoQuery query, MongoDB.Driver.ReadConcern readConcern, MongoDB.Driver.ReadPreference readPreference, MongoDB.Bson.Serialization.IBsonSerializer serializer, Core.IdentityMap<TDocument> store)
         {
             var cursorDefinition = typeof(MongoCursor<>);
             var cursorType = cursorDefinition.MakeGenericType(documentType);
@@ -45,7 +45,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
                     typeof(MongoDB.Driver.ReadConcern),
                     typeof(MongoDB.Driver.ReadPreference),
                     typeof(MongoDB.Bson.Serialization.IBsonSerializer),
-                    typeof(IdentityMap<TDocument>)
+                    typeof(Core.IdentityMap<TDocument>)
                 }
             );
             return (MongoDB.Driver.MongoCursor)constructorInfo.Invoke(new object[] { collection, query, readConcern, readPreference, serializer, store });

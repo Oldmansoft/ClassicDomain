@@ -4,16 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oldmansoft.ClassicDomain.Driver.Mongo
+namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
 {
     /// <summary>
     /// 实体集
     /// </summary>
     /// <typeparam name="TDomain"></typeparam>
     /// <typeparam name="TKey"></typeparam>
-    internal class SafeModeDbSet<TDomain, TKey> : Core.DbSet<TDomain, TKey>
+    internal class SafeModeDbSet<TDomain, TKey> : DbSet<TDomain, TKey>
     {
-        public IdentityMap<TDomain> IdentityMap { get; private set; }
+        public Core.IdentityMap<TDomain> IdentityMap { get; private set; }
 
         /// <summary>
         /// 创建实体集

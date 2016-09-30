@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
-namespace Oldmansoft.ClassicDomain.Driver.Mongo
+namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
 {
     /// <summary>
     /// 快速模式实体集
     /// </summary>
     /// <typeparam name="TDomain"></typeparam>
     /// <typeparam name="TKey"></typeparam>
-    internal class FastModeDbSet<TDomain, TKey> : Core.DbSet<TDomain, TKey>
+    internal class FastModeDbSet<TDomain, TKey> : DbSet<TDomain, TKey>
     {
         /// <summary>
         /// 创建实体集
