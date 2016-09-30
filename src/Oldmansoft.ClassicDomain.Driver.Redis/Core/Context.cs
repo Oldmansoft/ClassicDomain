@@ -26,6 +26,8 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
 
         private ConfigItem Config { get; set; }
 
+        private IDatabase Db { get; set; }
+
         /// <summary>
         /// 创建实体上下文
         /// </summary>
@@ -33,6 +35,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         {
             DbSet = new Dictionary<Type, IDbSet>();
             Config = ServerConfig.Get(ConnectionName);
+            Db = Config.GetDatabase();
         }
 
         /// <summary>
@@ -41,7 +44,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <typeparam name="TDomain"></typeparam>
         /// <typeparam name="TKey"></typeparam>
         /// <param name="keyExpression"></param>
-        public void Add<TDomain, TKey>(Func<TDomain, TKey> keyExpression)
+        public void Add<TDomain, TKey>(Func<TDomain, TKey> keyExpression) where TDomain : class, new()
         {
             var type = typeof(TDomain);
             if (DbSet.ContainsKey(type))
@@ -49,7 +52,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
                 throw new ArgumentException("已添加了具有相同键的项。");
             }
 
-            var dbSet = CreateDbSet(ServerConfig.Get(ConnectionName), keyExpression);
+            var dbSet = CreateDbSet(Config, Db, keyExpression);
             DbSet.Add(type, dbSet);
         }
 
@@ -59,7 +62,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <typeparam name="TDomain"></typeparam>
         /// <typeparam name="TKey"></typeparam>
         /// <returns></returns>
-        public IDbSet<TDomain, TKey> Set<TDomain, TKey>()
+        IDbSet<TDomain, TKey> IContext.Set<TDomain, TKey>()
         {
             var type = typeof(TDomain);
             if (!DbSet.ContainsKey(type))
@@ -103,8 +106,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <typeparam name="TDomain"></typeparam>
         /// <typeparam name="TKey"></typeparam>
         /// <param name="config"></param>
+        /// <param name="db"></param>
         /// <param name="keyExpression"></param>
         /// <returns></returns>
-        internal abstract IDbSet CreateDbSet<TDomain, TKey>(ConfigItem config, Func<TDomain, TKey> keyExpression);
+        internal abstract IDbSet CreateDbSet<TDomain, TKey>(ConfigItem config, IDatabase db, Func<TDomain, TKey> keyExpression) where TDomain : class, new();
     }
 }

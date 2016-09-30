@@ -81,6 +81,7 @@
     <Compile Include="Util\DataMapper.cs" />
     <Compile Include="Util\ExpressionHelper.cs" />
     <Compile Include="Util\OnceSet.cs" />
+    <Compile Include="Util\TypeParse.cs" />
     <Compile Include="Util\_Extend.cs" />
     <Compile Include="Util\TypePublicInstanceStore.cs" />
   </ItemGroup>

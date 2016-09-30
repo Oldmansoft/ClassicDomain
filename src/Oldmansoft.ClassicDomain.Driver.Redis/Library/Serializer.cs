@@ -6,7 +6,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
+namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
 {
     class Serializer
     {
@@ -16,7 +16,6 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
             {
                 return string.Empty;
             }
-
             return new ServiceStack.Text.JsonSerializer<T>().SerializeToString(value);
         }
 
@@ -26,8 +25,16 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
             {
                 return default(T);
             }
+            return ServiceStack.Text.JsonSerializer.DeserializeFromString<T>(value);
+        }
 
-            return new ServiceStack.Text.JsonSerializer<T>().DeserializeFromString(value);
+        public static object Deserialize(string value, Type type)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return null;
+            }
+            return ServiceStack.Text.JsonSerializer.DeserializeFromString(value, type);
         }
     }
 }

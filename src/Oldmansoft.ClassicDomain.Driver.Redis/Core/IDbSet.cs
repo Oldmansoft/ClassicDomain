@@ -37,5 +37,17 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// </summary>
         /// <param name="domain"></param>
         void RegisterRemove(TDomain domain);
+
+        /// <summary>
+        /// 注册执行
+        /// </summary>
+        /// <param name="execute"></param>
+        void RegisterExecute(Func<StackExchange.Redis.IDatabase, bool> execute);
+
+        /// <summary>
+        /// 获取 Mongo 集
+        /// </summary>
+        /// <returns></returns>
+        StackExchange.Redis.IDatabase GetDatabase();
     }
 }

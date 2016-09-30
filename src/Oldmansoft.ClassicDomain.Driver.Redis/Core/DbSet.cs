@@ -18,12 +18,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <summary>
         /// 领域名称
         /// </summary>
-        private string DomainName { get; set; }
+        protected string DomainName { get; private set; }
 
-        /// <summary>
-        /// 更改列表
-        /// </summary>
-        protected ChangeList<TDomain> List { get; set; }
+        
 
         private ConcurrentQueue<Func<IDatabase, bool>> ExecuteList { get; set; }
 
@@ -33,21 +30,27 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         protected Func<TDomain, TKey> KeyExpression { get; private set; }
 
         /// <summary>
-        /// 连接
+        /// 配置
         /// </summary>
         protected ConfigItem Config { get; private set; }
+
+        /// <summary>
+        /// 数据库
+        /// </summary>
+        protected IDatabase Db { get; private set; }
 
         /// <summary>
         /// 创建实体集
         /// </summary>
         /// <param name="config"></param>
+        /// <param name="db"></param>
         /// <param name="keyExpression"></param>
-        public DbSet(ConfigItem config, Func<TDomain, TKey> keyExpression)
+        public DbSet(ConfigItem config, IDatabase db, Func<TDomain, TKey> keyExpression)
         {
             DomainName = typeof(TDomain).FullName;
-            List = new ChangeList<TDomain>();
             ExecuteList = new ConcurrentQueue<Func<IDatabase, bool>>();
             Config = config;
+            Db = db;
             KeyExpression = keyExpression;
         }
 
@@ -86,33 +89,51 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// 注册添加
         /// </summary>
         /// <param name="domain"></param>
-        public void RegisterAdd(TDomain domain)
-        {
-            List.Addeds.Enqueue(domain);
-        }
+        public abstract void RegisterAdd(TDomain domain);
 
         /// <summary>
         /// 注册替换
         /// </summary>
         /// <param name="domain"></param>
-        public void RegisterReplace(TDomain domain)
-        {
-            List.Updateds.Enqueue(domain);
-        }
+        public abstract void RegisterReplace(TDomain domain);
 
         /// <summary>
         /// 注册移除
         /// </summary>
         /// <param name="domain"></param>
-        public void RegisterRemove(TDomain domain)
-        {
-            List.Deleteds.Enqueue(domain);
-        }
+        public abstract void RegisterRemove(TDomain domain);
 
         /// <summary>
         /// 提交
         /// </summary>
         /// <returns></returns>
-        public abstract int Commit();
+        public virtual int Commit()
+        {
+            int result = 0;
+            Func<IDatabase, bool> execute;
+            while (ExecuteList.TryDequeue(out execute))
+            {
+                if (execute(Db)) result++;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 注册执行
+        /// </summary>
+        /// <param name="execute"></param>
+        public void RegisterExecute(Func<IDatabase, bool> execute)
+        {
+            ExecuteList.Enqueue(execute);
+        }
+
+        /// <summary>
+        /// 获取数据库
+        /// </summary>
+        /// <returns></returns>
+        public IDatabase GetDatabase()
+        {
+            return Db;
+        }
     }
 }

@@ -8,9 +8,9 @@ using StackExchange.Redis;
 namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
 {
     /// <summary>
-    /// 快速模式上下文
+    /// 安全模式上下文
     /// </summary>
-    public abstract class FastModeContext : Context
+    public abstract class SafeModeContext : Context
     {
         /// <summary>
         /// 创建实体集
@@ -23,7 +23,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <returns></returns>
         internal override IDbSet CreateDbSet<TDomain, TKey>(ConfigItem config, IDatabase db, Func<TDomain, TKey> keyExpression)
         {
-            return new FastModeDbSet<TDomain, TKey>(config, db, keyExpression);
+            return new SafeModeDbSet<TDomain, TKey>(config, db, keyExpression);
         }
     }
 }

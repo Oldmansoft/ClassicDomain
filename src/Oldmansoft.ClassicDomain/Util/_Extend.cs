@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,22 @@ namespace Oldmansoft.ClassicDomain.Util
     /// </summary>
     public static class Extend
     {
+
+        /// <summary>
+        /// 两个对象是否内容相同
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public static bool IsEquals(this object source, object target)
+        {
+            if (source == null && target == null) return true;
+            if (source == null) return false;
+            if (target == null) return false;
+            return source.Equals(target);
+        }
+
+
         /// <summary>
         /// 是否为非字符串的类
         /// </summary>
@@ -40,6 +57,36 @@ namespace Oldmansoft.ClassicDomain.Util
                 }
             }
             return true;
+        }
+
+        /// <summary>
+        /// 是否为数组或泛型列表
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static bool IsArrayOrGenericList(this Type source)
+        {
+            return source.IsArray || (source.IsGenericType && source.GetInterfaces().Contains(typeof(IEnumerable)));
+        }
+
+        /// <summary>
+        /// 是否为泛型列表
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static bool IsGenericList(this Type source)
+        {
+            return source.IsGenericType && source.GetInterfaces().Contains(typeof(IEnumerable));
+        }
+
+        /// <summary>
+        /// 是否为集合
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static bool IsDictionary(this Type source)
+        {
+            return source.GetInterfaces().Contains(typeof(IDictionary));
         }
 
         /// <summary>
@@ -81,6 +128,24 @@ namespace Oldmansoft.ClassicDomain.Util
                 }
             }
             return true;
+        }
+
+        /// <summary>
+        /// 获取可枚举项的类型
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static Type GetEnumerableItemType(this Type source)
+        {
+            if (source.IsArray)
+            {
+                return source.GetMethod("Set").GetParameters()[1].ParameterType;
+            }
+            if (source.IsGenericType)
+            {
+                return source.GetGenericArguments()[0];
+            }
+            throw new NotSupportedException(string.Format("不支持获取 {0} 此类型的子项类型。", source.FullName));
         }
 
         /// <summary>
@@ -133,6 +198,17 @@ namespace Oldmansoft.ClassicDomain.Util
         {
             if (source is DataMapper) throw new ArgumentException("请不要直接使用 DataMapper.CopyTo(target) 方法", "source");
             return new DataMapper(isDeepCopy).CopyTo(source, target);
+        }
+
+        /// <summary>
+        /// 转换字符串为值
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static object FromString(this Type source, string context)
+        {
+            return TypeParse.Get(source)(context);
         }
     }
 }

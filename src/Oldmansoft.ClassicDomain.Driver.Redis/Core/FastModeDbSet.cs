@@ -10,36 +10,69 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
     internal class FastModeDbSet<TDomain, TKey> : DbSet<TDomain, TKey>
     {
         /// <summary>
+        /// 更改列表
+        /// </summary>
+        private ChangeList<TDomain> ChangeList { get; set; }
+
+        /// <summary>
         /// 创建实体集
         /// </summary>
         /// <param name="config"></param>
+        /// <param name="db"></param>
         /// <param name="keyExpression"></param>
-        public FastModeDbSet(ConfigItem config, Func<TDomain, TKey> keyExpression)
-            : base(config, keyExpression)
+        public FastModeDbSet(ConfigItem config, IDatabase db, Func<TDomain, TKey> keyExpression)
+            : base(config, db, keyExpression)
         {
+            ChangeList = new ChangeList<TDomain>();
+        }
+
+        /// <summary>
+        /// 注册添加
+        /// </summary>
+        /// <param name="domain"></param>
+        public override void RegisterAdd(TDomain domain)
+        {
+            ChangeList.Addeds.Enqueue(domain);
+        }
+
+        /// <summary>
+        /// 注册替换
+        /// </summary>
+        /// <param name="domain"></param>
+        public override void RegisterReplace(TDomain domain)
+        {
+            ChangeList.Updateds.Enqueue(domain);
+        }
+
+        /// <summary>
+        /// 注册移除
+        /// </summary>
+        /// <param name="domain"></param>
+        public override void RegisterRemove(TDomain domain)
+        {
+            ChangeList.Deleteds.Enqueue(domain);
         }
 
         public override int Commit()
         {
             var result = 0;
 
-            var db = Config.GetDatabase();
             TDomain domain;
-            while (List.Addeds.TryDequeue(out domain))
+            while (ChangeList.Addeds.TryDequeue(out domain))
             {
-                if (db.StringSet(GetKey(domain), Serializer.Serialize(domain), null, When.NotExists)) result++;
+                if (Db.StringSet(GetKey(domain), Library.Serializer.Serialize(domain), null, When.NotExists)) result++;
             }
-            while (List.Updateds.TryDequeue(out domain))
+            while (ChangeList.Updateds.TryDequeue(out domain))
             {
                 if (Config.IsLowServerVersion)
                 {
-                    if (db.KeyExists(GetKey(domain)) && db.StringSet(GetKey(domain), Serializer.Serialize(domain))) result++;
+                    if (Db.KeyExists(GetKey(domain)) && Db.StringSet(GetKey(domain), Library.Serializer.Serialize(domain))) result++;
                 }
                 else
                 {
                     try
                     {
-                        if (db.StringSet(GetKey(domain), Serializer.Serialize(domain), null, When.Exists)) result++;
+                        if (Db.StringSet(GetKey(domain), Library.Serializer.Serialize(domain), null, When.Exists)) result++;
                     }
                     catch (RedisServerException ex)
                     {
@@ -50,18 +83,17 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
                     }
                 }
             }
-            while (List.Deleteds.TryDequeue(out domain))
+            while (ChangeList.Deleteds.TryDequeue(out domain))
             {
-                if (db.KeyDelete(GetKey(domain))) result++;
+                if (Db.KeyDelete(GetKey(domain))) result++;
             }
-
-            return result;
+            return result + base.Commit();
         }
 
         public override TDomain Get(TKey id)
         {
-            var content = Config.GetDatabase().StringGet(MergeKey(id));
-            return Serializer.Deserialize<TDomain>(content);
+            var content = Db.StringGet(MergeKey(id));
+            return Library.Serializer.Deserialize<TDomain>(content);
         }
     }
 }
