@@ -18,14 +18,14 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
         /// <param name="domainType"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static UpdatedItem<TKey> GetContext<TKey>(TKey key, Type domainType, object context)
+        public static UpdatedCommand<TKey> GetContext<TKey>(TKey key, Type domainType, object context)
         {
-            var result = new UpdatedItem<TKey>(key);
+            var result = new UpdatedCommand<TKey>(key);
             SetContext(domainType, context, result, string.Empty);
             return result;
         }
 
-        private static void SetContext(Type type, object context, UpdatedItem result, string prefixName)
+        private static void SetContext(Type type, object context, UpdatedCommand result, string prefixName)
         {
             foreach(var property in TypePublicInstanceStore.GetPropertys(type))
             {
@@ -37,25 +37,25 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
 
                 if (propertyType.IsArrayOrGenericList())
                 {
-                    result.SetRangeInHash.Add(name, propertyType.FullName);
+                    result.HashSet.Add(name, propertyType.FullName);
                     if (propertyType.IsDictionary())
                     {
-                        result.SetRangeInHashes.Add(name, propertyType.ConvertToDictionary(value));
+                        result.HashSetList.Add(name, propertyType.ConvertToDictionary(value));
                         continue;
                     }
 
-                    result.AddRangeToList.Add(name, propertyType.ConvertToList(value));
+                    result.ListRightPush.Add(name, propertyType.ConvertToList(value));
                     continue;
                 }
 
                 if (propertyType.IsNormalClass())
                 {
-                    result.SetRangeInHash.Add(name, propertyType.FullName);
+                    result.HashSet.Add(name, propertyType.FullName);
                     SetContext(propertyType, value, result, string.Format("{0}.", name));
                     continue;
                 }
 
-                result.SetRangeInHash.Add(name, property.GetValue(context).ToString());
+                result.HashSet.Add(name, property.GetValue(context).ToString());
             }
         }
     }

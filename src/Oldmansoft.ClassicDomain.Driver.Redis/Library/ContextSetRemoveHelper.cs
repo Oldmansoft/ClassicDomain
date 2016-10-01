@@ -17,14 +17,14 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
         /// <param name="key"></param>
         /// <param name="domainType"></param>
         /// <returns></returns>
-        public static UpdatedItem<TKey> GetContext<TKey>(TKey key, Type domainType)
+        public static UpdatedCommand<TKey> GetContext<TKey>(TKey key, Type domainType)
         {
-            var result = new UpdatedItem<TKey>(key);
+            var result = new UpdatedCommand<TKey>(key);
             SetContext(domainType, result, string.Empty);
             return result;
         }
 
-        private static void SetContext(Type type, UpdatedItem result, string prefixName)
+        private static void SetContext(Type type, UpdatedCommand result, string prefixName)
         {
             foreach(var property in TypePublicInstanceStore.GetPropertys(type))
             {
@@ -32,7 +32,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
                 var propertyType = property.PropertyType;
                 if (propertyType.IsArrayOrGenericList())
                 {
-                    result.Remove.Add(name);
+                    result.KeyDelete.Add(name);
                     continue;
                 }
 

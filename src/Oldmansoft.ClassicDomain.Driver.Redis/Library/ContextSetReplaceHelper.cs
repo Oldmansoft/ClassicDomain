@@ -9,14 +9,14 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
 {
     class ContextSetReplaceHelper
     {
-        public static UpdatedItem<TKey> GetContext<TKey>(TKey key, Type domainType, object compareSource, object compareTarget)
+        public static UpdatedCommand<TKey> GetContext<TKey>(TKey key, Type domainType, object compareSource, object compareTarget)
         {
-            var result = new UpdatedItem<TKey>(key);
+            var result = new UpdatedCommand<TKey>(key);
             SetContext(domainType, result, string.Empty, compareSource, compareTarget);
             return result;
         }
 
-        private static void SetContext(Type type, UpdatedItem result, string prefixName, object compareSource, object compareTarget)
+        private static void SetContext(Type type, UpdatedCommand result, string prefixName, object compareSource, object compareTarget)
         {
             foreach (var property in TypePublicInstanceStore.GetPropertys(type))
             {
@@ -49,44 +49,44 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
             }
         }
 
-        private static void DealNormalClass(UpdatedItem result, Type propertyType, string name, object sourceValue, object targetValue)
+        private static void DealNormalClass(UpdatedCommand result, Type propertyType, string name, object sourceValue, object targetValue)
         {
             if (sourceValue != null && targetValue == null)
             {
-                result.RemoveEntryFromHash.Add(name);
+                result.HashDelete.Add(name);
             }
             else if (sourceValue == null && targetValue != null)
             {
-                result.SetRangeInHash.Add(name, propertyType.FullName);
+                result.HashSet.Add(name, propertyType.FullName);
             }
 
             SetContext(propertyType, result, string.Format("{0}.", name), sourceValue, targetValue);
         }
 
-        private static void DealValue(UpdatedItem result, string name, object targetValue)
+        private static void DealValue(UpdatedCommand result, string name, object targetValue)
         {
             if (targetValue == null)
             {
-                result.RemoveEntryFromHash.Add(name);
+                result.HashDelete.Add(name);
             }
             else
             {
-                result.SetRangeInHash.Add(name, targetValue.ToString());
+                result.HashSet.Add(name, targetValue.ToString());
             }
         }
 
-        private static void DealList(UpdatedItem result, Type propertyType, string name, object sourceValue, object targetValue)
+        private static void DealList(UpdatedCommand result, Type propertyType, string name, object sourceValue, object targetValue)
         {
             if (sourceValue != null && targetValue == null)
             {
-                result.RemoveEntryFromHash.Add(name);
-                result.Remove.Add(name);
+                result.HashDelete.Add(name);
+                result.KeyDelete.Add(name);
             }
             else if (sourceValue == null && targetValue != null)
             {
-                result.SetRangeInHash.Add(name, propertyType.FullName);
-                result.Remove.Add(name);
-                result.AddRangeToList.Add(name, propertyType.ConvertToList(targetValue));
+                result.HashSet.Add(name, propertyType.FullName);
+                result.KeyDelete.Add(name);
+                result.ListRightPush.Add(name, propertyType.ConvertToList(targetValue));
             }
             else if (sourceValue != null && targetValue != null)
             {
@@ -94,7 +94,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
             }
         }
 
-        private static void DealListChange(UpdatedItem result, Type propertyType, string name, object sourceValue, object targetValue)
+        private static void DealListChange(UpdatedCommand result, Type propertyType, string name, object sourceValue, object targetValue)
         {
             var diffrentList = new Dictionary<int, string>();
             var addList = new List<string>();
@@ -116,25 +116,25 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
             }
             for (var i = targetList.Count; i < sourceList.Count; i++)
             {
-                result.RemoveItemFromList.Add(name, sourceList[i]);
+                result.ListRemove.Add(name, sourceList[i]);
             }
 
-            if (diffrentList.Count > 0) result.SetItemInList.Add(name, diffrentList);
-            if (addList.Count > 0) result.AddRangeToList.Add(name, addList);
+            if (diffrentList.Count > 0) result.ListSetByIndex.Add(name, diffrentList);
+            if (addList.Count > 0) result.ListRightPush.Add(name, addList);
         }
 
-        private static void DealDictionary(UpdatedItem result, Type propertyType, string name, object sourceValue, object targetValue)
+        private static void DealDictionary(UpdatedCommand result, Type propertyType, string name, object sourceValue, object targetValue)
         {
             if (sourceValue != null && targetValue == null)
             {
-                result.RemoveEntryFromHash.Add(name);
-                result.Remove.Add(name);
+                result.HashDelete.Add(name);
+                result.KeyDelete.Add(name);
             }
             else if (sourceValue == null && targetValue != null)
             {
-                result.SetRangeInHash.Add(name, propertyType.FullName);
-                result.Remove.Add(name);
-                result.SetRangeInHashes.Add(name, propertyType.ConvertToDictionary(targetValue));
+                result.HashSet.Add(name, propertyType.FullName);
+                result.KeyDelete.Add(name);
+                result.HashSetList.Add(name, propertyType.ConvertToDictionary(targetValue));
             }
             else if (sourceValue != null && targetValue != null)
             {
@@ -142,7 +142,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
             }
         }
 
-        private static void DealDictionaryChange(UpdatedItem result, Type propertyType, string name, object sourceValue, object targetValue)
+        private static void DealDictionaryChange(UpdatedCommand result, Type propertyType, string name, object sourceValue, object targetValue)
         {
             var diffrentDicionary = new Dictionary<string, string>();
             var removeDicionary = new List<string>();
@@ -169,8 +169,8 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
                     removeDicionary.Add(item.Key);
                 }
             }
-            if (removeDicionary.Count > 0) result.RemoveEntryFromHashes.Add(name, removeDicionary);
-            if (diffrentDicionary.Count > 0) result.SetRangeInHashes.Add(name, diffrentDicionary);
+            if (removeDicionary.Count > 0) result.HashDeleteList.Add(name, removeDicionary);
+            if (diffrentDicionary.Count > 0) result.HashSetList.Add(name, diffrentDicionary);
         }
     }
 }

@@ -16,26 +16,26 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
         /// <summary>
         /// 添加列表
         /// </summary>
-        public ConcurrentQueue<UpdatedItem<TKey>> Addes { get; private set; }
+        public ConcurrentQueue<UpdatedCommand<TKey>> Addes { get; private set; }
 
         /// <summary>
         /// 替换列表
         /// </summary>
-        public ConcurrentQueue<UpdatedItem<TKey>> Replaces { get; private set; }
+        public ConcurrentQueue<UpdatedCommand<TKey>> Replaces { get; private set; }
 
         /// <summary>
         /// 移除列表
         /// </summary>
-        public ConcurrentQueue<UpdatedItem<TKey>> Removes { get; private set; }
+        public ConcurrentQueue<UpdatedCommand<TKey>> Removes { get; private set; }
 
         /// <summary>
         /// 创建更新列表
         /// </summary>
         public ChangeList()
         {
-            Addes = new ConcurrentQueue<UpdatedItem<TKey>>();
-            Replaces = new ConcurrentQueue<UpdatedItem<TKey>>();
-            Removes = new ConcurrentQueue<UpdatedItem<TKey>>();
+            Addes = new ConcurrentQueue<UpdatedCommand<TKey>>();
+            Replaces = new ConcurrentQueue<UpdatedCommand<TKey>>();
+            Removes = new ConcurrentQueue<UpdatedCommand<TKey>>();
         }
     }
 }

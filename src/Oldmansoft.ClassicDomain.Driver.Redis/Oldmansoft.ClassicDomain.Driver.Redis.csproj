@@ -63,6 +63,7 @@
     <Compile Include="Core\FastModeContext.cs" />
     <Compile Include="Core\FastModeDbSet.cs" />
     <Compile Include="Core\IContext.cs" />
+    <Compile Include="Core\IMergeKey.cs" />
     <Compile Include="Core\SafeModeDbSet.cs" />
     <Compile Include="Library\ContextSetGetHelper.cs" />
     <Compile Include="Library\ContextSetReplaceHelper.cs" />
@@ -75,7 +76,7 @@
     <Compile Include="Library\ContextSetAddtHelper.cs" />
     <Compile Include="Library\ChangeList.cs" />
     <Compile Include="Library\ContextSetRemoveHelper.cs" />
-    <Compile Include="Library\UpdatedItem.cs" />
+    <Compile Include="Library\UpdatedCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\Repository.cs" />
     <Compile Include="Repository.cs" />

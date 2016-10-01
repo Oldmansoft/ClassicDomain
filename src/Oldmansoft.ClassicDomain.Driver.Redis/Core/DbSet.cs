@@ -59,7 +59,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        protected string MergeKey(TKey key)
+        public string MergeKey(TKey key)
         {
             string id;
             if (key is Guid) id = ((Guid)Convert.ChangeType(key, typeof(Guid))).ToString("N");
