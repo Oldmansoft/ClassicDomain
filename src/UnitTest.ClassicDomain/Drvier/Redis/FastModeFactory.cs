@@ -8,11 +8,11 @@ using UnitTest.ClassicDomain.Drvier.Domain;
 
 namespace UnitTest.ClassicDomain.Drvier.Redis
 {
-    class Factory : IFactory
+    class FastModeFactory : IFactory
     {
         private UnitOfWork Uow { get; set; }
 
-        public Factory()
+        public FastModeFactory()
         {
             Uow = new UnitOfWork();
         }
@@ -24,12 +24,12 @@ namespace UnitTest.ClassicDomain.Drvier.Redis
 
         public IRepositoryGet<Book, Guid> CreateBook()
         {
-            return new Oldmansoft.ClassicDomain.Driver.Redis.Repository<Book, Guid, Mapping>(Uow);
+            return new Oldmansoft.ClassicDomain.Driver.Redis.Repository<Book, Guid, FastModeMapping>(Uow);
         }
 
         public IRepositoryGet<Book, Guid> CreateBook(string connectionName)
         {
-            return new Oldmansoft.ClassicDomain.Driver.Redis.Repository<Book, Guid, MappingCustomConnectionName, string>(Uow, connectionName);
+            return new Oldmansoft.ClassicDomain.Driver.Redis.Repository<Book, Guid, FastModeMappingCustomConnectionName, string>(Uow, connectionName);
         }
     }
 }

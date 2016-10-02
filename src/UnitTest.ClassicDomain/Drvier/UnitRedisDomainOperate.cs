@@ -9,7 +9,12 @@ namespace UnitTest.ClassicDomain.Drvier.Redis
         [TestMethod]
         public void TestAddReplaceRemove()
         {
-            var factory = new Factory();
+            TestAddReplaceRemove_Core(new Factory());
+            TestAddReplaceRemove_Core(new FastModeFactory());
+        }
+
+        private static void TestAddReplaceRemove_Core(IFactory factory)
+        {
             var repository = factory.CreateBook();
 
             var domain = new Domain.Book();
@@ -35,6 +40,22 @@ namespace UnitTest.ClassicDomain.Drvier.Redis
 
             domain = repository.Get(domain.Id);
             Assert.IsNull(domain);
+        }
+
+        [TestMethod]
+        public void TestCustomConnectionName()
+        {
+            TestCustomConnectionName_Core(new Factory());
+            TestCustomConnectionName_Core(new FastModeFactory());
+        }
+
+        private static void TestCustomConnectionName_Core(IFactory factory)
+        {
+            var repository = factory.CreateBook("RedisCustomBook");
+            var domain = new Domain.Book();
+            domain.Name = "hello";
+            repository.Add(domain);
+            factory.GetUnitOfWork().Commit();
         }
     }
 }

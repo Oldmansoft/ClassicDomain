@@ -80,7 +80,7 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
             }
         }
         
-        void IUnitOfWorkManagedItem.OnModelCreating()
+        void IUnitOfWorkManagedItem.ModelCreating()
         {
         }
     }

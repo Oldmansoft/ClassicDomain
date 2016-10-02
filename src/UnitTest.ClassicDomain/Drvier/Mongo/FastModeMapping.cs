@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnitTest.ClassicDomain.Drvier.Redis
+namespace UnitTest.ClassicDomain.Drvier.Mongo
 {
-    class Mapping : Oldmansoft.ClassicDomain.Driver.Redis.Context
+    class FastModeMapping : Oldmansoft.ClassicDomain.Driver.Mongo.FastModeContext
     {
         protected override void OnModelCreating()
         {
@@ -14,7 +14,7 @@ namespace UnitTest.ClassicDomain.Drvier.Redis
         }
     }
 
-    class MappingCustomConnectionName : Oldmansoft.ClassicDomain.Driver.Redis.Context<string>
+    class FastModeMappingCustomConnectionName : Oldmansoft.ClassicDomain.Driver.Mongo.FastModeContext<string>
     {
         protected override void OnModelCreating(string parameter)
         {

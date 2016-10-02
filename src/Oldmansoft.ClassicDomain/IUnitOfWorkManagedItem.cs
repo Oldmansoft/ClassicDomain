@@ -24,9 +24,9 @@ namespace Oldmansoft.ClassicDomain
         string GetHost();
 
         /// <summary>
-        /// 在创建实体时
+        /// 创建实体中
         /// </summary>
-        void OnModelCreating();
+        void ModelCreating();
     }
 
     /// <summary>
@@ -36,9 +36,9 @@ namespace Oldmansoft.ClassicDomain
     public interface IUnitOfWorkManagedItem<TInit> : IUnitOfWorkManagedItem
     {
         /// <summary>
-        /// 初始化方法，此方法由 UnitOfWork 调用
+        /// 创建实体中
         /// </summary>
         /// <param name="parameter">初始化参数</param>
-        void OnModelCreating(TInit parameter);
+        void ModelCreating(TInit parameter);
     }
 }

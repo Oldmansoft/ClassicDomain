@@ -20,7 +20,7 @@ namespace UnitTest.ClassicDomain.Drvier.Mongo
             var source = "mongodb://localhost/?replicaSet=test";
             var url = new MongoDB.Driver.MongoUrl(source);
             var setting = MongoDB.Driver.MongoServerSettings.FromUrl(url);
-            Assert.AreEqual("localhost:27017", setting.GetHost());
+            Assert.AreEqual("localhost", setting.GetHost());
         }
     }
 }

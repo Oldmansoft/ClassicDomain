@@ -7,11 +7,11 @@ using Oldmansoft.ClassicDomain;
 
 namespace UnitTest.ClassicDomain.Drvier.Mongo
 {
-    class Factory : IFactory
+    class FastModeFactory : IFactory
     {
         private UnitOfWork Uow { get; set; }
 
-        public Factory()
+        public FastModeFactory()
         {
             Uow = new UnitOfWork();
         }
@@ -20,15 +20,15 @@ namespace UnitTest.ClassicDomain.Drvier.Mongo
         {
             return Uow;
         }
-
+        
         public IRepository<Domain.Book, Guid> CreateBook()
         {
-            return new Oldmansoft.ClassicDomain.Driver.Mongo.Repository<Domain.Book, Guid, Mapping>(Uow);
+            return new Oldmansoft.ClassicDomain.Driver.Mongo.Repository<Domain.Book, Guid, FastModeMapping>(Uow);
         }
 
         public IRepository<Domain.Book, Guid> CreateBook(string connectionName)
         {
-            return new Oldmansoft.ClassicDomain.Driver.Mongo.Repository<Domain.Book, Guid, MappingCustomConnectionName, string>(Uow, connectionName);
+            return new Oldmansoft.ClassicDomain.Driver.Mongo.Repository<Domain.Book, Guid, FastModeMappingCustomConnectionName, string>(Uow, connectionName);
         }
     }
 }

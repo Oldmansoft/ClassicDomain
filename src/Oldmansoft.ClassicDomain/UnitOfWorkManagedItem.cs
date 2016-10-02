@@ -43,9 +43,17 @@ namespace Oldmansoft.ClassicDomain
         }
 
         /// <summary>
+        /// 创建实体中，此方法由 UnitOfWork 调用
+        /// </summary>
+        void IUnitOfWorkManagedItem.ModelCreating()
+        {
+            OnModelCreating();
+        }
+
+        /// <summary>
         /// 在创建实体时
         /// </summary>
-        public abstract void OnModelCreating();
+        protected abstract void OnModelCreating();
 
         /// <summary>
         /// 提交

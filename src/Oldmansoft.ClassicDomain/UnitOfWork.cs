@@ -78,7 +78,7 @@ namespace Oldmansoft.ClassicDomain
             if (!UnitOfWorks.ContainsKey(type))
             {
                 var context = new TUnitOfWork();
-                context.OnModelCreating();
+                context.ModelCreating();
                 lock (UnitOfWorks)
                 {
                     if (!UnitOfWorks.ContainsKey(type))
@@ -102,7 +102,7 @@ namespace Oldmansoft.ClassicDomain
             if (!UnitOfWorks.ContainsKey(type))
             {
                 var context = new TUnitOfWork();
-                context.OnModelCreating(parameter);
+                context.ModelCreating(parameter);
                 lock (UnitOfWorks)
                 {
                     if (!UnitOfWorks.ContainsKey(type))

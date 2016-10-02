@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UnitTest.ClassicDomain.Drvier.Redis
 {
-    class Mapping : Oldmansoft.ClassicDomain.Driver.Redis.Context
+    class FastModeMapping : Oldmansoft.ClassicDomain.Driver.Redis.FastModeContext
     {
         protected override void OnModelCreating()
         {
@@ -14,7 +14,7 @@ namespace UnitTest.ClassicDomain.Drvier.Redis
         }
     }
 
-    class MappingCustomConnectionName : Oldmansoft.ClassicDomain.Driver.Redis.Context<string>
+    class FastModeMappingCustomConnectionName : Oldmansoft.ClassicDomain.Driver.Redis.FastModeContext<string>
     {
         protected override void OnModelCreating(string parameter)
         {

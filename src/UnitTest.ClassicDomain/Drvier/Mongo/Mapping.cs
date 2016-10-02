@@ -8,7 +8,7 @@ namespace UnitTest.ClassicDomain.Drvier.Mongo
 {
     class Mapping : Oldmansoft.ClassicDomain.Driver.Mongo.Context
     {
-        public override void OnModelCreating()
+        protected override void OnModelCreating()
         {
             Add<Domain.Book, Guid>(o => o.Id);
         }
@@ -16,7 +16,7 @@ namespace UnitTest.ClassicDomain.Drvier.Mongo
 
     class MappingCustomConnectionName : Oldmansoft.ClassicDomain.Driver.Mongo.Context<string>
     {
-        public override void OnModelCreating(string parameter)
+        protected override void OnModelCreating(string parameter)
         {
             ConnectionName = parameter;
             Add<Domain.Book, Guid>(o => o.Id);

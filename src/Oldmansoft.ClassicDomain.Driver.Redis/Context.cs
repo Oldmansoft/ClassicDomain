@@ -20,16 +20,25 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis
     public abstract class Context<TInit> : Core.SafeModeContext, IContext<TInit>
     {
         /// <summary>
+        /// 创建实体中，此方法由 UnitOfWork 调用
+        /// </summary>
+        /// <param name="parameter">初始化参数</param>
+        void IUnitOfWorkManagedItem<TInit>.ModelCreating(TInit parameter)
+        {
+            OnModelCreating(parameter);
+        }
+
+        /// <summary>
+        /// 创建实体中
+        /// </summary>
+        protected override void OnModelCreating()
+        {
+        }
+
+        /// <summary>
         /// 初始化方法，此方法由 UnitOfWork 调用
         /// </summary>
         /// <param name="parameter">初始化参数</param>
-        public abstract void OnModelCreating(TInit parameter);
-
-        /// <summary>
-        /// 隐藏此方法
-        /// </summary>
-        public override void OnModelCreating()
-        {
-        }
+        protected abstract void OnModelCreating(TInit parameter);
     }
 }

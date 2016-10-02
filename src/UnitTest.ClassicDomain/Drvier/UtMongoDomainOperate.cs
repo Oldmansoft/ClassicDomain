@@ -10,7 +10,12 @@ namespace UnitTest.ClassicDomain.Drvier.Mongo
         [TestMethod]
         public void TestAddReplaceRemove()
         {
-            var factory = new Factory();
+            TestAddReplaceRemove_Core(new Factory());
+            TestAddReplaceRemove_Core(new FastModeFactory());
+        }
+
+        private static void TestAddReplaceRemove_Core(IFactory factory)
+        {
             var repository = factory.CreateBook();
 
             var domain = new Domain.Book();
@@ -38,8 +43,13 @@ namespace UnitTest.ClassicDomain.Drvier.Mongo
         [TestMethod]
         public void TestCustomConnectionName()
         {
-            var factory = new Factory();
-            var repository = factory.CreateBook("CustomBook");
+            TestCustomConnectionName_Core(new Factory());
+            TestCustomConnectionName_Core(new FastModeFactory());
+        }
+
+        private static void TestCustomConnectionName_Core(IFactory factory)
+        {
+            var repository = factory.CreateBook("MongoCustomBook");
             var domain = new Domain.Book();
             domain.Name = "hello";
             repository.Add(domain);
@@ -49,7 +59,12 @@ namespace UnitTest.ClassicDomain.Drvier.Mongo
         [TestMethod]
         public void TestListObjectRemoveFirst()
         {
-            var factory = new Factory();
+            TestListObjectRemoveFirst_Core(new Factory());
+            TestListObjectRemoveFirst_Core(new FastModeFactory());
+        }
+
+        private static void TestListObjectRemoveFirst_Core(IFactory factory)
+        {
             var repository = factory.CreateBook();
 
             var domain = new Domain.Book();
@@ -73,7 +88,12 @@ namespace UnitTest.ClassicDomain.Drvier.Mongo
         [TestMethod]
         public void TestListNormalRemoveFirst()
         {
-            var factory = new Factory();
+            TestListNormalRemoveFirst_Core(new Factory());
+            TestListNormalRemoveFirst_Core(new FastModeFactory());
+        }
+
+        private static void TestListNormalRemoveFirst_Core(IFactory factory)
+        {
             var repository = factory.CreateBook();
 
             var domain = new Domain.Book();
@@ -97,7 +117,12 @@ namespace UnitTest.ClassicDomain.Drvier.Mongo
         [TestMethod]
         public void TestListSet()
         {
-            var factory = new Factory();
+            TestListSet_Core(new Factory());
+            TestListSet_Core(new FastModeFactory());
+        }
+
+        private static void TestListSet_Core(IFactory factory)
+        {
             var repository = factory.CreateBook();
 
             var domain = new Domain.Book();

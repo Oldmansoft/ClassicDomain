@@ -26,15 +26,13 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// 配置项
         /// </summary>
         private ConfigItem Config { get; set; }
-        
-        /// <summary>
-        /// 创建上下文
-        /// </summary>
-        public SafeModeContext()
-        {
-            Config = Server.Get(ConnectionName);
-        }
 
+        private ConfigItem GetConfig()
+        {
+            if (Config == null) Config = Server.Get(ConnectionName);
+            return Config;
+        }
+        
         /// <summary>
         /// 创建实体集
         /// </summary>
@@ -44,7 +42,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// <returns></returns>
         internal override IDbSet<TDomain, TKey> CreateDbSet<TDomain, TKey>(System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
         {
-            var database = Config.GetDatabase() as Library.MongoDatabase;
+            var database = GetConfig().GetDatabase() as Library.MongoDatabase;
             var result = new SafeModeDbSet<TDomain, TKey>(database, keyExpression);
             result.IdentityMap.SetKey(keyExpression.Compile());
             database.SetIdentityMap(result.IdentityMap);
@@ -57,7 +55,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// <returns></returns>
         public override string GetHost()
         {
-            return Config.GetHost();
+            return GetConfig().GetHost();
         }
     }
 }

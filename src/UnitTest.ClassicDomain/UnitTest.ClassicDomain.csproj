@@ -86,8 +86,14 @@
     <Compile Include="Drvier\InProcess\Factory.cs" />
     <Compile Include="Drvier\InProcess\Mapping.cs" />
     <Compile Include="Drvier\Mongo\Factory.cs" />
+    <Compile Include="Drvier\Mongo\FastModeFactory.cs" />
+    <Compile Include="Drvier\Mongo\FastModeMapping.cs" />
+    <Compile Include="Drvier\Mongo\IFactory.cs" />
     <Compile Include="Drvier\Mongo\Mapping.cs" />
+    <Compile Include="Drvier\Redis\FastModeFactory.cs" />
     <Compile Include="Drvier\Redis\Factory.cs" />
+    <Compile Include="Drvier\Redis\FastModeMapping.cs" />
+    <Compile Include="Drvier\Redis\IFactory.cs" />
     <Compile Include="Drvier\Redis\Mapping.cs" />
     <Compile Include="Drvier\UnitRedisDomainOperate.cs" />
     <Compile Include="Drvier\UtEntityFrameworkDomainOperate.cs" />

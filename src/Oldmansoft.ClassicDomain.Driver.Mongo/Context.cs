@@ -24,16 +24,25 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
     public abstract class Context<TInit> : Core.SafeModeContext, IContext<TInit>
     {
         /// <summary>
-        /// 初始化方法，此方法由 UnitOfWork 调用
+        /// 创建实体中，此方法由 UnitOfWork 调用
         /// </summary>
         /// <param name="parameter">初始化参数</param>
-        public abstract void OnModelCreating(TInit parameter);
+        void IUnitOfWorkManagedItem<TInit>.ModelCreating(TInit parameter)
+        {
+            OnModelCreating(parameter);
+        }
 
         /// <summary>
-        /// 隐藏此方法
+        /// 创建实体中
         /// </summary>
-        public override void OnModelCreating()
+        protected override void OnModelCreating()
         {
         }
+
+        /// <summary>
+        /// 创建实体中
+        /// </summary>
+        /// <param name="parameter">初始化参数</param>
+        protected abstract void OnModelCreating(TInit parameter);
     }
 }

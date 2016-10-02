@@ -34,10 +34,20 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         public Context()
         {
             DbSet = new Dictionary<Type, IDbSet>();
-            Config = ServerConfig.Get(ConnectionName);
-            Db = Config.GetDatabase();
         }
 
+        private ConfigItem GetConfig()
+        {
+            if (Config == null) Config = ServerConfig.Get(ConnectionName);
+            return Config;
+        }
+
+        private IDatabase GetDatabase()
+        {
+            if (Db == null) Db = GetConfig().GetDatabase();
+            return Db;
+        }
+        
         /// <summary>
         /// 添加领域上下文
         /// </summary>
@@ -52,7 +62,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
                 throw new ArgumentException("已添加了具有相同键的项。");
             }
 
-            var dbSet = CreateDbSet(Config, Db, keyExpression);
+            var dbSet = CreateDbSet(GetConfig(), GetDatabase(), keyExpression);
             DbSet.Add(type, dbSet);
         }
 
@@ -97,7 +107,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <returns></returns>
         public override string GetHost()
         {
-            return Config.Host;
+            return GetConfig().Host;
         }
 
         /// <summary>
