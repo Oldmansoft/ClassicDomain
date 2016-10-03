@@ -54,7 +54,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <typeparam name="TDomain"></typeparam>
         /// <typeparam name="TKey"></typeparam>
         /// <param name="keyExpression"></param>
-        public void Add<TDomain, TKey>(Func<TDomain, TKey> keyExpression) where TDomain : class, new()
+        public void Add<TDomain, TKey>(System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression) where TDomain : class, new()
         {
             var type = typeof(TDomain);
             if (DbSet.ContainsKey(type))
@@ -119,6 +119,6 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <param name="db"></param>
         /// <param name="keyExpression"></param>
         /// <returns></returns>
-        internal abstract IDbSet CreateDbSet<TDomain, TKey>(ConfigItem config, IDatabase db, Func<TDomain, TKey> keyExpression) where TDomain : class, new();
+        internal abstract IDbSet CreateDbSet<TDomain, TKey>(ConfigItem config, IDatabase db, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression) where TDomain : class, new();
     }
 }

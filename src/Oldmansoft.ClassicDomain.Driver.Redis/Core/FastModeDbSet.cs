@@ -20,7 +20,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <param name="config"></param>
         /// <param name="db"></param>
         /// <param name="keyExpression"></param>
-        public FastModeDbSet(ConfigItem config, IDatabase db, Func<TDomain, TKey> keyExpression)
+        public FastModeDbSet(ConfigItem config, IDatabase db, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
             : base(config, db, keyExpression)
         {
             ChangeList = new ChangeList<TDomain>();
@@ -32,6 +32,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <param name="domain"></param>
         public override void RegisterAdd(TDomain domain)
         {
+            TrySetDomainKey(domain);
             ChangeList.Addeds.Enqueue(domain);
         }
 

@@ -21,7 +21,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <param name="db"></param>
         /// <param name="keyExpression"></param>
         /// <returns></returns>
-        internal override IDbSet CreateDbSet<TDomain, TKey>(ConfigItem config, IDatabase db, Func<TDomain, TKey> keyExpression)
+        internal override IDbSet CreateDbSet<TDomain, TKey>(ConfigItem config, IDatabase db, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
         {
             return new FastModeDbSet<TDomain, TKey>(config, db, keyExpression);
         }

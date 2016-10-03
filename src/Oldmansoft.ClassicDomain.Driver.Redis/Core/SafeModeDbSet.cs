@@ -21,7 +21,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <param name="config"></param>
         /// <param name="db"></param>
         /// <param name="keyExpression"></param>
-        public SafeModeDbSet(ConfigItem config, IDatabase db, Func<TDomain, TKey> keyExpression)
+        public SafeModeDbSet(ConfigItem config, IDatabase db, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
             : base(config, db, keyExpression)
         {
             IdentityMap = new ConcurrentDictionary<TKey, TDomain>();
@@ -34,7 +34,8 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <param name="domain"></param>
         public override void RegisterAdd(TDomain domain)
         {
-            ChangeList.Addes.Enqueue(Library.ContextSetAddtHelper.GetContext(KeyExpression(domain), typeof(TDomain), domain));
+            TrySetDomainKey(domain);
+            ChangeList.Addes.Enqueue(Library.ContextSetAddtHelper.GetContext(KeyExpressionCompile(domain), typeof(TDomain), domain));
         }
 
         /// <summary>
@@ -44,7 +45,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         public override void RegisterReplace(TDomain domain)
         {
             TDomain source;
-            var key = KeyExpression(domain);
+            var key = KeyExpressionCompile(domain);
             if (!IdentityMap.TryGetValue(key, out source))
             {
                 throw new ArgumentException("修改的实例必须经过加载", "domain");
@@ -58,7 +59,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <param name="domain"></param>
         public override void RegisterRemove(TDomain domain)
         {
-            ChangeList.Removes.Enqueue(Library.ContextSetRemoveHelper.GetContext(KeyExpression(domain), typeof(TDomain)));
+            ChangeList.Removes.Enqueue(Library.ContextSetRemoveHelper.GetContext(KeyExpressionCompile(domain), typeof(TDomain)));
         }
 
         /// <summary>

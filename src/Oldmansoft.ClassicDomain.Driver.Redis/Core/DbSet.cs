@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using StackExchange.Redis;
+using Oldmansoft.ClassicDomain.Util;
+using System.Linq.Expressions;
 
 namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
 {
@@ -24,10 +26,12 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
 
         private ConcurrentQueue<Func<IDatabase, bool>> ExecuteList { get; set; }
 
+        private Expression<Func<TDomain, TKey>> KeyExpression { get; set; }
+
         /// <summary>
         /// 主键表达式
         /// </summary>
-        protected Func<TDomain, TKey> KeyExpression { get; private set; }
+        protected Func<TDomain, TKey> KeyExpressionCompile { get; private set; }
 
         /// <summary>
         /// 配置
@@ -45,13 +49,14 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <param name="config"></param>
         /// <param name="db"></param>
         /// <param name="keyExpression"></param>
-        public DbSet(ConfigItem config, IDatabase db, Func<TDomain, TKey> keyExpression)
+        public DbSet(ConfigItem config, IDatabase db, Expression<Func<TDomain, TKey>> keyExpression)
         {
             DomainName = typeof(TDomain).FullName;
             ExecuteList = new ConcurrentQueue<Func<IDatabase, bool>>();
             Config = config;
             Db = db;
             KeyExpression = keyExpression;
+            KeyExpressionCompile = keyExpression.Compile();
         }
 
         /// <summary>
@@ -75,7 +80,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <returns></returns>
         protected string GetKey(TDomain domain)
         {
-            return MergeKey(KeyExpression(domain));
+            return MergeKey(KeyExpressionCompile(domain));
         }
 
         /// <summary>
@@ -143,6 +148,21 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         public bool IsLowServerVersion()
         {
             return Config.IsLowServerVersion;
+        }
+
+        /// <summary>
+        /// 尝试设置主键
+        /// </summary>
+        /// <param name="domain"></param>
+        protected void TrySetDomainKey(TDomain domain)
+        {
+            if (typeof(TKey) == typeof(Guid))
+            {
+                if ((Guid)(object)KeyExpressionCompile(domain) == Guid.Empty)
+                {
+                    KeyExpression.GetProperty().SetValue(domain, Guid.NewGuid());
+                }
+            }
         }
     }
 }
