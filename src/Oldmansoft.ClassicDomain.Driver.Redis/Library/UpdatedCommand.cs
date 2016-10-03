@@ -110,7 +110,28 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
             foreach (var item in ListRightPush)
             {
                 if (item.Value.Count == 0) continue;
-                db.ListRightPush(dbSet.MergeKey(Key, item.Key), item.Value.ToRedisValues());
+                if (dbSet.IsLowServerVersion())
+                {
+                    foreach (var subItem in item.Value)
+                    {
+                        db.ListRightPush(dbSet.MergeKey(Key, item.Key), subItem);
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        db.ListRightPush(dbSet.MergeKey(Key, item.Key), item.Value.ToRedisValues());
+                    }
+                    catch (RedisServerException ex)
+                    {
+                        if (ex.Message == "ERR wrong number of arguments for 'rpush' command")
+                        {
+                            throw new ClassicDomainException(Core.Config.AlertLowServerVersion);
+                        }
+                        throw;
+                    }
+                }
             }
             foreach (var line in ListSetByIndex)
             {

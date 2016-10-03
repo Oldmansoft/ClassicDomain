@@ -78,8 +78,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
                     {
                         if (ex.Message == "ERR wrong number of arguments for 'set' command")
                         {
-                            throw new ClassicDomainException("接口不支持旧版服务器，请换用新的服务器，或在配置里指定 providerName=\"2\"。");
+                            throw new ClassicDomainException(Core.Config.AlertLowServerVersion);
                         }
+                        throw;
                     }
                 }
             }

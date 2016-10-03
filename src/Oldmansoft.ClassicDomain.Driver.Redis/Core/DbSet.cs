@@ -135,5 +135,14 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         {
             return Db;
         }
+
+        /// <summary>
+        /// 是否低服务器版本
+        /// </summary>
+        /// <returns></returns>
+        public bool IsLowServerVersion()
+        {
+            return Config.IsLowServerVersion;
+        }
     }
 }

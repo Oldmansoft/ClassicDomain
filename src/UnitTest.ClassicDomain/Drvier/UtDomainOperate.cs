@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTest.ClassicDomain.Drvier.Mongo
+namespace UnitTest.ClassicDomain.Drvier
 {
     [TestClass]
-    public class UtMongoDomainOperate
+    public class UtDomainOperate
     {
         [TestMethod]
         public void TestAddReplaceRemove()
         {
-            TestAddReplaceRemove_Core(new Factory());
-            TestAddReplaceRemove_Core(new FastModeFactory());
+            TestAddReplaceRemove_Core(new Mongo.Factory());
+            TestAddReplaceRemove_Core(new Mongo.FastModeFactory());
+            TestAddReplaceRemove_Core(new Redis.Factory());
+            TestAddReplaceRemove_Core(new Redis.FastModeFactory());
         }
 
         private static void TestAddReplaceRemove_Core(IFactory factory)
@@ -43,24 +45,34 @@ namespace UnitTest.ClassicDomain.Drvier.Mongo
         [TestMethod]
         public void TestCustomConnectionName()
         {
-            TestCustomConnectionName_Core(new Factory());
-            TestCustomConnectionName_Core(new FastModeFactory());
+            TestCustomConnectionName_Core(new Mongo.Factory(), "MongoCustomBook");
+            TestCustomConnectionName_Core(new Mongo.FastModeFactory(), "MongoCustomBook");
+            TestCustomConnectionName_Core(new Redis.Factory(), "RedisCustomBook");
+            TestCustomConnectionName_Core(new Redis.FastModeFactory(), "RedisCustomBook");
         }
 
-        private static void TestCustomConnectionName_Core(IFactory factory)
+        private static void TestCustomConnectionName_Core(IFactory factory, string connectionName)
         {
-            var repository = factory.CreateBook("MongoCustomBook");
+            var repository = factory.CreateBook(connectionName);
             var domain = new Domain.Book();
             domain.Name = "hello";
             repository.Add(domain);
             factory.GetUnitOfWork().Commit();
+
+            repository.Remove(domain);
+            factory.GetUnitOfWork().Commit();
+
+            domain = repository.Get(domain.Id);
+            Assert.IsNull(domain);
         }
 
         [TestMethod]
         public void TestListObjectRemoveFirst()
         {
-            TestListObjectRemoveFirst_Core(new Factory());
-            TestListObjectRemoveFirst_Core(new FastModeFactory());
+            TestListObjectRemoveFirst_Core(new Mongo.Factory());
+            TestListObjectRemoveFirst_Core(new Mongo.FastModeFactory());
+            TestListObjectRemoveFirst_Core(new Redis.Factory());
+            TestListObjectRemoveFirst_Core(new Redis.FastModeFactory());
         }
 
         private static void TestListObjectRemoveFirst_Core(IFactory factory)
@@ -83,13 +95,21 @@ namespace UnitTest.ClassicDomain.Drvier.Mongo
 
             domain = repository.Get(domain.Id);
             Assert.AreEqual("two", domain.Authors[0].Name);
+
+            repository.Remove(domain);
+            factory.GetUnitOfWork().Commit();
+
+            domain = repository.Get(domain.Id);
+            Assert.IsNull(domain);
         }
 
         [TestMethod]
         public void TestListNormalRemoveFirst()
         {
-            TestListNormalRemoveFirst_Core(new Factory());
-            TestListNormalRemoveFirst_Core(new FastModeFactory());
+            TestListNormalRemoveFirst_Core(new Mongo.Factory());
+            TestListNormalRemoveFirst_Core(new Mongo.FastModeFactory());
+            TestListNormalRemoveFirst_Core(new Redis.Factory());
+            TestListNormalRemoveFirst_Core(new Redis.FastModeFactory());
         }
 
         private static void TestListNormalRemoveFirst_Core(IFactory factory)
@@ -112,13 +132,21 @@ namespace UnitTest.ClassicDomain.Drvier.Mongo
 
             domain = repository.Get(domain.Id);
             Assert.AreEqual("world", domain.Tags[0]);
+
+            repository.Remove(domain);
+            factory.GetUnitOfWork().Commit();
+
+            domain = repository.Get(domain.Id);
+            Assert.IsNull(domain);
         }
 
         [TestMethod]
         public void TestListSet()
         {
-            TestListSet_Core(new Factory());
-            TestListSet_Core(new FastModeFactory());
+            TestListSet_Core(new Mongo.Factory());
+            TestListSet_Core(new Mongo.FastModeFactory());
+            TestListSet_Core(new Redis.Factory());
+            TestListSet_Core(new Redis.FastModeFactory());
         }
 
         private static void TestListSet_Core(IFactory factory)
@@ -141,6 +169,12 @@ namespace UnitTest.ClassicDomain.Drvier.Mongo
 
             domain = repository.Get(domain.Id);
             Assert.AreEqual("three", domain.Authors[1].Name);
+
+            repository.Remove(domain);
+            factory.GetUnitOfWork().Commit();
+
+            domain = repository.Get(domain.Id);
+            Assert.IsNull(domain);
         }
     }
 }

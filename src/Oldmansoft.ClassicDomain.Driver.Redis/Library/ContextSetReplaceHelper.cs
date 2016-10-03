@@ -114,13 +114,17 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
                     addList.Add(targetList[i]);
                 }
             }
+            if (addList.Count > 0) result.ListRightPush.Add(name, addList);
+
+            var hasRemove = false;
             for (var i = targetList.Count; i < sourceList.Count; i++)
             {
-                result.ListRemove.Add(name, sourceList[i]);
+                hasRemove = true;
+                diffrentList.Add(i, RemoveObject.Instance);
             }
 
             if (diffrentList.Count > 0) result.ListSetByIndex.Add(name, diffrentList);
-            if (addList.Count > 0) result.ListRightPush.Add(name, addList);
+            if (hasRemove) result.ListRemove.Add(name, RemoveObject.Instance);
         }
 
         private static void DealDictionary(UpdatedCommand result, Type propertyType, string name, object sourceValue, object targetValue)

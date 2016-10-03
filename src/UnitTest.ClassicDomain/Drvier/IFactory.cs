@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Oldmansoft.ClassicDomain;
 
-namespace UnitTest.ClassicDomain.Drvier.Redis
+namespace UnitTest.ClassicDomain.Drvier
 {
     interface IFactory
     {

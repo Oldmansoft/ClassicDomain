@@ -13,6 +13,8 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
     /// </summary>
     internal class Config
     {
+        public const string AlertLowServerVersion = "接口不支持旧版 Redis 服务器，请换用新的 Redis 服务器，或在配置里指定 providerName=\"2\"。";
+
         private ConcurrentDictionary<string, ConfigItem> Connections { get; set; }
 
         /// <summary>

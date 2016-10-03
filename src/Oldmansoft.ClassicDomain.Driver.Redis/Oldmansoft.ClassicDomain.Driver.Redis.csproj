@@ -69,6 +69,7 @@
     <Compile Include="Library\ContextSetReplaceHelper.cs" />
     <Compile Include="Library\DataGetMapping.cs" />
     <Compile Include="Library\ReflectionItem.cs" />
+    <Compile Include="Library\RemoveObject.cs" />
     <Compile Include="Library\Serializer.cs" />
     <Compile Include="FastModeContext.cs" />
     <Compile Include="IContext.cs" />

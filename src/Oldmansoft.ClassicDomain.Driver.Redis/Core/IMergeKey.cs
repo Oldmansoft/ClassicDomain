@@ -11,5 +11,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         string MergeKey(TKey key);
 
         string MergeKey(TKey key, string subName);
+
+        bool IsLowServerVersion();
     }
 }

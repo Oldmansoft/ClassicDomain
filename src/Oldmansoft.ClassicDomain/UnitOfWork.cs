@@ -157,14 +157,14 @@ namespace Oldmansoft.ClassicDomain
                 }
                 throw ex.InnerException;
             }
-            //catch
-            //{
-            //    if (OnCommitException != null)
-            //    {
-            //        OnCommitException();
-            //    }
-            //    throw;
-            //}
+            catch
+            {
+                if (OnCommitException != null)
+                {
+                    OnCommitException();
+                }
+                throw;
+            }
 
             if (OnCommitCompleted != null)
             {
