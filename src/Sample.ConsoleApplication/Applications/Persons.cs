@@ -14,8 +14,7 @@ namespace Sample.ConsoleApplication.Applications
         {
             var factory = new Repositories.RepositoryFactory();
             var repository = factory.CreatePerson();
-            var domain = new Domain.Person();
-            domain.Name = "Oldman";
+            var domain = data.CopyTo(new Domain.Person());
             repository.Add(domain);
             factory.GetUnitOfWork().Commit();
             return domain.Id;
