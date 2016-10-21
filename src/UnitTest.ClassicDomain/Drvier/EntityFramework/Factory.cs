@@ -3,26 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Oldmansoft.ClassicDomain;
+using UnitTest.ClassicDomain.Drvier.Domain;
 
 namespace UnitTest.ClassicDomain.Drvier.EntityFramework
 {
-    class Factory
+    class Factory : IFactory
     {
-        private Oldmansoft.ClassicDomain.UnitOfWork Uow { get; set; }
+        private UnitOfWork Uow { get; set; }
 
         public Factory()
         {
-            Uow = new Oldmansoft.ClassicDomain.UnitOfWork();
+            Uow = new UnitOfWork();
         }
 
-        public Oldmansoft.ClassicDomain.IUnitOfWork GetUnitOfWork()
+        public IUnitOfWork GetUnitOfWork()
         {
             return Uow;
         }
 
-        public Oldmansoft.ClassicDomain.IRepositoryGet<Domain.Book, Guid> CreateBook()
+        public IRepositoryGet<Book, Guid> CreateBook()
         {
-            return new Oldmansoft.ClassicDomain.Driver.EF.Repository<Domain.Book, Guid, Mapping>(Uow);
+            return new Oldmansoft.ClassicDomain.Driver.EF.Repository<Book, Guid, Mapping>(Uow);
+        }
+
+        public IRepositoryGet<Book, Guid> CreateBook(string connectionName)
+        {
+            throw new NotImplementedException();
         }
     }
 }

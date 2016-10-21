@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
+using Oldmansoft.ClassicDomain.Util;
 
 namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
 {
@@ -18,7 +19,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// </summary>
         protected string TableName { get; private set; }
 
-        private ChangeList<TDomain> List { get; set; }
+        
 
         private ConcurrentQueue<Func<MongoCollection<TDomain>, bool>> ExecuteList { get; set; }
 
@@ -27,6 +28,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// </summary>
         protected System.Linq.Expressions.Expression<Func<TDomain, TKey>> KeyExpression { get; set; }
 
+        /// <summary>
+        /// 主键获取
+        /// </summary>
         protected Func<TDomain, TKey> KeyExpressionCompile { get; set; }
 
         /// <summary>
@@ -38,38 +42,44 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         {
             Database = database;
             TableName = typeof(TDomain).Name;
-            List = new ChangeList<TDomain>();
+            
             ExecuteList = new ConcurrentQueue<Func<MongoCollection<TDomain>, bool>>();
             KeyExpression = keyExpression;
             KeyExpressionCompile = keyExpression.Compile();
         }
 
         /// <summary>
-        /// 注册移除
+        /// 尝试设置主键
         /// </summary>
         /// <param name="domain"></param>
-        void IDbSet<TDomain, TKey>.RegisterRemove(TDomain domain)
+        protected void TrySetDomainKey(TDomain domain)
         {
-            List.Deleteds.Enqueue(domain);
-        }
-
-        /// <summary>
-        /// 注册替换
-        /// </summary>
-        /// <param name="domain"></param>
-        void IDbSet<TDomain, TKey>.RegisterReplace(TDomain domain)
-        {
-            List.Updateds.Enqueue(domain);
+            if (typeof(TKey) == typeof(Guid))
+            {
+                if ((Guid)(object)KeyExpressionCompile(domain) == Guid.Empty)
+                {
+                    KeyExpression.GetProperty().SetValue(domain, Guid.NewGuid());
+                }
+            }
         }
 
         /// <summary>
         /// 注册添加
         /// </summary>
         /// <param name="domain"></param>
-        void IDbSet<TDomain, TKey>.RegisterAdd(TDomain domain)
-        {
-            List.Addeds.Enqueue(domain);
-        }
+        public abstract void RegisterAdd(TDomain domain);
+
+        /// <summary>
+        /// 注册替换
+        /// </summary>
+        /// <param name="domain"></param>
+        public abstract void RegisterReplace(TDomain domain);
+
+        /// <summary>
+        /// 注册移除
+        /// </summary>
+        /// <param name="domain"></param>
+        public abstract void RegisterRemove(TDomain domain);
 
         /// <summary>
         /// 注册执行
@@ -130,32 +140,10 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// 提交
         /// </summary>
         /// <returns></returns>
-        public int Commit()
+        public virtual int Commit()
         {
             var collection = GetCollection();
-
             int result = 0;
-            TDomain domain;
-            List<TDomain> addeds = new List<TDomain>();
-            while (List.Addeds.TryDequeue(out domain))
-            {
-                addeds.Add(domain);
-                result++;
-            }
-            if (addeds.Count > 0)
-            {
-                collection.InsertBatch(addeds);
-            }
-
-            while (List.Updateds.TryDequeue(out domain))
-            {
-                if (Replace(collection, domain)) result++;
-            }
-            while (List.Deleteds.TryDequeue(out domain))
-            {
-                if (Remove(collection, KeyExpressionCompile(domain))) result++;
-            }
-
             Func<MongoCollection<TDomain>, bool> execute;
             while (ExecuteList.TryDequeue(out execute))
             {
@@ -163,7 +151,28 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
             }
             return result;
         }
+
+        /// <summary>
+        /// 添加数据
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="domain"></param>
+        /// <returns></returns>
+        protected virtual bool Add(MongoCollection<TDomain> collection, TDomain domain)
+        {
+            var writeResult = collection.Insert(domain);
+            if (writeResult == null) return true;
+            return !writeResult.HasLastErrorMessage;
+        }
         
+        /// <summary>
+        /// 替换数据
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="domain"></param>
+        /// <returns></returns>
+        protected abstract bool Replace(MongoCollection<TDomain> collection, TDomain domain);
+
         /// <summary>
         /// 移除数据
         /// </summary>
@@ -177,13 +186,5 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
             if (writeResult == null) return true;
             return writeResult.DocumentsAffected > 0;
         }
-
-        /// <summary>
-        /// 替换数据
-        /// </summary>
-        /// <param name="collection"></param>
-        /// <param name="entity"></param>
-        /// <returns></returns>
-        protected abstract bool Replace(MongoCollection<TDomain> collection, TDomain entity);
     }
 }

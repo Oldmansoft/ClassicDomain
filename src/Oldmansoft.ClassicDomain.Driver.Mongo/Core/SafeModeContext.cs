@@ -44,7 +44,6 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         {
             var database = GetConfig().GetDatabase() as Library.MongoDatabase;
             var result = new SafeModeDbSet<TDomain, TKey>(database, keyExpression);
-            result.IdentityMap.SetKey(keyExpression.Compile());
             database.SetIdentityMap(result.IdentityMap);
             return result;
         }

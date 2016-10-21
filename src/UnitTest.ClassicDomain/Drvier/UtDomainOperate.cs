@@ -176,5 +176,74 @@ namespace UnitTest.ClassicDomain.Drvier
             domain = repository.Get(domain.Id);
             Assert.IsNull(domain);
         }
+
+        [TestMethod]
+        public void TestIdentityMap()
+        {
+            TestIdentityMap_Core(new Mongo.Factory());
+            TestIdentityMap_Core(new Mongo.FastModeFactory());
+            TestIdentityMap_Core(new Redis.Factory());
+            TestIdentityMap_Core(new Redis.FastModeFactory());
+        }
+
+        private static void TestIdentityMap_Core(IFactory factory)
+        {
+            var repository = factory.CreateBook();
+
+            var domain = new Domain.Book();
+            domain.Sex = true;
+            repository.Add(domain);
+            factory.GetUnitOfWork().Commit();
+
+            domain.Sex = false;
+            repository.Replace(domain);
+            factory.GetUnitOfWork().Commit();
+
+            domain.Sex = true;
+            repository.Replace(domain);
+            factory.GetUnitOfWork().Commit();
+
+            domain = repository.Get(domain.Id);
+            
+            repository.Remove(domain);
+            factory.GetUnitOfWork().Commit();
+
+            Assert.AreEqual(true, domain.Sex);
+        }
+
+        [TestMethod]
+        public void TestRepository()
+        {
+            TestRepository_Core(new Mongo.Factory());
+            TestRepository_Core(new Mongo.FastModeFactory());
+            TestRepository_Core(new Redis.Factory());
+            TestRepository_Core(new Redis.FastModeFactory());
+        }
+
+        private static void TestRepository_Core(IFactory factory)
+        {
+            var repository = factory.CreateBook();
+
+            var domain = new Domain.Book();
+            domain.Name = "hello";
+            domain.Sex = true;
+            repository.Add(domain);
+
+            domain.Sex = false;
+            repository.Replace(domain);
+
+            domain.Sex = true;
+            repository.Replace(domain);
+
+            domain.Sex = false;
+            repository.Replace(domain);
+            var commit = factory.GetUnitOfWork().Commit();
+
+            domain = repository.Get(domain.Id);
+
+            repository.Remove(domain);
+            factory.GetUnitOfWork().Commit();
+            Assert.AreEqual(false, domain.Sex);
+        }
     }
 }

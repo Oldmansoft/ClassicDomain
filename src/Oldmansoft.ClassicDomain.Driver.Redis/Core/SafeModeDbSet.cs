@@ -4,14 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Oldmansoft.ClassicDomain.Util;
 using StackExchange.Redis;
 
 namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
 {
     internal class SafeModeDbSet<TDomain, TKey> : DbSet<TDomain, TKey>, IMergeKey<TKey> where TDomain : class, new()
     {
-        private ConcurrentDictionary<TKey, TDomain> IdentityMap { get; set; }
+        private IdentityMap<TDomain> IdentityMap { get; set; }
 
         private Library.ChangeList<TKey> ChangeList { get; set; }
 
@@ -24,7 +23,8 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         public SafeModeDbSet(ConfigItem config, IDatabase db, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
             : base(config, db, keyExpression)
         {
-            IdentityMap = new ConcurrentDictionary<TKey, TDomain>();
+            IdentityMap = new IdentityMap<TDomain>();
+            IdentityMap.SetKey(KeyExpressionCompile);
             ChangeList = new Library.ChangeList<TKey>();
         }
 
@@ -36,6 +36,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         {
             TrySetDomainKey(domain);
             ChangeList.Addes.Enqueue(Library.ContextSetAddtHelper.GetContext(KeyExpressionCompile(domain), typeof(TDomain), domain));
+            IdentityMap.Set(domain);
         }
 
         /// <summary>
@@ -44,13 +45,14 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <param name="domain"></param>
         public override void RegisterReplace(TDomain domain)
         {
-            TDomain source;
             var key = KeyExpressionCompile(domain);
-            if (!IdentityMap.TryGetValue(key, out source))
+            var source = IdentityMap.Get(key);
+            if (source == null)
             {
                 throw new ArgumentException("修改的实例必须经过加载", "domain");
             }
             ChangeList.Replaces.Enqueue(Library.ContextSetReplaceHelper.GetContext(key, typeof(TDomain), source, domain));
+            IdentityMap.Set(domain);
         }
 
         /// <summary>
@@ -98,7 +100,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         public override TDomain Get(TKey id)
         {
             var result = Library.ContextSetGetHelper.GetContext<TDomain>(FromRedis(Db, id));
-            IdentityMap.TryAdd(id, result.CopyTo(new TDomain()));
+            IdentityMap.Set(result);
             return result;
         }
 
@@ -136,8 +138,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
             {
                 command.Execute(Db, this);
                 if (!Db.KeyDelete(MergeKey(command.Key))) continue;
-                TDomain temp;
-                IdentityMap.TryRemove(command.Key, out temp);
+                IdentityMap.Remove(command.Key);
                 result++;
             }
             return result + base.Commit();

@@ -4,38 +4,38 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
+namespace Oldmansoft.ClassicDomain.Driver
 {
     /// <summary>
     /// 标识映射
     /// </summary>
-    /// <typeparam name="TEntity"></typeparam>
-    internal class IdentityMap<TEntity>
+    /// <typeparam name="TDomain"></typeparam>
+    public class IdentityMap<TDomain>
     {
-        private Dictionary<string, TEntity> Store;
+        private Dictionary<string, TDomain> Store;
 
         private Util.DataMapper Mapper;
 
         /// <summary>
         /// 获取主键
         /// </summary>
-        public Func<TEntity, object> GetKey { get; private set; }
+        private Func<TDomain, object> GetKey { get; set; }
 
         /// <summary>
         /// 创建标识映射
         /// </summary>
         public IdentityMap()
         {
-            Store = new Dictionary<string, TEntity>();
+            Store = new Dictionary<string, TDomain>();
             Mapper = new Util.DataMapper(true);
         }
 
         /// <summary>
-        /// 设置主键
+        /// 设置获取主键的表达式
         /// </summary>
-        /// <typeparam name="TMember"></typeparam>
+        /// <typeparam name="TKey"></typeparam>
         /// <param name="keyExpression"></param>
-        public void SetKey<TMember>(Func<TEntity, TMember> keyExpression)
+        public void SetKey<TKey>(Func<TDomain, TKey> keyExpression)
         {
             GetKey = (entity) => { return keyExpression(entity); };
         }
@@ -43,12 +43,12 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// <summary>
         /// 设置值
         /// </summary>
-        /// <param name="entity"></param>
-        public void Set(TEntity entity)
+        /// <param name="domain"></param>
+        public void Set(TDomain domain)
         {
-            if (entity == null) return;
-            var domain = Activator.CreateInstance<TEntity>();
-            Store[GetKey(entity).ToString()] = Mapper.CopyTo(entity, domain);
+            if (domain == null) return;
+            var storeDomain = Activator.CreateInstance<TDomain>();
+            Store[GetKey(domain).ToString()] = Mapper.CopyTo(domain, storeDomain);
         }
 
         /// <summary>
@@ -56,8 +56,10 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public TEntity Get(object key)
+        public TDomain Get(object key)
         {
+            if (key == null) throw new ArgumentNullException("key");
+
             var index = key.ToString();
             if (Store.ContainsKey(index))
             {
@@ -65,7 +67,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
             }
             else
             {
-                return default(TEntity);
+                return default(TDomain);
             }
         }
 

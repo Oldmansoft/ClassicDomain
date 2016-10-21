@@ -72,7 +72,6 @@
     <Compile Include="Core\IContext.cs" />
     <Compile Include="IContext.cs" />
     <Compile Include="Core\IDbSet.cs" />
-    <Compile Include="Core\IdentityMap.cs" />
     <Compile Include="Library\RemoveObject.cs" />
     <Compile Include="Repository.cs" />
     <Compile Include="Core\SafeModeDbSet.cs" />

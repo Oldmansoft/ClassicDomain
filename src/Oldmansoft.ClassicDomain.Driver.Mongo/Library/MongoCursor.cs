@@ -8,7 +8,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
 {
     internal class MongoCursor<TDocument> : MongoDB.Driver.MongoCursor<TDocument> where TDocument : class
     {
-        private Core.IdentityMap<TDocument> IdentityMap { get; set; }
+        private IdentityMap<TDocument> IdentityMap { get; set; }
 
         public MongoCursor(
             MongoDB.Driver.MongoCollection collection,
@@ -16,7 +16,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
             MongoDB.Driver.ReadConcern readConcern,
             MongoDB.Driver.ReadPreference readPreference,
             MongoDB.Bson.Serialization.IBsonSerializer serializer,
-            Core.IdentityMap<TDocument> identityMap
+            IdentityMap<TDocument> identityMap
         )
             : base(collection, query, readConcern, readPreference, serializer)
         {

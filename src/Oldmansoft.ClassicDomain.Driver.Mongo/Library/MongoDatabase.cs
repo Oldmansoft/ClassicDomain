@@ -15,14 +15,14 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
         {
         }
 
-        public void SetIdentityMap<TDocument>(Core.IdentityMap<TDocument> identityMap)
+        public void SetIdentityMap<TDocument>(IdentityMap<TDocument> identityMap)
         {
             IdentityMap = identityMap;
         }
 
         public override MongoDB.Driver.MongoCollection<TDefaultDocument> GetCollection<TDefaultDocument>(string collectionName, MongoDB.Driver.MongoCollectionSettings collectionSettings)
         {
-            return new MongoCollection<TDefaultDocument>(this, collectionName, collectionSettings, IdentityMap as Core.IdentityMap<TDefaultDocument>);
+            return new MongoCollection<TDefaultDocument>(this, collectionName, collectionSettings, IdentityMap as IdentityMap<TDefaultDocument>);
         }
     }
 }
