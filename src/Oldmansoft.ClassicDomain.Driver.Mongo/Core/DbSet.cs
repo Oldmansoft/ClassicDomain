@@ -58,7 +58,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
             {
                 if ((Guid)(object)KeyExpressionCompile(domain) == Guid.Empty)
                 {
-                    KeyExpression.GetProperty().SetValue(domain, Guid.NewGuid());
+                    KeyExpression.GetProperty().SetValue(domain, GuidGenerator.Default.Create(StorageMapping.MongoMapping));
                 }
             }
         }

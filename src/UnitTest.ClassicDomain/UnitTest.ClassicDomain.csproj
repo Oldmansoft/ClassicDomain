@@ -94,6 +94,7 @@
     <Compile Include="Drvier\Redis\Factory.cs" />
     <Compile Include="Drvier\Redis\FastModeMapping.cs" />
     <Compile Include="Drvier\Redis\Mapping.cs" />
+    <Compile Include="Drvier\UtGuidGenerator.cs" />
     <Compile Include="Drvier\UtEntityFrameworkDomainOperate.cs" />
     <Compile Include="Drvier\UtDomainOperate.cs" />
     <Compile Include="Drvier\Mongo\UtConnectionString.cs" />
