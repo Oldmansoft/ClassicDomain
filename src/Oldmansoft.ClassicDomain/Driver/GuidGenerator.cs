@@ -13,7 +13,7 @@ namespace Oldmansoft.ClassicDomain.Driver
     {
         private byte[] Hash { get; set; }
 
-        private short Seed { get; set; }
+        private uint Seed { get; set; }
 
         private byte[] LastTime { get; set; }
 
@@ -39,7 +39,7 @@ namespace Oldmansoft.ClassicDomain.Driver
             LastTime = new byte[6];
         }
 
-        private short GetNextSeed(byte[] time)
+        private uint GetNextSeed(byte[] time)
         {
             lock (this)
             {
@@ -71,8 +71,8 @@ namespace Oldmansoft.ClassicDomain.Driver
             var content = new byte[16];
             var time = BitConverter.GetBytes(DateTime.Now.Ticks);
             var seed = BitConverter.GetBytes(GetNextSeed(time));
-            Array.Copy(Hash, 0, content, 0, 8);
-            Array.Copy(seed, 0, content, 8, 2);
+            Array.Copy(Hash, 0, content, 0, 6);
+            Array.Copy(seed, 0, content, 6, 4);
             Array.Copy(time, 2, content, 10, 6);
 
             if (mapping == null)
