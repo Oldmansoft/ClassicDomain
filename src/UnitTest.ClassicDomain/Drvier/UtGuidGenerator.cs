@@ -95,7 +95,7 @@ namespace UnitTest.ClassicDomain.Drvier
         {
             var factory = new Factory();
             var repository = factory.CreateEf();
-            for (var i = 0; i < 10000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 repository.Add(new GuidData { Id = GuidGenerator.Default.Create(StorageMapping.MssqlMapping), Index = i });
             }

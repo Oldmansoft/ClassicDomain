@@ -102,15 +102,6 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         }
 
         /// <summary>
-        /// 获取 Commit 的主机
-        /// </summary>
-        /// <returns></returns>
-        public override string GetHost()
-        {
-            return GetConfig().Host;
-        }
-
-        /// <summary>
         /// 创建实体集
         /// </summary>
         /// <typeparam name="TDomain"></typeparam>

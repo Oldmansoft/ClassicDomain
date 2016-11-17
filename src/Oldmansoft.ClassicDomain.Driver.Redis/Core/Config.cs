@@ -38,25 +38,13 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
             var setting = Configuration.Config.GetConnectionStringSettings(name);
 
             var connection = ConnectionMultiplexer.Connect(setting.ConnectionString);
-            result = new ConfigItem(connection, GetHost(connection), setting.ProviderName);
+            result = new ConfigItem(connection, setting.ProviderName);
             if (!Connections.TryAdd(name, result))
             {
                 connection.Close();
                 Connections.TryGetValue(name, out result);
             }
             return result;
-        }
-
-        private static string GetHost(ConnectionMultiplexer connection)
-        {
-            var result = new StringBuilder();
-            foreach (var ep in connection.GetEndPoints())
-            {
-                if (result.Length > 0) result.Append(",");
-                result.Append(ep.ToString().Split(':')[0]);
-            }
-
-            return result.ToString();
         }
     }
 }

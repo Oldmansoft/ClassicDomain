@@ -18,11 +18,6 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         private ConnectionMultiplexer Connection { get; set; }
 
         /// <summary>
-        /// 主机名
-        /// </summary>
-        public string Host { get; private set; }
-
-        /// <summary>
         /// 是否低服务器版本
         /// </summary>
         public bool IsLowServerVersion { get; private set; }
@@ -31,12 +26,10 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// 创建配置项
         /// </summary>
         /// <param name="connection"></param>
-        /// <param name="host"></param>
         /// <param name="serverVersion"></param>
-        public ConfigItem(ConnectionMultiplexer connection, string host, string serverVersion)
+        public ConfigItem(ConnectionMultiplexer connection, string serverVersion)
         {
             Connection = connection;
-            Host = host;
             IsLowServerVersion = serverVersion == "2";
         }
 

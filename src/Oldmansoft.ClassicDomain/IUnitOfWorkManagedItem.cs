@@ -18,12 +18,6 @@ namespace Oldmansoft.ClassicDomain
         string GetConnectionName();
 
         /// <summary>
-        /// 获取 Commit 的主机
-        /// </summary>
-        /// <returns></returns>
-        string GetHost();
-
-        /// <summary>
         /// 创建实体中
         /// </summary>
         void ModelCreating();

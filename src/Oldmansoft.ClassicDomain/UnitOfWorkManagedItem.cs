@@ -34,15 +34,6 @@ namespace Oldmansoft.ClassicDomain
         }
 
         /// <summary>
-        /// 获取 Commit 的主机
-        /// </summary>
-        /// <returns></returns>
-        public virtual string GetHost()
-        {
-            return Guid.NewGuid().ToString("N");
-        }
-
-        /// <summary>
         /// 创建实体中，此方法由 UnitOfWork 调用
         /// </summary>
         void IUnitOfWorkManagedItem.ModelCreating()

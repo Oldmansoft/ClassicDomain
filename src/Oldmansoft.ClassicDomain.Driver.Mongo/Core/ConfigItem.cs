@@ -21,22 +21,15 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// 数据库名称
         /// </summary>
         private string DatabaseName { get; set; }
-
-        /// <summary>
-        /// 主机名
-        /// </summary>
-        private string Host { get; set; }
-
+        
         /// <summary>
         /// 创建配置项
         /// </summary>
         /// <param name="server"></param>
-        /// <param name="host"></param>
         /// <param name="databaseName"></param>
-        public ConfigItem(MongoServer server, string host, string databaseName)
+        public ConfigItem(MongoServer server, string databaseName)
         {
             Server = server;
-            Host = host;
             DatabaseName = databaseName;
         }
 
@@ -47,15 +40,6 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         public MongoDatabase GetDatabase()
         {
             return Server.GetDatabase(DatabaseName);
-        }
-
-        /// <summary>
-        /// 获取主机名
-        /// </summary>
-        /// <returns></returns>
-        public string GetHost()
-        {
-            return Host;
         }
     }
 }

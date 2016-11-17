@@ -51,7 +51,6 @@
     <Compile Include="Configuration\ConnectionString.cs" />
     <Compile Include="Configuration\DataSource.cs" />
     <Compile Include="Configuration\DataSourceSet.cs" />
-    <Compile Include="ConnectionNameMapHost.cs" />
     <Compile Include="Driver\ChangeList.cs" />
     <Compile Include="Driver\GuidGenerator.cs" />
     <Compile Include="Driver\IDbSet.cs" />

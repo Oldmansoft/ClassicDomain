@@ -34,16 +34,6 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
         }
 
         /// <summary>
-        /// 获取 Commit 的主机
-        /// </summary>
-        /// <returns></returns>
-        public virtual string GetHost()
-        {
-            var connectionString = ClassicDomain.Configuration.Config.GetConnectionString(ConnectionName);
-            return new Configuration.ConnectionString(ConnectionName, connectionString, 1433).DataSource.Host;
-        }
-
-        /// <summary>
         /// 提交
         /// </summary>
         /// <returns></returns>

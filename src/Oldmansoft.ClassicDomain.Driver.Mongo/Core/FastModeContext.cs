@@ -44,14 +44,5 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         {
             return new FastModeDbSet<TDomain, TKey>(GetConfig().GetDatabase(), keyExpression);
         }
-        
-        /// <summary>
-        /// 获取 commit 的主机
-        /// </summary>
-        /// <returns></returns>
-        public override string GetHost()
-        {
-            return GetConfig().GetHost();
-        }
     }
 }

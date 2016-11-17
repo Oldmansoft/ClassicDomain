@@ -21,15 +21,6 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
         {
             DbSet = new ConcurrentDictionary<Type, IDbSet>();
         }
-        
-        /// <summary>
-        /// 获取 Commit 的主机
-        /// </summary>
-        /// <returns></returns>
-        public override string GetHost()
-        {
-            return string.Empty;
-        }
 
         /// <summary>
         /// 添加领域上下文

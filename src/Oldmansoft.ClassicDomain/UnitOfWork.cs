@@ -11,13 +11,6 @@ namespace Oldmansoft.ClassicDomain
     /// </summary>
     public class UnitOfWork : IUnitOfWork
     {
-        private static ConnectionNameMapHost HostMapping { get; set; }
-
-        static UnitOfWork()
-        {
-            HostMapping = new ConnectionNameMapHost();
-        }
-        
         /// <summary>
         /// 提交完成事件
         /// </summary>
@@ -31,6 +24,7 @@ namespace Oldmansoft.ClassicDomain
         /// <summary>
         /// 是否并行提交
         /// </summary>
+        [Obsolete("不再支持")]
         public bool IsParallelCommit { get; set; }
 
         /// <summary>
@@ -43,30 +37,9 @@ namespace Oldmansoft.ClassicDomain
         /// </summary>
         public UnitOfWork()
         {
-            IsParallelCommit = true;
             UnitOfWorks = new Dictionary<Type, IUnitOfWorkManagedItem>();
         }
-
-        /// <summary>
-        /// 排序工作单元集
-        /// </summary>
-        /// <param name="source"></param>
-        /// <returns></returns>
-        private Dictionary<string, List<IUnitOfWorkManagedItem>> SortUnitOfWork(IEnumerable<IUnitOfWorkManagedItem> source)
-        {
-            Dictionary<string, List<IUnitOfWorkManagedItem>> result = new Dictionary<string, List<IUnitOfWorkManagedItem>>();
-            foreach (var uow in source)
-            {
-                string host = HostMapping.GetHost(uow);
-                if (!result.ContainsKey(host))
-                {
-                    result.Add(host, new List<IUnitOfWorkManagedItem>());
-                }
-                result[host].Add(uow);
-            }
-            return result;
-        }
-
+        
         /// <summary>
         /// 获取被管理的子工作单元
         /// </summary>
@@ -114,8 +87,6 @@ namespace Oldmansoft.ClassicDomain
             return UnitOfWorks[type] as TUnitOfWork;
         }
 
-        private object Locker_CommitCount = new object();
-
         /// <summary>
         /// 将所有子工作单元提交
         /// </summary>
@@ -123,39 +94,13 @@ namespace Oldmansoft.ClassicDomain
         public virtual int Commit()
         {
             int result = 0;
+            if (UnitOfWorks.Count == 0) return 0;
             try
             {
-                if (UnitOfWorks.Count == 0) return 0;
-                if (IsParallelCommit && UnitOfWorks.Count > 1)
+                foreach (var o in UnitOfWorks.Values)
                 {
-                    Parallel.ForEach(SortUnitOfWork(UnitOfWorks.Values), o =>
-                    {
-                        int count = 0;
-                        foreach (var item in o.Value)
-                        {
-                            count += item.Commit();
-                        }
-                        lock (Locker_CommitCount)
-                        {
-                            result += count;
-                        }
-                    });
+                    result += o.Commit();
                 }
-                else
-                {
-                    foreach (var o in UnitOfWorks.Values)
-                    {
-                        result += o.Commit();
-                    }
-                }
-            }
-            catch (AggregateException ex)
-            {
-                if (OnCommitException != null)
-                {
-                    OnCommitException();
-                }
-                throw ex.InnerException;
             }
             catch
             {

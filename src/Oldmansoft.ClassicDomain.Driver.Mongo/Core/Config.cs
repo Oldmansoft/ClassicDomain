@@ -22,14 +22,38 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         private ConfigItem InitItem(string name)
         {
             var connectionString = Configuration.Config.GetConnectionString(name);
-            var url = new MongoUrl(connectionString);
-            var setting = MongoServerSettings.FromUrl(url);
-            var uri = new Uri(connectionString);
-            if (uri.GetDatabase() == string.Empty)
+            string database;
+            MongoServerSettings setting;
+            if (connectionString.IndexOf("mongodb://") > -1)
+            {
+                setting = MongoServerSettings.FromUrl(new MongoUrl(connectionString));
+                database = new Uri(connectionString).GetDatabase();
+            }
+            else
+            {
+                var connectionContext = new Configuration.ConnectionString(name, connectionString, 27017);
+                var urlBuilder = new MongoUrlBuilder();
+                var servers = new List<MongoServerAddress>();
+                foreach (var dataSource in connectionContext.DataSource)
+                {
+                    servers.Add(new MongoServerAddress(dataSource.Host, dataSource.Port));
+                }
+                urlBuilder.Servers = servers;
+                if (!string.IsNullOrEmpty(connectionContext.UserID))
+                {
+                    urlBuilder.Username = connectionContext.UserID;
+                    urlBuilder.Password = connectionContext.Password;
+                }
+
+                setting = MongoServerSettings.FromUrl(urlBuilder.ToMongoUrl());
+                setting.WriteConcern = WriteConcern.Acknowledged;
+                database = connectionContext.InitialCatalog;
+            }
+            if (string.IsNullOrEmpty(database))
             {
                 throw new ConfigItemException(string.Format("config 文件的配置项 {0} ConnectionString 需要指定数据库名称", name));
             }
-            return new ConfigItem(CreateMongoServer(setting), setting.GetHost(), uri.GetDatabase());
+            return new ConfigItem(CreateMongoServer(setting), database);
         }
 
         /// <summary>

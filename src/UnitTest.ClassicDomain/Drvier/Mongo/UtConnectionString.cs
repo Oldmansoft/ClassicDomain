@@ -13,14 +13,5 @@ namespace UnitTest.ClassicDomain.Drvier.Mongo
             var source = "mongodb://localhost/database";
             Assert.AreEqual("database", new Uri(source).GetDatabase());
         }
-
-        [TestMethod]
-        public void TestHost()
-        {
-            var source = "mongodb://localhost/?replicaSet=test";
-            var url = new MongoDB.Driver.MongoUrl(source);
-            var setting = MongoDB.Driver.MongoServerSettings.FromUrl(url);
-            Assert.AreEqual("localhost", setting.GetHost());
-        }
     }
 }

@@ -47,14 +47,5 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
             database.SetIdentityMap(result.IdentityMap);
             return result;
         }
-
-        /// <summary>
-        /// 获取 commit 的主机
-        /// </summary>
-        /// <returns></returns>
-        public override string GetHost()
-        {
-            return GetConfig().GetHost();
-        }
     }
 }
