@@ -39,12 +39,12 @@ namespace Sample.ConsoleApplication.Applications
             factory.GetUnitOfWork().Commit();
         }
 
-        public IPageResult<Data.PersonData> Page(int index, int size)
+        public Data.PersonData[] Page(int index, int size, out int totalCount)
         {
             var factory = new Repositories.RepositoryFactory();
             var repository = factory.CreatePerson();
-            var result = repository.Page(index, size, sort => sort.OrderByDescending(o => o.Name));
-            return result.CopyTo(new PageResult<Data.PersonData>());
+            var result = repository.Paging().OrderBy(o => o.Name).Size(size).GetResult(out totalCount, index);
+            return result.CopyTo(new Data.PersonData[result.Length]);
         }
     }
 }

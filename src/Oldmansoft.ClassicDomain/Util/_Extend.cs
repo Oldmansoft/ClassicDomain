@@ -235,5 +235,21 @@ namespace Oldmansoft.ClassicDomain.Util
         {
             return new Paging.PagingCondition<TSource>(source);
         }
+
+        /// <summary>
+        /// 获取分页结果
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="number"></param>
+        /// <returns></returns>
+        public static IPageResult<TSource> GetPageResult<TSource>(this IPagingResult<TSource> source, int number)
+        {
+            int totalCount;
+            var result = new PageResult<TSource>();
+            result.List = new List<TSource>(source.GetResult(out totalCount, number));
+            result.TotalCount = totalCount;
+            return result;
+        }
     }
 }
