@@ -158,6 +158,7 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <param name="sort">排序</param>
         /// <param name="condition">条件</param>
         /// <returns></returns>
+        [Obsolete("请使用 IPagingCondition<TSource> Paging<TSource>(this IQuery<TSource> source)")]
         public static IPageResult<TDomain> Page<TDomain>(this IQuery<TDomain> source,
             int index,
             int size,
@@ -209,6 +210,30 @@ namespace Oldmansoft.ClassicDomain.Util
         public static object FromString(this Type source, string context)
         {
             return TypeParse.Get(source)(context);
+        }
+
+        /// <summary>
+        /// 分页
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static IPagingCondition<TSource> Paging<TSource>(this IQuery<TSource> source)
+            where TSource : class
+        {
+            return new Paging.PagingCondition<TSource>(source.Query());
+        }
+
+        /// <summary>
+        /// 分页
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static IPagingCondition<TSource> Paging<TSource>(this IQueryable<TSource> source)
+            where TSource : class
+        {
+            return new Paging.PagingCondition<TSource>(source);
         }
     }
 }

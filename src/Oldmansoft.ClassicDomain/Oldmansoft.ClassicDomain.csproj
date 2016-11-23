@@ -64,6 +64,8 @@
     <Compile Include="IGet.cs" />
     <Compile Include="Driver\InProcess\StoreManager.cs" />
     <Compile Include="IPageResult.cs" />
+    <Compile Include="IPagingResult.cs" />
+    <Compile Include="IPagingOrdered.cs" />
     <Compile Include="IQuery.cs" />
     <Compile Include="IRemove.cs" />
     <Compile Include="IReplace.cs" />
@@ -82,7 +84,11 @@
     <Compile Include="UnitOfWork.cs" />
     <Compile Include="Util\DataMapper.cs" />
     <Compile Include="Util\ExpressionHelper.cs" />
+    <Compile Include="IPagingCondition.cs" />
     <Compile Include="Util\OnceSet.cs" />
+    <Compile Include="Util\Paging\PagingCondition.cs" />
+    <Compile Include="Util\Paging\PagingResult.cs" />
+    <Compile Include="Util\Paging\PagingOrdered.cs" />
     <Compile Include="Util\TypeParse.cs" />
     <Compile Include="Util\_Extend.cs" />
     <Compile Include="Util\TypePublicInstanceStore.cs" />
