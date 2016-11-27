@@ -10,7 +10,7 @@ namespace UnitTest.ClassicDomain.Drvier.EntityFramework
     {
         public BookConfiguration()
         {
-            Property(m => m.Id).HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
+            Property(m => m.Id).HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
             Property(m => m.Name).IsRequired().HasMaxLength(50).IsUnicode(false);
             HasMany(m => m.Authors).WithRequired().WillCascadeOnDelete();
         }

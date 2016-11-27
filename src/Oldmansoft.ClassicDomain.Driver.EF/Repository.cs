@@ -54,9 +54,10 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
         public void Add(TDomain domain)
         {
             if (domain == null) return;
+            PrimaryKeyManager.Instance.TrySetDomainGuidEmptyKey(domain, Context);
             Context.Set<TDomain>().Add(domain);
         }
-
+        
         /// <summary>
         /// 替换
         /// </summary>
