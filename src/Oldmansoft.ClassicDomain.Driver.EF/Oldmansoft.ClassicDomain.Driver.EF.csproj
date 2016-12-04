@@ -57,6 +57,7 @@
     <Compile Include="PrimaryKeyManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository.cs" />
+    <Compile Include="RepositoryDefinedSuperClass.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

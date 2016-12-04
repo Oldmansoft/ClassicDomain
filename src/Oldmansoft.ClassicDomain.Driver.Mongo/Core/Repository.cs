@@ -9,9 +9,10 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
     /// <summary>
     /// 仓储库
     /// </summary>
-    /// <typeparam name="TDomain"></typeparam>
-    /// <typeparam name="TKey"></typeparam>
-    public abstract class Repository<TDomain, TKey> : IRepository<TDomain, TKey> where TDomain : class
+    /// <typeparam name="TDomain">领域类型</typeparam>
+    /// <typeparam name="TKey">主键类型</typeparam>
+    public abstract class Repository<TDomain, TKey> : IRepository<TDomain, TKey>
+        where TDomain : class
     {
         /// <summary>
         /// 上下文

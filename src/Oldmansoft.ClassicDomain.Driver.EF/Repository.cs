@@ -9,10 +9,12 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
     /// <summary>
     /// Entity Framework 仓储
     /// </summary>
-    /// <typeparam name="TDomain">领域</typeparam>
-    /// <typeparam name="TKey">主键</typeparam>
-    /// <typeparam name="TContext">上下文</typeparam>
-    public class Repository<TDomain, TKey, TContext> : IRepository<TDomain, TKey> where TDomain : class where TContext : Context, new()
+    /// <typeparam name="TDomain">领域类型</typeparam>
+    /// <typeparam name="TKey">主键类型</typeparam>
+    /// <typeparam name="TContext">领域上下文</typeparam>
+    public class Repository<TDomain, TKey, TContext> : IRepository<TDomain, TKey>
+        where TDomain : class
+        where TContext : Context, new()
     {
         /// <summary>
         /// 实体上下文
