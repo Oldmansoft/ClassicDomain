@@ -44,7 +44,7 @@ namespace Sample.ConsoleApplication.Applications
             var factory = new Repositories.RepositoryFactory();
             var repository = factory.CreatePerson();
             var result = repository.Paging().OrderBy(o => o.Name).Size(size).GetResult(out totalCount, index);
-            return result.CopyTo(new Data.PersonData[result.Length]);
+            return result.CopyTo(new Data.PersonData[result.Count]);
         }
     }
 }

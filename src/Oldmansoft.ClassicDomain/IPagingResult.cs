@@ -17,7 +17,7 @@ namespace Oldmansoft.ClassicDomain
         /// </summary>
         /// <param name="number">页码（从 1 开始）</param>
         /// <returns></returns>
-        TSource[] GetResult(int number);
+        IList<TSource> GetResult(int number);
 
         /// <summary>
         /// 获取结果
@@ -25,6 +25,6 @@ namespace Oldmansoft.ClassicDomain
         /// <param name="totalCount">总数</param>
         /// <param name="number">页码（从 1 开始）</param>
         /// <returns></returns>
-        TSource[] GetResult(out int totalCount, int number);
+        IList<TSource> GetResult(out int totalCount, int number);
     }
 }

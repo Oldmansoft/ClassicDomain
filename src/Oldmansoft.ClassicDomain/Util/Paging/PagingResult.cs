@@ -21,14 +21,14 @@ namespace Oldmansoft.ClassicDomain.Util.Paging
             Size = size;
         }
 
-        public TSource[] GetResult(int number)
+        public IList<TSource> GetResult(int number)
         {
             if (number < 1) number = 1;
 
-            return OrderedQuery.Skip(Size * (number - 1)).Take(Size).ToArray();
+            return OrderedQuery.Skip(Size * (number - 1)).Take(Size).ToList();
         }
 
-        public TSource[] GetResult(out int totalCount, int number)
+        public IList<TSource> GetResult(out int totalCount, int number)
         {
             totalCount = Query.Count();
             if (totalCount == 0) return new TSource[0];
