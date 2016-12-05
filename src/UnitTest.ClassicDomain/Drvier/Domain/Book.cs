@@ -14,6 +14,8 @@ namespace UnitTest.ClassicDomain.Drvier.Domain
 
         public bool Sex { get; set; }
 
+        public byte[] Binary { get; set; }
+
         public List<Author> Authors { get; set; }
 
         public List<string> Tags { get; set; }

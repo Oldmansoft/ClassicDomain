@@ -245,5 +245,25 @@ namespace UnitTest.ClassicDomain.Drvier
             factory.GetUnitOfWork().Commit();
             Assert.AreEqual(false, domain.Sex);
         }
+
+        [TestMethod]
+        public void TestReplaceBinaryByMongo()
+        {
+            var factory = new Mongo.Factory();
+            var repository = factory.CreateBook();
+            var domain = new Domain.Book();
+            domain.Name = "hello";
+            domain.Binary = new byte[] { 1 };
+            repository.Add(domain);
+            factory.GetUnitOfWork().Commit();
+            domain = repository.Get(domain.Id);
+            domain.Binary[0] += domain.Binary[0];
+            repository.Replace(domain);
+            factory.GetUnitOfWork().Commit();
+            domain = repository.Get(domain.Id);
+            repository.Remove(domain);
+            factory.GetUnitOfWork().Commit();
+            Assert.AreEqual(2, domain.Binary[0]);
+        }
     }
 }

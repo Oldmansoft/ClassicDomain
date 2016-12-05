@@ -104,6 +104,15 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
             var sourceList = sourceValue as System.Collections.IList;
             var targetList = targetValue as System.Collections.IList;
 
+            if (IsByteArray(propertyType, itemType))
+            {
+                if (IsByteArrayContentDifferent(sourceList, targetList))
+                {
+                    result.Add(new UpdateBuilder().SetObjectWrapped(name, targetValue));
+                }
+                return;
+            }
+
             for (var i = 0; i < targetList.Count; i++)
             {
                 if (i >= sourceList.Count)
@@ -129,6 +138,24 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
                 result.AddOther(new UpdateBuilder().SetObjectWrapped(GetListKey(name, i), RemoveObject.Instance));
             }
             if (isRemoveObject) result.AddOther(new UpdateBuilder().PullObjectWrapped(name, RemoveObject.Instance));
+        }
+
+        private static bool IsByteArray(Type propertyType, Type itemType)
+        {
+            return propertyType.IsArray && itemType == typeof(byte);
+        }
+
+        private static bool IsByteArrayContentDifferent(System.Collections.IList sourceList, System.Collections.IList targetList)
+        {
+            if (targetList.Count != sourceList.Count) return true;
+            for (var i = 0; i < targetList.Count; i++)
+            {
+                if ((byte)sourceList[i] != (byte)targetList[i])
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private static BsonValue GetBsonValue(Type type, object value, bool isNormalClass = false)
