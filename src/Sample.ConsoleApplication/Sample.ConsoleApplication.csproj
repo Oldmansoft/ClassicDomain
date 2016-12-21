@@ -45,9 +45,11 @@
     <Compile Include="Applications\Persons.cs" />
     <Compile Include="Data\PersonData.cs" />
     <Compile Include="Domain\Person.cs" />
+    <Compile Include="Infrastructure\IPersonRepository.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\Mapping.cs" />
+    <Compile Include="Repositories\PersonRepository.cs" />
     <Compile Include="Repositories\RepositoryFactory.cs" />
   </ItemGroup>
   <ItemGroup>

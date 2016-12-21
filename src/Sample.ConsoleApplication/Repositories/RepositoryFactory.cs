@@ -21,9 +21,9 @@ namespace Sample.ConsoleApplication.Repositories
             return Uow;
         }
 
-        public IRepository<Domain.Person, Guid> CreatePerson()
+        public Infrastructure.IPersonRepository CreatePerson()
         {
-            return new Oldmansoft.ClassicDomain.Driver.Mongo.Repository<Domain.Person, Guid, Mapping>(Uow);
+            return new PersonRepository(Uow);
         }
     }
 }

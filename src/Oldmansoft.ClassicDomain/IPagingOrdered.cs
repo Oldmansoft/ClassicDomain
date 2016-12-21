@@ -11,15 +11,8 @@ namespace Oldmansoft.ClassicDomain
     /// 分页排序
     /// </summary>
     /// <typeparam name="TSource"></typeparam>
-    public interface IPagingOrdered<TSource>
+    public interface IPagingOrdered<TSource> : IPagingData<TSource>
     {
-        /// <summary>
-        /// 设置页大小
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        IPagingResult<TSource> Size(int value);
-
         /// <summary>
         /// 再正序
         /// </summary>

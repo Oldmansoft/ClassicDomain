@@ -66,6 +66,7 @@
     <Compile Include="IPageResult.cs" />
     <Compile Include="IPagingResult.cs" />
     <Compile Include="IPagingOrdered.cs" />
+    <Compile Include="IPagingData.cs" />
     <Compile Include="IQuery.cs" />
     <Compile Include="IRemove.cs" />
     <Compile Include="IReplace.cs" />
