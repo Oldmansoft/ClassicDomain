@@ -81,5 +81,20 @@ namespace UnitTest.ClassicDomain.Util
             Assert.AreEqual(source.Count, target.Count);
             Assert.AreEqual("world", target["hello"].Name);
         }
+
+        [TestMethod]
+        public void TestCopyItemDictionary()
+        {
+            var source = new ItemDictionary();
+            source.Item = new Dictionary<string, string>();
+            source.Item.Add("hello", "world");
+            var target = source.CopyTo(new ItemDictionary());
+            Assert.AreEqual(source.Item.Count, target.Item.Count);
+        }
+
+        class ItemDictionary
+        {
+            public Dictionary<string, string> Item { get; set; }
+        }
     }
 }

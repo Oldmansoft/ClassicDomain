@@ -294,9 +294,9 @@ namespace Oldmansoft.ClassicDomain.Util
 
         private bool ListClassCopy(PropertyInfo sourcePropertyInfo, PropertyInfo targetPropertyInfo, object sourceValue, object target)
         {
-            if (!sourcePropertyInfo.PropertyType.GetInterfaces().Contains(typeof(System.Collections.IEnumerable))) return false;
+            if (!sourcePropertyInfo.PropertyType.GetInterfaces().Contains(typeof(IEnumerable))) return false;
             if (!sourcePropertyInfo.PropertyType.IsGenericType) return false;
-            if (!targetPropertyInfo.PropertyType.GetInterfaces().Contains(typeof(System.Collections.IEnumerable))) return false;
+            if (!targetPropertyInfo.PropertyType.GetInterfaces().Contains(typeof(IEnumerable))) return false;
             if (!targetPropertyInfo.PropertyType.IsGenericType) return false;
 
             var sourceItemType = sourcePropertyInfo.PropertyType.GetGenericArguments()[0];
@@ -304,7 +304,7 @@ namespace Oldmansoft.ClassicDomain.Util
             var targetType = typeof(List<>).MakeGenericType(targetItemType);
 
             if (targetType != targetPropertyInfo.PropertyType && !targetType.GetInterfaces().Contains(targetPropertyInfo.PropertyType)) return false;
-            var source = (sourceValue as System.Collections.IEnumerable);
+            var source = (sourceValue as IEnumerable);
             if (source == null) return true;
 
             var isNormalClass = sourceItemType.IsNormalClass() && targetItemType.IsNormalClass();
@@ -319,9 +319,9 @@ namespace Oldmansoft.ClassicDomain.Util
 
         private bool DictionaryClassCopy(PropertyInfo sourcePropertyInfo, PropertyInfo targetPropertyInfo, object sourceValue, object target)
         {
-            if (!sourcePropertyInfo.PropertyType.GetInterfaces().Contains(typeof(System.Collections.IDictionary))) return false;
+            if (!sourcePropertyInfo.PropertyType.GetInterfaces().Contains(typeof(IDictionary))) return false;
             if (!sourcePropertyInfo.PropertyType.IsGenericType) return false;
-            if (!targetPropertyInfo.PropertyType.GetInterfaces().Contains(typeof(System.Collections.IDictionary))) return false;
+            if (!targetPropertyInfo.PropertyType.GetInterfaces().Contains(typeof(IDictionary))) return false;
             if (!targetPropertyInfo.PropertyType.IsGenericType) return false;
 
             var sourceKeyType = sourcePropertyInfo.PropertyType.GetGenericArguments()[0];
@@ -333,11 +333,11 @@ namespace Oldmansoft.ClassicDomain.Util
 
             var targetType = typeof(Dictionary<,>).MakeGenericType(targetKeyType, targetValueType);
 
-            if (!targetType.GetInterfaces().Contains(targetPropertyInfo.PropertyType)) return false;
+            if (targetType != targetPropertyInfo.PropertyType && !targetType.GetInterfaces().Contains(targetPropertyInfo.PropertyType)) return false;
 
             var isNormalClass = sourceValueType.IsNormalClass() && targetValueType.IsNormalClass();
-            var targetValue = Activator.CreateInstance(targetType) as System.Collections.IDictionary;
-            var source = sourceValue as System.Collections.IDictionary;
+            var targetValue = Activator.CreateInstance(targetType) as IDictionary;
+            var source = sourceValue as IDictionary;
             if (source == null) return true;
             foreach (var key in source.Keys)
             {
