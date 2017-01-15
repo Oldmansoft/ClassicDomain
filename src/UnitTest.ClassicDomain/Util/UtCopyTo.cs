@@ -85,16 +85,80 @@ namespace UnitTest.ClassicDomain.Util
         [TestMethod]
         public void TestCopyItemDictionary()
         {
-            var source = new ItemDictionary();
-            source.Item = new Dictionary<string, string>();
-            source.Item.Add("hello", "world");
-            var target = source.CopyTo(new ItemDictionary());
-            Assert.AreEqual(source.Item.Count, target.Item.Count);
+            var source = new ItemObject();
+            source.Dic = new Dictionary<string, string>();
+            source.Dic.Add("hello", "world");
+            var target = source.CopyTo(new ItemObject());
+            Assert.AreEqual(source.Dic.Count, target.Dic.Count);
         }
 
-        class ItemDictionary
+        class ItemObject
         {
-            public Dictionary<string, string> Item { get; set; }
+            public Dictionary<string, string> Dic { get; set; }
+
+            public string[] Array { get; set; }
+
+            public List<string> List { get; set; }
+
+            public CopySourceModel Model { get; set; }
+
+            public E? Enum { get; set; }
+
+            public enum E
+            {
+                A,
+                B
+            }
+        }
+
+        [TestMethod]
+        public void TestCopyDicSourceNull()
+        {
+            var source = new ItemObject();
+            var target = new ItemObject();
+            target.Dic = new Dictionary<string, string>();
+            source.CopyTo(target);
+            Assert.IsNull(target.Dic);
+        }
+
+        [TestMethod]
+        public void TestCopyArraySourceNull()
+        {
+            var source = new ItemObject();
+            var target = new ItemObject();
+            target.Array = new string[0];
+            source.CopyTo(target);
+            Assert.IsNull(target.Array);
+        }
+
+        [TestMethod]
+        public void TestCopyListSourceNull()
+        {
+            var source = new ItemObject();
+            var target = new ItemObject();
+            target.List = new List<string>();
+            source.CopyTo(target);
+            Assert.IsNull(target.List);
+        }
+
+        [TestMethod]
+        public void TestCopyModelSourceNull()
+        {
+            var source = new ItemObject();
+            var target = new ItemObject();
+            target.Model = new CopySourceModel();
+            source.CopyTo(target);
+            Assert.IsNull(target.Model);
+        }
+
+        [TestMethod]
+        public void TestCopyEnumSourceNull()
+        {
+            var source = new ItemObject();
+            var target = new ItemObject();
+            target.Enum = ItemObject.E.B;
+            source.CopyTo(target);
+            Assert.IsNull(target.Enum);
         }
     }
 }

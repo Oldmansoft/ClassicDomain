@@ -25,12 +25,18 @@ namespace Oldmansoft.ClassicDomain.Util
         public bool IsDeepCopy { get; set; }
 
         /// <summary>
+        /// 是否忽略空值
+        /// </summary>
+        public bool IsIgnoreNull { get; set; }
+
+        /// <summary>
         /// 创建数据映射
         /// </summary>
         public DataMapper(bool isDeepCopy = true)
         {
             IgnoreProperty = new HashSet<string>();
             IsDeepCopy = isDeepCopy;
+            IsIgnoreNull = false;
         }
 
         /// <summary>
@@ -193,7 +199,7 @@ namespace Oldmansoft.ClassicDomain.Util
                 {
                     if (!IsDeepCopy) continue;
                     object sourceValue = sourcePropertyInfo.GetValue(source);
-                    if (sourceValue == null) continue;
+                    if (sourceValue == null && IsIgnoreNull) continue;
                     if (ArrayClassCopy(sourcePropertyInfo, targetPropertyInfo, sourceValue, target)) continue;
                 }
 
@@ -201,7 +207,7 @@ namespace Oldmansoft.ClassicDomain.Util
                 {
                     if (!IsDeepCopy) continue;
                     object sourceValue = sourcePropertyInfo.GetValue(source);
-                    if (sourceValue == null) continue;
+                    if (sourceValue == null && IsIgnoreNull) continue;
                     if (ListClassCopy(sourcePropertyInfo, targetPropertyInfo, sourceValue, target)) continue;
                     if (DictionaryClassCopy(sourcePropertyInfo, targetPropertyInfo, sourceValue, target)) continue;
                 }
@@ -210,7 +216,7 @@ namespace Oldmansoft.ClassicDomain.Util
                 {
                     if (!IsDeepCopy) continue;
                     object sourceValue = sourcePropertyInfo.GetValue(source);
-                    if (sourceValue == null) continue;
+                    if (sourceValue == null && IsIgnoreNull) continue;
                     NormalClassCopy(target, refPropertyName, sourcePropertyInfo, targetPropertyInfo, sourceValue);
                     continue;
                 }
@@ -224,7 +230,12 @@ namespace Oldmansoft.ClassicDomain.Util
                 if (sourcePropertyInfo.PropertyType.IsNullableEnum() && targetPropertyInfo.PropertyType.IsNullableEnum())
                 {
                     var sourceValue = sourcePropertyInfo.GetValue(source);
-                    if (sourceValue == null) continue;
+                    if (sourceValue == null && IsIgnoreNull) continue;
+                    if (sourceValue == null)
+                    {
+                        targetPropertyInfo.SetValue(target, null);
+                        continue;
+                    }
                     var targetValue = Enum.ToObject(targetPropertyInfo.PropertyType.GenericTypeArguments[0], (int)sourceValue);
                     targetPropertyInfo.SetValue(target, Activator.CreateInstance(targetPropertyInfo.PropertyType, targetValue));
                     continue;
@@ -278,7 +289,11 @@ namespace Oldmansoft.ClassicDomain.Util
 
             var isNormalClass = sourceItemType.IsNormalClass() && targetItemType.IsNormalClass();
             var source = sourceValue as Array;
-            if (source == null) return true;
+            if (source == null)
+            {
+                targetPropertyInfo.SetValue(target, null);
+                return true;
+            }
 
             var targetValue = targetPropertyInfo.PropertyType.InvokeMember("Set", BindingFlags.CreateInstance, null, null, new object[] { source.Length }) as Array;
             var method = targetPropertyInfo.PropertyType.GetMethod("SetValue", new Type[] { typeof(object), typeof(int) });
@@ -305,10 +320,14 @@ namespace Oldmansoft.ClassicDomain.Util
 
             if (targetType != targetPropertyInfo.PropertyType && !targetType.GetInterfaces().Contains(targetPropertyInfo.PropertyType)) return false;
             var source = (sourceValue as IEnumerable);
-            if (source == null) return true;
+            if (source == null)
+            {
+                targetPropertyInfo.SetValue(target, null);
+                return true;
+            }
 
             var isNormalClass = sourceItemType.IsNormalClass() && targetItemType.IsNormalClass();
-            var targetValue = Activator.CreateInstance(targetType) as System.Collections.IList;
+            var targetValue = Activator.CreateInstance(targetType) as IList;
             foreach (var item in source)
             {
                 targetValue.Add(ValueCopy(sourceItemType, targetItemType, isNormalClass, item));
@@ -338,7 +357,11 @@ namespace Oldmansoft.ClassicDomain.Util
             var isNormalClass = sourceValueType.IsNormalClass() && targetValueType.IsNormalClass();
             var targetValue = Activator.CreateInstance(targetType) as IDictionary;
             var source = sourceValue as IDictionary;
-            if (source == null) return true;
+            if (source == null)
+            {
+                targetPropertyInfo.SetValue(target, null);
+                return true;
+            }
             foreach (var key in source.Keys)
             {
                 targetValue.Add(key, ValueCopy(sourceValueType, targetValueType, isNormalClass, source[key]));
@@ -349,7 +372,11 @@ namespace Oldmansoft.ClassicDomain.Util
 
         private void NormalClassCopy(object target, string refPropertyName, PropertyInfo sourcePropertyInfo, PropertyInfo targetPropertyInfo, object sourceValue)
         {
-            if (sourceValue == null) return;
+            if (sourceValue == null)
+            {
+                targetPropertyInfo.SetValue(target, null);
+                return;
+            }
             object targetValue = targetPropertyInfo.GetValue(target);
             if (targetValue == null && !targetPropertyInfo.PropertyType.IsAbstract)
             {
