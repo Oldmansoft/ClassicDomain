@@ -10,6 +10,7 @@ namespace Oldmansoft.ClassicDomain
     /// 分页结果
     /// </summary>
     /// <typeparam name="TData"></typeparam>
+    [Obsolete]
     public class PageResult<TData> : IPageResult<TData>
     {
         /// <summary>

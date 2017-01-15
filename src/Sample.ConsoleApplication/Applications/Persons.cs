@@ -24,7 +24,7 @@ namespace Sample.ConsoleApplication.Applications
         {
             var factory = new Repositories.RepositoryFactory();
             var repository = factory.CreatePerson();
-            var domain = repository.Query().FirstOrDefault(o => o.Id == data.Id);
+            var domain = repository.Get(data.Id);
             data.CopyTo(domain);
             repository.Replace(domain);
             factory.GetUnitOfWork().Commit();
@@ -34,7 +34,7 @@ namespace Sample.ConsoleApplication.Applications
         {
             var factory = new Repositories.RepositoryFactory();
             var repository = factory.CreatePerson();
-            var domain = repository.Query().FirstOrDefault(o => o.Id == id);
+            var domain = repository.Get(id);
             repository.Remove(domain);
             factory.GetUnitOfWork().Commit();
         }

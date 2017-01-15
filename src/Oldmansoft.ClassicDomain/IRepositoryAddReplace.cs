@@ -13,7 +13,6 @@ namespace Oldmansoft.ClassicDomain
     /// <typeparam name="TKey"></typeparam>
     public interface IRepositoryAddReplace<TDomain, TKey> :
         IGet<TDomain, TKey>,
-        IQuery<TDomain>,
         IAdd<TDomain>,
         IReplace<TDomain>,
         IRepositoryAdd<TDomain, TKey>

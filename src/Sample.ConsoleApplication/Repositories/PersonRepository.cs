@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Oldmansoft.ClassicDomain;
 using Oldmansoft.ClassicDomain.Util;
-using Sample.ConsoleApplication.Domain;
 
 namespace Sample.ConsoleApplication.Repositories
 {
@@ -16,9 +15,14 @@ namespace Sample.ConsoleApplication.Repositories
         {
         }
 
-        public IPagingData<Person> PageByName()
+        public IPagingData<Domain.Person> PageByName()
         {
             return Query().Paging().OrderBy(o => o.Name);
+        }
+
+        public Domain.Person GetByName(string name)
+        {
+            return Query().FirstOrDefault(o => o.Name == name);
         }
     }
 }

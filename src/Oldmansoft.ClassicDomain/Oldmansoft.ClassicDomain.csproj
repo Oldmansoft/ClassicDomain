@@ -67,13 +67,10 @@
     <Compile Include="IPagingResult.cs" />
     <Compile Include="IPagingOrdered.cs" />
     <Compile Include="IPagingData.cs" />
-    <Compile Include="IQuery.cs" />
+    <Compile Include="IQuerySupport.cs" />
     <Compile Include="IRemove.cs" />
     <Compile Include="IReplace.cs" />
     <Compile Include="IRepository.cs" />
-    <Compile Include="IRepositoryGet.cs" />
-    <Compile Include="IRepositoryGetAdd.cs" />
-    <Compile Include="IRepositoryGetAddReplace.cs" />
     <Compile Include="IRepositoryAdd.cs" />
     <Compile Include="IRepositoryAddReplace.cs" />
     <Compile Include="IUnitOfWork.cs" />

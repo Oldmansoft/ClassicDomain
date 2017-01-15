@@ -13,7 +13,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
     /// <typeparam name="TDomain">领域类型</typeparam>
     /// <typeparam name="TSuperDomain">领域的父类</typeparam>
     /// <typeparam name="TKey">主键类型</typeparam>
-    public abstract class RepositoryDefinedSuperClass<TDomain, TSuperDomain, TKey> : Repository<TDomain, TKey>, IRepositoryGet<TSuperDomain, TKey>
+    public abstract class RepositoryDefinedSuperClass<TDomain, TSuperDomain, TKey> : Repository<TDomain, TKey>, IRepository<TSuperDomain, TKey>
         where TDomain : class, TSuperDomain
         where TSuperDomain : class
     {

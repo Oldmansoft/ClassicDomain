@@ -9,5 +9,7 @@ namespace Sample.ConsoleApplication.Infrastructure
     public interface IPersonRepository : Oldmansoft.ClassicDomain.IRepository<Domain.Person, Guid>
     {
         Oldmansoft.ClassicDomain.IPagingData<Domain.Person> PageByName();
+
+        Domain.Person GetByName(string name);
     }
 }

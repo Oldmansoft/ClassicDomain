@@ -11,8 +11,8 @@ namespace UnitTest.ClassicDomain.Drvier
     {
         IUnitOfWork GetUnitOfWork();
 
-        IRepositoryGet<Domain.Book, Guid> CreateBook();
+        IRepository<Domain.Book, Guid> CreateBook();
 
-        IRepositoryGet<Domain.Book, Guid> CreateBook(string connectionName);
+        IRepository<Domain.Book, Guid> CreateBook(string connectionName);
     }
 }

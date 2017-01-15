@@ -147,44 +147,6 @@ namespace Oldmansoft.ClassicDomain.Util
             }
             throw new NotSupportedException(string.Format("不支持获取 {0} 此类型的子项类型。", source.FullName));
         }
-
-        /// <summary>
-        /// 分页
-        /// </summary>
-        /// <typeparam name="TDomain">领域</typeparam>
-        /// <param name="source">源</param>
-        /// <param name="index">页码</param>
-        /// <param name="size">页大小</param>
-        /// <param name="sort">排序</param>
-        /// <param name="condition">条件</param>
-        /// <returns></returns>
-        [Obsolete("请使用 IPagingCondition<TSource> Paging<TSource>(this IQuery<TSource> source)")]
-        public static IPageResult<TDomain> Page<TDomain>(this IQuery<TDomain> source,
-            int index,
-            int size,
-            Func<IQueryable<TDomain>, IQueryable<TDomain>> sort,
-            params System.Linq.Expressions.Expression<Func<TDomain, bool>>[] condition
-        ) where TDomain : class
-        {
-            if (source == null) throw new ArgumentNullException("source");
-            if (sort == null) throw new ArgumentNullException("sort");
-
-            var query = source.Query();
-            if (condition != null)
-            {
-                for (int i = 0; i < condition.Length; i++)
-                {
-                    if (condition[i] == null) continue;
-                    query = query.Where(condition[i]);
-                }
-            }
-
-            var result = new PageResult<TDomain>();
-            result.TotalCount = query.Count();
-            query = sort(query);
-            result.List = query.Skip(size * (index - 1)).Take(size).ToList();
-            return result;
-        }
         
         /// <summary>
         /// 复制到
@@ -211,19 +173,7 @@ namespace Oldmansoft.ClassicDomain.Util
         {
             return TypeParse.Get(source)(context);
         }
-
-        /// <summary>
-        /// 分页
-        /// </summary>
-        /// <typeparam name="TSource"></typeparam>
-        /// <param name="source"></param>
-        /// <returns></returns>
-        public static IPagingCondition<TSource> Paging<TSource>(this IQuery<TSource> source)
-            where TSource : class
-        {
-            return new Paging.PagingCondition<TSource>(source.Query());
-        }
-
+        
         /// <summary>
         /// 分页
         /// </summary>
@@ -243,6 +193,7 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <param name="source"></param>
         /// <param name="number"></param>
         /// <returns></returns>
+        [Obsolete]
         public static IPageResult<TSource> GetPageResult<TSource>(this IPagingResult<TSource> source, int number)
         {
             int totalCount;

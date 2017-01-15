@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace Oldmansoft.ClassicDomain
 {
     /// <summary>
-    /// 查询
+    /// 查询支持
     /// </summary>
-    public interface IQuery<TDomain> where TDomain : class
+    public interface IQuerySupport<TDomain> where TDomain : class
     {
         /// <summary>
         /// 查询

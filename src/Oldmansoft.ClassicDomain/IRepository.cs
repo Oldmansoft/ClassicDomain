@@ -16,12 +16,8 @@ namespace Oldmansoft.ClassicDomain
         IReplace<TDomain>,
         IRemove<TDomain>,
         IGet<TDomain, TKey>,
-        IQuery<TDomain>,
         IRepositoryAdd<TDomain, TKey>,
-        IRepositoryAddReplace<TDomain, TKey>,
-        IRepositoryGet<TDomain, TKey>,
-        IRepositoryGetAdd<TDomain, TKey>,
-        IRepositoryGetAddReplace<TDomain, TKey>
+        IRepositoryAddReplace<TDomain, TKey>
         where TDomain : class
     {
     }

@@ -22,12 +22,12 @@ namespace UnitTest.ClassicDomain.Drvier.Redis
             return Uow;
         }
 
-        public IRepositoryGet<Book, Guid> CreateBook()
+        public IRepository<Book, Guid> CreateBook()
         {
             return new Oldmansoft.ClassicDomain.Driver.Redis.Repository<Book, Guid, Mapping>(Uow);
         }
 
-        public IRepositoryGet<Book, Guid> CreateBook(string connectionName)
+        public IRepository<Book, Guid> CreateBook(string connectionName)
         {
             return new Oldmansoft.ClassicDomain.Driver.Redis.Repository<Book, Guid, MappingCustomConnectionName, string>(Uow, connectionName);
         }

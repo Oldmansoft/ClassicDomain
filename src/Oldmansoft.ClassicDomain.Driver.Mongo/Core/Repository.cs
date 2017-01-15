@@ -11,7 +11,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
     /// </summary>
     /// <typeparam name="TDomain">领域类型</typeparam>
     /// <typeparam name="TKey">主键类型</typeparam>
-    public abstract class Repository<TDomain, TKey> : IRepository<TDomain, TKey>
+    public abstract class Repository<TDomain, TKey> : IRepository<TDomain, TKey>, IQuerySupport<TDomain>
         where TDomain : class
     {
         /// <summary>

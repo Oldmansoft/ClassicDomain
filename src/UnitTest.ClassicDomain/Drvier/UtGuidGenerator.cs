@@ -39,7 +39,7 @@ namespace UnitTest.ClassicDomain.Drvier
                 repository.Add(new GuidData { Id = new Guid(StorageMapping.Format(input, StorageMapping.MssqlMapping)), Index = i });
             }
             factory.GetUnitOfWork().Commit();
-            var output = repository.Query().OrderBy(o => o.Id).ToList();
+            var output = repository.List();
             foreach(var item in output)
             {
                 repository.Remove(item);
@@ -63,7 +63,7 @@ namespace UnitTest.ClassicDomain.Drvier
                 repository.Add(new GuidData { Id = new Guid(StorageMapping.Format(input, StorageMapping.MongoMapping)), Index = i });
             }
             factory.GetUnitOfWork().Commit();
-            var output = repository.Query().OrderBy(o => o.Id).ToList();
+            var output = repository.List();
             foreach (var item in output)
             {
                 repository.Remove(item);
@@ -100,7 +100,7 @@ namespace UnitTest.ClassicDomain.Drvier
                 repository.Add(new GuidData { Id = GuidGenerator.Default.Create(StorageMapping.MssqlMapping), Index = i });
             }
             factory.GetUnitOfWork().Commit();
-            var output = repository.Query().OrderBy(o => o.Id).ToList();
+            var output = repository.List();
             foreach (var item in output)
             {
                 repository.Remove(item);
@@ -122,7 +122,7 @@ namespace UnitTest.ClassicDomain.Drvier
                 repository.Add(new GuidData { Id = GuidGenerator.Default.Create(StorageMapping.MongoMapping), Index = i });
             }
             factory.GetUnitOfWork().Commit();
-            var output = repository.Query().OrderBy(o => o.Id).ToList();
+            var output = repository.List();
             foreach (var item in output)
             {
                 repository.Remove(item);
@@ -148,14 +148,14 @@ namespace UnitTest.ClassicDomain.Drvier
                 return Uow;
             }
 
-            public IRepository<GuidData, Guid> CreateEf()
+            public IGuidRepository CreateEf()
             {
-                return new Oldmansoft.ClassicDomain.Driver.EF.Repository<GuidData, Guid, EfMapping>(Uow);
+                return new EfGuidRepository(Uow);
             }
 
-            public IRepository<GuidData, Guid> CreateMongo()
+            public IGuidRepository CreateMongo()
             {
-                return new Oldmansoft.ClassicDomain.Driver.Mongo.Repository<GuidData, Guid, MongoMapping>(Uow);
+                return new MongoGuidRepository(Uow);
             }
         }
     }
@@ -182,6 +182,35 @@ namespace UnitTest.ClassicDomain.Drvier
         protected override void OnModelCreating()
         {
             Add<GuidData, Guid>(o => o.Id);
+        }
+    }
+
+    interface IGuidRepository : IRepository<GuidData, Guid>
+    {
+        IList<GuidData> List();
+    }
+
+    class EfGuidRepository : Oldmansoft.ClassicDomain.Driver.EF.Repository<GuidData, Guid, EfMapping>, IGuidRepository
+    {
+        public EfGuidRepository(UnitOfWork uow)
+            : base(uow)
+        { }
+
+        public IList<GuidData> List()
+        {
+            return Query().OrderBy(o => o.Id).ToList();
+        }
+    }
+
+    class MongoGuidRepository : Oldmansoft.ClassicDomain.Driver.Mongo.Repository<GuidData, Guid, MongoMapping>, IGuidRepository
+    {
+        public MongoGuidRepository(UnitOfWork uow)
+            : base(uow)
+        { }
+
+        public IList<GuidData> List()
+        {
+            return Query().OrderBy(o => o.Id).ToList();
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
     /// </summary>
     /// <typeparam name="TDomain"></typeparam>
     /// <typeparam name="TKey"></typeparam>
-    public abstract class Repository<TDomain, TKey> : IRepositoryGet<TDomain, TKey>
+    public abstract class Repository<TDomain, TKey> : IRepository<TDomain, TKey>
         where TDomain : class
     {
         /// <summary>

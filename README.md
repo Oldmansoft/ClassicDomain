@@ -13,7 +13,7 @@ You need to download [MongoDB](https://www.mongodb.com/download-center).
 #### web.config or app.config
 ```Xml
 <connectionStrings>
-	<add name="Sample.Repositories.Mapping" connectionString="mongodb://localhost/Sample?j=true" />
+	<add name="Sample.Repositories.Mapping" connectionString="mongodb://localhost/Sample" />
 </connectionStrings>
 ```
 
@@ -44,6 +44,41 @@ namespace Sample.Repositories
 ```
 
 ```C#
+namespace Sample.Infrastructure
+{
+    public interface IPersonRepository : Oldmansoft.ClassicDomain.IRepository<Domain.Person, Guid>
+    {
+        Oldmansoft.ClassicDomain.IPagingData<Domain.Person> PageByName();
+
+        Domain.Person GetByName(string name);
+    }
+}
+```
+
+```C#
+namespace Sample.Repositories
+{
+    class PersonRepository : Oldmansoft.ClassicDomain.Driver.Mongo.Repository<Domain.Person, Guid, Mapping>, Infrastructure.IPersonRepository
+    {
+        public PersonRepository(UnitOfWork uow)
+            : base(uow)
+        {
+        }
+
+        public IPagingData<Domain.Person> PageByName()
+        {
+            return Query().Paging().OrderBy(o => o.Name);
+        }
+
+        public Domain.Person GetByName(string name)
+        {
+            return Query().FirstOrDefault(o => o.Name == name);
+        }
+    }
+}
+```
+
+```C#
 using Oldmansoft.ClassicDomain;
 namespace Sample.Repositories
 {
@@ -61,9 +96,9 @@ namespace Sample.Repositories
 			return Uow;
 		}
 
-		public IRepository<Domain.Person, Guid> CreatePerson()
+		public Infrastructure.IPersonRepository CreatePerson()
 		{
-			return new Oldmansoft.ClassicDomain.Driver.Mongo.Repository<Domain.Person, Guid, Mapping>(Uow);
+			return new PersonRepository(Uow);
 		}
 	}
 }
@@ -100,7 +135,7 @@ namespace Sample
 		{
 			var factory = new Repositories.RepositoryFactory();
 			var repository = factory.CreatePerson();
-			var domain = repository.Query().FirstOrDefault(o => o.Name == "Oldman");
+			var domain = repository.GetByName("Oldman");
 			domain.Name = "Oldmansoft";
 			repository.Replace(domain);
 			factory.GetUnitOfWork().Commit();
@@ -120,7 +155,7 @@ namespace Sample
 		{
 			var factory = new Repositories.RepositoryFactory();
 			var repository = factory.CreatePerson();
-			var domain = repository.Query().FirstOrDefault(o => o.Name == "Oldmansoft");
+			var domain = repository.GetByName("Oldmansoft");
 			repository.Remove(domain);
 			factory.GetUnitOfWork().Commit();
 		}

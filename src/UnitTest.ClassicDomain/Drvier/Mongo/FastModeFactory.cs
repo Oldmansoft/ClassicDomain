@@ -21,12 +21,12 @@ namespace UnitTest.ClassicDomain.Drvier.Mongo
             return Uow;
         }
         
-        public IRepositoryGet<Domain.Book, Guid> CreateBook()
+        public IRepository<Domain.Book, Guid> CreateBook()
         {
             return new Oldmansoft.ClassicDomain.Driver.Mongo.Repository<Domain.Book, Guid, FastModeMapping>(Uow);
         }
 
-        public IRepositoryGet<Domain.Book, Guid> CreateBook(string connectionName)
+        public IRepository<Domain.Book, Guid> CreateBook(string connectionName)
         {
             return new Oldmansoft.ClassicDomain.Driver.Mongo.Repository<Domain.Book, Guid, FastModeMappingCustomConnectionName, string>(Uow, connectionName);
         }

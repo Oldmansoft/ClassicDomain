@@ -14,7 +14,7 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
     /// <typeparam name="TSuperDomain">领域的父类</typeparam>
     /// <typeparam name="TKey">主键类型</typeparam>
     /// <typeparam name="TContext">领域上下文</typeparam>
-    public class RepositoryDefinedSuperClass<TDomain, TSuperDomain, TKey, TContext> : Repository<TDomain, TKey, TContext>, IRepository<TSuperDomain, TKey>
+    public class RepositoryDefinedSuperClass<TDomain, TSuperDomain, TKey, TContext> : Repository<TDomain, TKey, TContext>, IRepository<TSuperDomain, TKey>, IQuerySupport<TSuperDomain>
         where TDomain : class, TSuperDomain
         where TSuperDomain : class
         where TContext : Context, new()
@@ -38,7 +38,7 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
             return Get(id);
         }
 
-        IQueryable<TSuperDomain> IQuery<TSuperDomain>.Query()
+        IQueryable<TSuperDomain> IQuerySupport<TSuperDomain>.Query()
         {
             return Query();
         }

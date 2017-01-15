@@ -12,7 +12,7 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
     /// <typeparam name="TDomain">领域类型</typeparam>
     /// <typeparam name="TKey">主键类型</typeparam>
     /// <typeparam name="TContext">领域上下文</typeparam>
-    public class Repository<TDomain, TKey, TContext> : IRepository<TDomain, TKey>
+    public class Repository<TDomain, TKey, TContext> : IRepository<TDomain, TKey>, IQuerySupport<TDomain>
         where TDomain : class
         where TContext : Context, new()
     {
@@ -31,6 +31,15 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
         }
 
         /// <summary>
+        /// 查询
+        /// </summary>
+        /// <returns></returns>
+        public IQueryable<TDomain> Query()
+        {
+            return Context.Set<TDomain>();
+        }
+
+        /// <summary>
         /// 获取
         /// </summary>
         /// <param name="id"></param>
@@ -38,15 +47,6 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
         public TDomain Get(TKey id)
         {
             return Context.Set<TDomain>().Find(id);
-        }
-
-        /// <summary>
-        /// 查询
-        /// </summary>
-        /// <returns></returns>
-        public IQueryable<TDomain> Query()
-        {
-            return Context.Set<TDomain>();
         }
 
         /// <summary>
