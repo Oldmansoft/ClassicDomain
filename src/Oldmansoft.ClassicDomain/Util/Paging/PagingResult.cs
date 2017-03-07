@@ -31,7 +31,7 @@ namespace Oldmansoft.ClassicDomain.Util.Paging
         public IList<TSource> GetResult(out int totalCount, int number)
         {
             totalCount = Query.Count();
-            if (totalCount == 0) return new TSource[0];
+            if (totalCount == 0) return new List<TSource>();
 
             return GetResult(number);
         }
