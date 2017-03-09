@@ -17,6 +17,7 @@ namespace Oldmansoft.ClassicDomain
         /// </summary>
         /// <param name="number">页码（从 1 开始）</param>
         /// <returns></returns>
+        [Obsolete("请使用 ToList 方法")]
         IList<TSource> GetResult(int number);
 
         /// <summary>
@@ -25,6 +26,22 @@ namespace Oldmansoft.ClassicDomain
         /// <param name="totalCount">总数</param>
         /// <param name="number">页码（从 1 开始）</param>
         /// <returns></returns>
+        [Obsolete("请使用 ToList 方法")]
         IList<TSource> GetResult(out int totalCount, int number);
+
+        /// <summary>
+        /// 生成列表
+        /// </summary>
+        /// <param name="number">页码（从 1 开始）</param>
+        /// <returns></returns>
+        IList<TSource> ToList(int number);
+
+        /// <summary>
+        /// 生成列表
+        /// </summary>
+        /// <param name="number">页码（从 1 开始）</param>
+        /// <param name="totalCount">所有记录数</param>
+        /// <returns></returns>
+        IList<TSource> ToList(int number, out int totalCount);
     }
 }

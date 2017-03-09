@@ -23,17 +23,27 @@ namespace Oldmansoft.ClassicDomain.Util.Paging
 
         public IList<TSource> GetResult(int number)
         {
+            return ToList(number);
+        }
+
+        public IList<TSource> GetResult(out int totalCount, int number)
+        {
+            return ToList(number, out totalCount);
+        }
+
+        public IList<TSource> ToList(int number)
+        {
             if (number < 1) number = 1;
 
             return OrderedQuery.Skip(Size * (number - 1)).Take(Size).ToList();
         }
 
-        public IList<TSource> GetResult(out int totalCount, int number)
+        public IList<TSource> ToList(int number, out int totalCount)
         {
             totalCount = Query.Count();
             if (totalCount == 0) return new List<TSource>();
 
-            return GetResult(number);
+            return ToList(number);
         }
     }
 }

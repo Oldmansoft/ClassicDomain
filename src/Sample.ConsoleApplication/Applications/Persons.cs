@@ -43,7 +43,7 @@ namespace Sample.ConsoleApplication.Applications
         {
             var factory = new Repositories.RepositoryFactory();
             var repository = factory.CreatePerson();
-            var result = repository.PageByName().Size(size).GetResult(out totalCount, index);
+            var result = repository.PageByName().Size(size).ToList(index, out totalCount);
             return result.CopyTo(new Data.PersonData[result.Count]);
         }
     }

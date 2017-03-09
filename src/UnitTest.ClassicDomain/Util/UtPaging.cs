@@ -18,7 +18,7 @@ namespace UnitTest.ClassicDomain.Util
                 source.Add(new Data { Id = i });
             }
             int count;
-            var list = source.AsQueryable().Paging().Where(o => o.Id > 10).OrderBy(o => o.Id).Size(20).GetResult(out count, 1);
+            var list = source.AsQueryable().Paging().Where(o => o.Id > 10).OrderBy(o => o.Id).Size(20).ToList(1, out count);
             Assert.AreEqual(1000 - 11, count, "总数");
             Assert.AreEqual(20, list.Count, "长度");
             for (var i = 0; i < list.Count; i++)
@@ -37,7 +37,7 @@ namespace UnitTest.ClassicDomain.Util
             }
             int count;
             var where = source.AsQueryable().Paging().Where(o => o.Id > 10);
-            var list = where.OrderBy(o => o.Id).Size(20).GetResult(out count, 1);
+            var list = where.OrderBy(o => o.Id).Size(20).ToList(1, out count);
             Assert.AreEqual(1000 - 11, count, "比较一总数");
             Assert.AreEqual(20, list.Count, "比较一长度");
             for (var i = 0; i < list.Count; i++)
@@ -45,7 +45,7 @@ namespace UnitTest.ClassicDomain.Util
                 Assert.AreEqual(i + 11, list[i].Id, string.Format("比较一第 {0} 位", i));
             }
 
-            list = where.Where(o => o.Id < 100).OrderByDescending(o => o.Id).Size(20).GetResult(out count, 1);
+            list = where.Where(o => o.Id < 100).OrderByDescending(o => o.Id).Size(20).ToList(1, out count);
             Assert.AreEqual(100 - 11, count, "比较二总数");
             Assert.AreEqual(20, list.Count, "比较二长度");
             for (var i = 0; i < list.Count; i++)

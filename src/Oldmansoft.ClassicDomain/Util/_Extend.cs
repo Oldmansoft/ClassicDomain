@@ -198,7 +198,7 @@ namespace Oldmansoft.ClassicDomain.Util
         {
             int totalCount;
             var result = new PageResult<TSource>();
-            result.List = new List<TSource>(source.GetResult(out totalCount, number));
+            result.List = new List<TSource>(source.ToList(number, out totalCount));
             result.TotalCount = totalCount;
             return result;
         }
