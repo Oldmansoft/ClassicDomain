@@ -48,7 +48,7 @@ namespace Sample.Infrastructure
 {
     public interface IPersonRepository : Oldmansoft.ClassicDomain.IRepository<Domain.Person, Guid>
     {
-        Oldmansoft.ClassicDomain.IPagingData<Domain.Person> PageByName();
+        Oldmansoft.ClassicDomain.IPagingCondition<Domain.Person> PageByName();
 
         Domain.Person GetByName(string name);
     }
@@ -65,7 +65,7 @@ namespace Sample.Repositories
         {
         }
 
-        public IPagingData<Domain.Person> PageByName()
+        public IPagingCondition<Domain.Person> PageByName()
         {
             return Query().Paging().OrderBy(o => o.Name);
         }
