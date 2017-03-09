@@ -72,9 +72,20 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// <param name="isAscending">是否顺序排序</param>
         /// <param name="keyExpressions">索引键表达式</param>
         /// <returns>设置</returns>
+        [Obsolete("请使用 SetIndexDescending 代替倒序参数")]
         public Setting<TEntity, TMember> SetIndex(bool isAscending, params Expression<Func<TEntity, object>>[] keyExpressions)
         {
             return SetIndex(isAscending, false, keyExpressions);
+        }
+
+        /// <summary>
+        /// 设置倒序索引
+        /// </summary>
+        /// <param name="keyExpressions">索引键表达式</param>
+        /// <returns></returns>
+        public Setting<TEntity, TMember> SetIndexDescending(params Expression<Func<TEntity, object>>[] keyExpressions)
+        {
+            return SetIndex(false, false, keyExpressions);
         }
 
         /// <summary>
@@ -93,9 +104,20 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// <param name="isAscending"></param>
         /// <param name="keyExpressions"></param>
         /// <returns></returns>
+        [Obsolete("请使用 SetUniqueDescending 代替倒序参数")]
         public Setting<TEntity, TMember> SetUnique(bool isAscending, params Expression<Func<TEntity, object>>[] keyExpressions)
         {
             return SetIndex(isAscending, true, keyExpressions);
+        }
+
+        /// <summary>
+        /// 设置倒序唯一索引
+        /// </summary>
+        /// <param name="keyExpressions"></param>
+        /// <returns></returns>
+        public Setting<TEntity, TMember> SetUniqueDescending(params Expression<Func<TEntity, object>>[] keyExpressions)
+        {
+            return SetIndex(false, true, keyExpressions);
         }
 
         /// <summary>
