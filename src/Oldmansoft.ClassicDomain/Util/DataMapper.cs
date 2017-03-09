@@ -45,10 +45,21 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="keyExpression"></param>
         /// <returns></returns>
+        [Obsolete("请使用 SetIgnore 方法代替")]
         public DataMapper AddIgnore<TEntity>(Expression<Func<TEntity, object>> keyExpression)
         {
             IgnoreProperty.Add(keyExpression.GetProperty().Name);
             return this;
+        }
+
+        /// <summary>
+        /// 设置忽略属性的实体
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <returns></returns>
+        public IPropertyIgnore<TEntity> SetIgnore<TEntity>()
+        {
+            return new PropertyIgnore<TEntity>(IgnoreProperty);
         }
 
         /// <summary>
