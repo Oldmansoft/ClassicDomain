@@ -177,5 +177,15 @@ namespace UnitTest.ClassicDomain.Util
             source.CopyTo(target);
             Assert.IsNull(target.Enum);
         }
+
+        [TestMethod]
+        public void TestCopyIList()
+        {
+            IList<int> source = new List<int>();
+            source.Add(1);
+            var target = new List<int>();
+            source.CopyTo(target);
+            Assert.AreEqual(source.Count, target.Count);
+        }
     }
 }

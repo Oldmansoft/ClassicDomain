@@ -61,9 +61,41 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// </summary>
         /// <param name="keyExpressions">索引键表达式</param>
         /// <returns>设置</returns>
+        [Obsolete("请使用 SetIndexMany 代替多参数")]
         public Setting<TEntity, TMember> SetIndex(params Expression<Func<TEntity, object>>[] keyExpressions)
         {
             return SetIndex(true, false, keyExpressions);
+        }
+
+        /// <summary>
+        /// 设置索引
+        /// </summary>
+        /// <param name="keyExpression">索引键表达式</param>
+        /// <returns>设置</returns>
+        public Setting<TEntity, TMember> SetIndex(Expression<Func<TEntity, object>> keyExpression)
+        {
+            return SetIndex(true, false, keyExpression);
+        }
+
+        /// <summary>
+        /// 设置索引
+        /// </summary>
+        /// <param name="keyExpression">索引键表达式</param>
+        /// <param name="keyExpressions">索引键表达式</param>
+        /// <returns>设置</returns>
+        public Setting<TEntity, TMember> SetIndexMany(Expression<Func<TEntity, object>> keyExpression, params Expression<Func<TEntity, object>>[] keyExpressions)
+        {
+            if (keyExpressions == null || keyExpressions.Length == 0)
+            {
+                return SetIndex(true, false, keyExpression);
+            }
+            else
+            {
+                var values = new Expression<Func<TEntity, object>>[keyExpressions.Length + 1];
+                values[0] = keyExpression;
+                Array.Copy(keyExpressions, 0, values, 1, keyExpressions.Length);
+                return SetIndex(true, false, values);
+            }
         }
 
         /// <summary>
@@ -82,17 +114,50 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// 设置倒序索引
         /// </summary>
         /// <param name="keyExpressions">索引键表达式</param>
-        /// <returns></returns>
+        /// <returns>设置</returns>
+        [Obsolete("请使用 SetIndexDescendingMany 代替多参数")]
         public Setting<TEntity, TMember> SetIndexDescending(params Expression<Func<TEntity, object>>[] keyExpressions)
         {
             return SetIndex(false, false, keyExpressions);
         }
 
         /// <summary>
+        /// 设置倒序索引
+        /// </summary>
+        /// <param name="keyExpression">索引键表达式</param>
+        /// <returns>设置</returns>
+        public Setting<TEntity, TMember> SetIndexDescending(Expression<Func<TEntity, object>> keyExpression)
+        {
+            return SetIndex(false, false, keyExpression);
+        }
+
+        /// <summary>
+        /// 设置倒序索引
+        /// </summary>
+        /// <param name="keyExpression">索引键表达式</param>
+        /// <param name="keyExpressions">索引键表达式</param>
+        /// <returns>设置</returns>
+        public Setting<TEntity, TMember> SetIndexDescendingMany(Expression<Func<TEntity, object>> keyExpression, params Expression<Func<TEntity, object>>[] keyExpressions)
+        {
+            if (keyExpressions == null || keyExpressions.Length == 0)
+            {
+                return SetIndex(false, false, keyExpression);
+            }
+            else
+            {
+                var values = new Expression<Func<TEntity, object>>[keyExpressions.Length + 1];
+                values[0] = keyExpression;
+                Array.Copy(keyExpressions, 0, values, 1, keyExpressions.Length);
+                return SetIndex(false, false, values);
+            }
+        }
+
+        /// <summary>
         /// 设置唯一索引
         /// </summary>
-        /// <param name="keyExpressions"></param>
-        /// <returns></returns>
+        /// <param name="keyExpressions">索引键表达式</param>
+        /// <returns>设置</returns>
+        [Obsolete("请使用 SetUniqueMany 代替多参数")]
         public Setting<TEntity, TMember> SetUnique(params Expression<Func<TEntity, object>>[] keyExpressions)
         {
             return SetIndex(true, true, keyExpressions);
@@ -101,9 +166,40 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// <summary>
         /// 设置唯一索引
         /// </summary>
+        /// <param name="keyExpression">索引键表达式</param>
+        /// <returns>设置</returns>
+        public Setting<TEntity, TMember> SetUnique(Expression<Func<TEntity, object>> keyExpression)
+        {
+            return SetIndex(true, true, keyExpression);
+        }
+
+        /// <summary>
+        /// 设置唯一索引
+        /// </summary>
+        /// <param name="keyExpression">索引键表达式</param>
+        /// <param name="keyExpressions">索引键表达式</param>
+        /// <returns>设置</returns>
+        public Setting<TEntity, TMember> SetUniqueMany(Expression<Func<TEntity, object>> keyExpression, params Expression<Func<TEntity, object>>[] keyExpressions)
+        {
+            if (keyExpressions == null || keyExpressions.Length == 0)
+            {
+                return SetIndex(true, true, keyExpression);
+            }
+            else
+            {
+                var values = new Expression<Func<TEntity, object>>[keyExpressions.Length + 1];
+                values[0] = keyExpression;
+                Array.Copy(keyExpressions, 0, values, 1, keyExpressions.Length);
+                return SetIndex(true, true, values);
+            }
+        }
+
+        /// <summary>
+        /// 设置唯一索引
+        /// </summary>
         /// <param name="isAscending"></param>
         /// <param name="keyExpressions"></param>
-        /// <returns></returns>
+        /// <returns>设置</returns>
         [Obsolete("请使用 SetUniqueDescending 代替倒序参数")]
         public Setting<TEntity, TMember> SetUnique(bool isAscending, params Expression<Func<TEntity, object>>[] keyExpressions)
         {
@@ -113,11 +209,43 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// <summary>
         /// 设置倒序唯一索引
         /// </summary>
-        /// <param name="keyExpressions"></param>
-        /// <returns></returns>
+        /// <param name="keyExpressions">索引键表达式</param>
+        /// <returns>设置</returns>
+        [Obsolete("请使用 SetUniqueDescendingMany 代替多参数")]
         public Setting<TEntity, TMember> SetUniqueDescending(params Expression<Func<TEntity, object>>[] keyExpressions)
         {
             return SetIndex(false, true, keyExpressions);
+        }
+
+        /// <summary>
+        /// 设置倒序唯一索引
+        /// </summary>
+        /// <param name="keyExpression">索引键表达式</param>
+        /// <returns>设置</returns>
+        public Setting<TEntity, TMember> SetUniqueDescending(Expression<Func<TEntity, object>> keyExpression)
+        {
+            return SetIndex(false, true, keyExpression);
+        }
+
+        /// <summary>
+        /// 设置倒序唯一索引
+        /// </summary>
+        /// <param name="keyExpression">索引键表达式</param>
+        /// <param name="keyExpressions">索引键表达式</param>
+        /// <returns>设置</returns>
+        public Setting<TEntity, TMember> SetUniqueDescendingMany(Expression<Func<TEntity, object>> keyExpression, params Expression<Func<TEntity, object>>[] keyExpressions)
+        {
+            if (keyExpressions == null || keyExpressions.Length == 0)
+            {
+                return SetIndex(false, true, keyExpression);
+            }
+            else
+            {
+                var values = new Expression<Func<TEntity, object>>[keyExpressions.Length + 1];
+                values[0] = keyExpression;
+                Array.Copy(keyExpressions, 0, values, 1, keyExpressions.Length);
+                return SetIndex(false, true, values);
+            }
         }
 
         /// <summary>
@@ -161,7 +289,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// 创建 2d 索引
         /// </summary>
         /// <param name="keyExpression"></param>
-        /// <returns></returns>
+        /// <returns>设置</returns>
         public Setting<TEntity, TMember> SetGeoSpatial(Expression<Func<TEntity, object>> keyExpression)
         {
             var key = GetMember(keyExpression);
@@ -179,7 +307,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// 创建 2dsphere 索引
         /// </summary>
         /// <param name="keyExpression"></param>
-        /// <returns></returns>
+        /// <returns>设置</returns>
         public Setting<TEntity, TMember> SetGeoSpatialSpherical(Expression<Func<TEntity, object>> keyExpression)
         {
             var key = GetMember(keyExpression);
