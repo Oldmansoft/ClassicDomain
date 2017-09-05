@@ -78,7 +78,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
                 if (!mapping.Fields.ContainsKey(name)) continue;
                 if (propertyType.IsNormalClass())
                 {
-                    var obj = Activator.CreateInstance(propertyType);
+                    var obj = ObjectCreator.CreateInstance(propertyType);
                     SetContext(mapping, propertyType, obj, string.Format("{0}.", name));
                     property.SetValue(instance, obj);
                     continue;
@@ -107,7 +107,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
             var dictionaryType = typeof(Dictionary<,>).MakeGenericType(keyType, valueType);
             if (propertyType == dictionaryType)
             {
-                var dictionary = Activator.CreateInstance(dictionaryType) as System.Collections.IDictionary;
+                var dictionary = ObjectCreator.CreateInstance(dictionaryType) as System.Collections.IDictionary;
                 foreach (var item in mapping.Hashs[name])
                 {
                     dictionary.Add(item.Key.GetValueFromString(keyType, isKeyNormalClass), item.Value.GetValueFromString(valueType, isValueNormalClass));

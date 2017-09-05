@@ -10,24 +10,41 @@ namespace Sample.ConsoleApplication.Applications
 {
     public class Persons
     {
-        public Guid Add(Data.PersonData data)
+        public bool Add(string name, out Guid id)
         {
             var factory = new Repositories.RepositoryFactory();
             var repository = factory.CreatePerson();
-            var domain = data.CopyTo(new Domain.Person());
+            var domain = Domain.Person.Create(name);
             repository.Add(domain);
-            factory.GetUnitOfWork().Commit();
-            return domain.Id;
+            try
+            {
+                factory.GetUnitOfWork().Commit();
+            }
+            catch (UniqueException)
+            {
+                id = Guid.Empty;
+                return false;
+            }
+            id = domain.Id;
+            return true;
         }
 
-        public void Edit(Data.PersonData data)
+        public void Edit(Guid id, string name)
         {
             var factory = new Repositories.RepositoryFactory();
             var repository = factory.CreatePerson();
-            var domain = repository.Get(data.Id);
-            data.CopyTo(domain);
+            var domain = repository.Get(id);
+            if (domain == null) return;
+            domain.Change(name);
             repository.Replace(domain);
-            factory.GetUnitOfWork().Commit();
+            try
+            {
+                factory.GetUnitOfWork().Commit();
+            }
+            catch (UniqueException)
+            {
+
+            }
         }
 
         public void Remove(Guid id)
@@ -39,12 +56,12 @@ namespace Sample.ConsoleApplication.Applications
             factory.GetUnitOfWork().Commit();
         }
 
-        public Data.PersonData[] Page(int index, int size, out int totalCount)
+        public IList<Data.PersonData> Page(int index, int size, out int totalCount)
         {
             var factory = new Repositories.RepositoryFactory();
             var repository = factory.CreatePerson();
             var result = repository.PageByName().Size(size).ToList(index, out totalCount);
-            return result.CopyTo(new Data.PersonData[result.Count]);
+            return result.CopyTo(new List<Data.PersonData>());
         }
     }
 }

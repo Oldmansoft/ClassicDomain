@@ -13,7 +13,7 @@ You need to download [MongoDB](https://www.mongodb.com/download-center).
 #### web.config or app.config
 ```Xml
 <connectionStrings>
-	<add name="Sample.Repositories.Mapping" connectionString="mongodb://localhost/Sample" />
+	<add name="Sample.Repositories.Mapping" connectionString="mongodb://localhost/Sample?journal=true" />
 </connectionStrings>
 ```
 

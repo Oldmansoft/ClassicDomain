@@ -10,11 +10,17 @@ namespace UnitTest.ClassicDomain.Util
     [TestClass]
     public class UtCopyTo
     {
+        private CopySourceModel CreateSource(string name)
+        {
+            var source = new CopySourceModel();
+            source.SetName(name);
+            return source;
+        }
+
         [TestMethod]
         public void TestCopyNormalClass()
         {
-            var source = new CopySourceModel();
-            source.Name = "hello";
+            var source = CreateSource("hello");
             var target = source.CopyTo(new CopyTargetModel());
             Assert.AreEqual(source.Name, target.Name);
         }
@@ -41,7 +47,7 @@ namespace UnitTest.ClassicDomain.Util
         {
             var source = new PageResult<CopySourceModel>();
             var list =  new List<CopySourceModel>();
-            list.Add(new CopySourceModel() { Name = "hello" });
+            list.Add(CreateSource("hello"));
             source.List = list;
             source.TotalCount = 1;
 
@@ -68,7 +74,7 @@ namespace UnitTest.ClassicDomain.Util
         public void TestCopyArray()
         {
             var source = new CopySourceModel[1];
-            source[0] = new CopySourceModel() { Name = "hello" };
+            source[0] = CreateSource("hello");
 
             var target = source.CopyTo(new CopyTargetModel[1]);
 
@@ -80,7 +86,7 @@ namespace UnitTest.ClassicDomain.Util
         public void TestCopyList()
         {
             var source = new List<CopySourceModel>();
-            source.Add(new CopySourceModel() { Name = "hello" });
+            source.Add(CreateSource("hello"));
 
             var target = source.CopyTo(new List<CopyTargetModel>());
 
@@ -92,7 +98,7 @@ namespace UnitTest.ClassicDomain.Util
         public void TestCopyDictionary()
         {
             var source = new Dictionary<string, CopySourceModel>();
-            source.Add("hello", new CopySourceModel() { Name = "world" });
+            source.Add("hello", CreateSource("world"));
             var target = source.CopyTo(new Dictionary<string, CopyTargetModel>());
 
             Assert.AreEqual(source.Count, target.Count);

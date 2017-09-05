@@ -89,7 +89,7 @@ namespace Oldmansoft.ClassicDomain.Util
             while (memberExpression.Expression.GetType().Name == "PropertyExpression")
             {
                 memberExpression = (MemberExpression)memberExpression.Expression;
-                content = memberExpression.Member.Name + "." + content;
+                content = string.Format("{0}.{1}", memberExpression.Member.Name, content);
             }
             return content;
         }

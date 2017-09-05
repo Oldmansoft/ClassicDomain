@@ -267,7 +267,7 @@ namespace Oldmansoft.ClassicDomain.Util
                 object targetValue = null;
                 try
                 {
-                    targetValue = Activator.CreateInstance(targetItemType);
+                    targetValue = ObjectCreator.CreateInstance(targetItemType);
                 }
                 catch
                 {
@@ -338,7 +338,7 @@ namespace Oldmansoft.ClassicDomain.Util
             }
 
             var isNormalClass = sourceItemType.IsNormalClass() && targetItemType.IsNormalClass();
-            var targetValue = Activator.CreateInstance(targetType) as IList;
+            var targetValue = ObjectCreator.CreateInstance(targetType) as IList;
             foreach (var item in source)
             {
                 targetValue.Add(ValueCopy(sourceItemType, targetItemType, isNormalClass, item));
@@ -366,7 +366,7 @@ namespace Oldmansoft.ClassicDomain.Util
             if (targetType != targetPropertyInfo.PropertyType && !targetType.GetInterfaces().Contains(targetPropertyInfo.PropertyType)) return false;
 
             var isNormalClass = sourceValueType.IsNormalClass() && targetValueType.IsNormalClass();
-            var targetValue = Activator.CreateInstance(targetType) as IDictionary;
+            var targetValue = ObjectCreator.CreateInstance(targetType) as IDictionary;
             var source = sourceValue as IDictionary;
             if (source == null)
             {
@@ -393,7 +393,7 @@ namespace Oldmansoft.ClassicDomain.Util
             {
                 try
                 {
-                    targetValue = Activator.CreateInstance(targetPropertyInfo.PropertyType);
+                    targetValue = ObjectCreator.CreateInstance(targetPropertyInfo.PropertyType);
                     targetPropertyInfo.SetValue(target, targetValue);
                 }
                 catch { }

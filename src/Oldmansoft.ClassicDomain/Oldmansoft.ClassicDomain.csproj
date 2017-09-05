@@ -84,6 +84,7 @@
     <Compile Include="Util\ExpressionHelper.cs" />
     <Compile Include="IPagingCondition.cs" />
     <Compile Include="Util\IPropertyIgnore.cs" />
+    <Compile Include="Util\ObjectCreator.cs" />
     <Compile Include="Util\PropertyIgnore.cs" />
     <Compile Include="Util\OnceSet.cs" />
     <Compile Include="Util\Paging\PagingCondition.cs" />
