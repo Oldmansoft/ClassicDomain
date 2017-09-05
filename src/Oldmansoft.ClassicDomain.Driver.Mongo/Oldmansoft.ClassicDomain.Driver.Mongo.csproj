@@ -71,6 +71,7 @@
     <Compile Include="Core\FastModeContext.cs" />
     <Compile Include="Core\Repository.cs" />
     <Compile Include="Core\IContext.cs" />
+    <Compile Include="ExpressionGroup.cs" />
     <Compile Include="IContext.cs" />
     <Compile Include="Core\IDbSet.cs" />
     <Compile Include="Library\RemoveObject.cs" />
