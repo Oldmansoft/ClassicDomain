@@ -67,5 +67,31 @@ namespace Oldmansoft.ClassicDomain.Util
             if (!(constantExpression.Value is MethodInfo)) return null;
             return (MethodInfo)constantExpression.Value;
         }
+
+
+        /// <summary>
+        /// 获取属性表达式的内容
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public static string GetPropertyContent<TEntity>(this Expression<Func<TEntity, object>> expression)
+        {
+            var member = expression.Body;
+            if (member.NodeType == ExpressionType.Convert && expression.Body is UnaryExpression)
+            {
+                member = ((UnaryExpression)member).Operand;
+            }
+            if (!(member is MemberExpression)) return null;
+
+            var memberExpression = (MemberExpression)member;
+            var content = memberExpression.Member.Name;
+            while (memberExpression.Expression.GetType().Name == "PropertyExpression")
+            {
+                memberExpression = (MemberExpression)memberExpression.Expression;
+                content = memberExpression.Member.Name + "." + content;
+            }
+            return content;
+        }
     }
 }

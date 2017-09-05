@@ -30,7 +30,7 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <returns></returns>
         public IPropertyIgnore<TEntity> Add(System.Linq.Expressions.Expression<Func<TEntity, object>> property)
         {
-            Store.Add(property.GetProperty().Name);
+            Store.Add(property.GetPropertyContent());
             return this;
         }
     }
