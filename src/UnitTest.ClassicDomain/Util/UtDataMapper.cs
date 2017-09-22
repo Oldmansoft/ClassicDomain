@@ -30,6 +30,7 @@ namespace UnitTest.ClassicDomain.Util
             source.SetName("hello");
             source.CreateSub();
             source.Sub.Value = "world";
+            source.Type = SourceType.Importance;
 
             var target = mapper.CopyTo(source, new CopySourceModel());
             Assert.IsNull(target.Sub.Value);

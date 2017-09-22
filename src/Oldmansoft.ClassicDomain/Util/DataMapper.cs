@@ -234,7 +234,11 @@ namespace Oldmansoft.ClassicDomain.Util
 
                 if (sourcePropertyInfo.PropertyType.IsEnum && targetPropertyInfo.PropertyType.IsEnum)
                 {
-                    targetPropertyInfo.SetValue(target, (int)sourcePropertyInfo.GetValue(source));
+                    try
+                    {
+                        targetPropertyInfo.SetValue(target, Enum.Parse(targetPropertyInfo.PropertyType, sourcePropertyInfo.GetValue(source).ToString()));
+                    }
+                    catch (ArgumentException) { }
                     continue;
                 }
 

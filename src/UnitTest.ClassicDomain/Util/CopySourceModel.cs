@@ -12,6 +12,8 @@ namespace UnitTest.ClassicDomain.Util
 
         public CopySourceSubModel Sub { get; set; }
 
+        public SourceType Type { get; set; }
+
         public void SetName(string name)
         {
             Name = name;
@@ -33,5 +35,11 @@ namespace UnitTest.ClassicDomain.Util
         {
             return new CopySourceSubModel();
         }
+    }
+
+    enum SourceType : byte
+    {
+        Normal,
+        Importance
     }
 }
