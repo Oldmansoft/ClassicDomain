@@ -109,7 +109,7 @@ namespace Oldmansoft.ClassicDomain.Util
         public static bool IsGenericEnumerable(this Type source)
         {
             if (!source.IsGenericType) return false;
-            if (!source.GetInterfaces().Contains(typeof(System.Collections.IEnumerable))) return false;
+            if (!source.GetInterfaces().Contains(typeof(IEnumerable))) return false;
             return true;
         }
 
@@ -172,35 +172,6 @@ namespace Oldmansoft.ClassicDomain.Util
         public static object FromString(this Type source, string context)
         {
             return TypeParse.Get(source)(context);
-        }
-        
-        /// <summary>
-        /// 分页
-        /// </summary>
-        /// <typeparam name="TSource"></typeparam>
-        /// <param name="source"></param>
-        /// <returns></returns>
-        public static IPagingCondition<TSource> Paging<TSource>(this IQueryable<TSource> source)
-            where TSource : class
-        {
-            return new Paging.PagingCondition<TSource>(source);
-        }
-
-        /// <summary>
-        /// 获取分页结果
-        /// </summary>
-        /// <typeparam name="TSource"></typeparam>
-        /// <param name="source"></param>
-        /// <param name="number"></param>
-        /// <returns></returns>
-        [Obsolete]
-        public static IPageResult<TSource> GetPageResult<TSource>(this IPagingResult<TSource> source, int number)
-        {
-            int totalCount;
-            var result = new PageResult<TSource>();
-            result.List = new List<TSource>(source.ToList(number, out totalCount));
-            result.TotalCount = totalCount;
-            return result;
         }
     }
 }

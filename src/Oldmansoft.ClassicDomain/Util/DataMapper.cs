@@ -61,20 +61,7 @@ namespace Oldmansoft.ClassicDomain.Util
         {
             return new PropertyIgnore<TEntity>(IgnoreProperty);
         }
-
-        /// <summary>
-        /// 复制
-        /// </summary>
-        /// <typeparam name="TTarget"></typeparam>
-        /// <param name="source">源对象</param>
-        /// <param name="target">目标对象</param>
-        /// <returns>返回目标对象</returns>
-        [Obsolete("请使用 CopyTo 方法代替")]
-        public TTarget Copy<TTarget>(object source, TTarget target)
-        {
-            return CopyTo(source, target);
-        }
-
+        
         /// <summary>
         /// 分页列表复制到
         /// </summary>

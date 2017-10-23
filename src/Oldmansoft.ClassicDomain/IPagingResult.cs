@@ -13,23 +13,6 @@ namespace Oldmansoft.ClassicDomain
     public interface IPagingResult<TSource>
     {
         /// <summary>
-        /// 获取结果
-        /// </summary>
-        /// <param name="number">页码（从 1 开始）</param>
-        /// <returns></returns>
-        [Obsolete("请使用 ToList 方法")]
-        IList<TSource> GetResult(int number);
-
-        /// <summary>
-        /// 获取结果
-        /// </summary>
-        /// <param name="totalCount">总数</param>
-        /// <param name="number">页码（从 1 开始）</param>
-        /// <returns></returns>
-        [Obsolete("请使用 ToList 方法")]
-        IList<TSource> GetResult(out int totalCount, int number);
-
-        /// <summary>
         /// 生成列表
         /// </summary>
         /// <param name="number">页码（从 1 开始）</param>

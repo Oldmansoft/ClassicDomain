@@ -63,7 +63,6 @@
     <Compile Include="IAdd.cs" />
     <Compile Include="IGet.cs" />
     <Compile Include="Driver\InProcess\StoreManager.cs" />
-    <Compile Include="IPageResult.cs" />
     <Compile Include="IPagingResult.cs" />
     <Compile Include="IPagingOrdered.cs" />
     <Compile Include="IPagingData.cs" />
@@ -75,7 +74,6 @@
     <Compile Include="IRepositoryAddReplace.cs" />
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="IUnitOfWorkManagedItem.cs" />
-    <Compile Include="PageResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UniqueException.cs" />
     <Compile Include="UnitOfWorkManagedItem.cs" />
@@ -93,6 +91,7 @@
     <Compile Include="Util\TypeParse.cs" />
     <Compile Include="Util\_Extend.cs" />
     <Compile Include="Util\TypePublicInstanceStore.cs" />
+    <Compile Include="_Extends.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

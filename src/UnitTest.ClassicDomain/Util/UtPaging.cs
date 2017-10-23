@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Oldmansoft.ClassicDomain.Util;
+using Oldmansoft.ClassicDomain;
 
 namespace UnitTest.ClassicDomain.Util
 {
