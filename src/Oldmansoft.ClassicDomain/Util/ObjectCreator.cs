@@ -12,6 +12,13 @@ namespace Oldmansoft.ClassicDomain.Util
     /// </summary>
     public static class ObjectCreator
     {
+        private static System.Collections.Concurrent.ConcurrentDictionary<Type, ConstructorInfo> Constructors;
+
+        static ObjectCreator()
+        {
+            Constructors = new System.Collections.Concurrent.ConcurrentDictionary<Type, ConstructorInfo>();
+        }
+
         /// <summary>
         /// 创建实例
         /// </summary>
@@ -20,7 +27,13 @@ namespace Oldmansoft.ClassicDomain.Util
         public static object CreateInstance(Type type)
         {
             if (type == null) throw new ArgumentNullException("type");
-            var constructor = type.GetConstructor(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance, null, new Type[0], null);
+            ConstructorInfo constructor;
+
+            if (!Constructors.TryGetValue(type, out constructor))
+            {
+                constructor = type.GetConstructor(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance, null, new Type[0], null);
+                Constructors.TryAdd(type, constructor);
+            }
             if (constructor == null) return null;
             return constructor.Invoke(new object[0]);
         }

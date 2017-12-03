@@ -13,9 +13,7 @@ namespace Oldmansoft.ClassicDomain.Driver
     public class IdentityMap<TDomain>
     {
         private Dictionary<string, TDomain> Store;
-
-        private Util.DataMapper Mapper;
-
+        
         /// <summary>
         /// 获取主键
         /// </summary>
@@ -27,7 +25,6 @@ namespace Oldmansoft.ClassicDomain.Driver
         public IdentityMap()
         {
             Store = new Dictionary<string, TDomain>();
-            Mapper = new Util.DataMapper(true);
         }
 
         /// <summary>
@@ -48,7 +45,7 @@ namespace Oldmansoft.ClassicDomain.Driver
         {
             if (domain == null) return;
             var storeDomain = Util.ObjectCreator.CreateInstance<TDomain>();
-            Store[GetKey(domain).ToString()] = Mapper.CopyTo(domain, storeDomain);
+            Store[GetKey(domain).ToString()] = Util.DataMapper.Map(domain, storeDomain);
         }
 
         /// <summary>

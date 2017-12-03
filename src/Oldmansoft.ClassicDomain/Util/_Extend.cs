@@ -70,16 +70,6 @@ namespace Oldmansoft.ClassicDomain.Util
         }
 
         /// <summary>
-        /// 是否为泛型列表
-        /// </summary>
-        /// <param name="source"></param>
-        /// <returns></returns>
-        public static bool IsGenericList(this Type source)
-        {
-            return source.IsGenericType && source.GetInterfaces().Contains(typeof(IEnumerable));
-        }
-
-        /// <summary>
         /// 是否为集合
         /// </summary>
         /// <param name="source"></param>
@@ -109,7 +99,35 @@ namespace Oldmansoft.ClassicDomain.Util
         public static bool IsGenericEnumerable(this Type source)
         {
             if (!source.IsGenericType) return false;
-            if (!source.GetInterfaces().Contains(typeof(System.Collections.IEnumerable))) return false;
+            if (!source.GetInterfaces().Contains(typeof(IEnumerable))) return false;
+            return true;
+        }
+
+        /// <summary>
+        /// 是否为泛型字典
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static bool IsGenericDictionary(this Type source)
+        {
+            if (!source.IsGenericType) return false;
+            var genericArguments = source.GetGenericArguments();
+            if (genericArguments.Length != 2) return false;
+            var sourceDictionaryType = typeof(IDictionary<,>).MakeGenericType(genericArguments[0], genericArguments[1]);
+            if (!source.GetInterfaces().Contains(sourceDictionaryType)) return false;
+            return true;
+        }
+
+        /// <summary>
+        /// 是否为泛型列表
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static bool IsGenericList(this Type source)
+        {
+            if (!source.IsGenericType) return false;
+            var sourceListType = typeof(ICollection<>).MakeGenericType(source.GetGenericArguments()[0]);
+            if (!source.GetInterfaces().Contains(sourceListType)) return false;
             return true;
         }
 
@@ -123,6 +141,40 @@ namespace Oldmansoft.ClassicDomain.Util
             foreach (var item in source)
             {
                 if (!item.IsGenericEnumerable())
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 是否为泛型字典
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static bool IsGenericDictionary(this IEnumerable<Type> source)
+        {
+            foreach (var item in source)
+            {
+                if (!item.IsGenericDictionary())
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 是否为泛型列表
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static bool IsGenericList(this IEnumerable<Type> source)
+        {
+            foreach (var item in source)
+            {
+                if (!item.IsGenericList())
                 {
                     return false;
                 }
@@ -147,7 +199,7 @@ namespace Oldmansoft.ClassicDomain.Util
             }
             throw new NotSupportedException(string.Format("不支持获取 {0} 此类型的子项类型。", source.FullName));
         }
-        
+
         /// <summary>
         /// 复制到
         /// </summary>
@@ -155,12 +207,26 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <typeparam name="TTarget"></typeparam>
         /// <param name="source"></param>
         /// <param name="target"></param>
-        /// <param name="isDeepCopy">是否深拷贝</param>
+        /// <param name="config"></param>
         /// <returns></returns>
-        public static TTarget CopyTo<TSource, TTarget>(this TSource source, TTarget target, bool isDeepCopy = true)
+        public static TTarget CopyTo<TSource, TTarget>(this TSource source, TTarget target, MapConfig config)
         {
             if (source is DataMapper) throw new ArgumentException("请不要直接使用 DataMapper.CopyTo(target) 方法", "source");
-            return new DataMapper(isDeepCopy).CopyTo(source, target);
+            return DataMapper.Map(source, target, config);
+        }
+
+        /// <summary>
+        /// 复制到
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TTarget"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public static TTarget CopyTo<TSource, TTarget>(this TSource source, TTarget target)
+        {
+            if (source is DataMapper) throw new ArgumentException("请不要直接使用 DataMapper.CopyTo(target) 方法", "source");
+            return DataMapper.Map(source, target);
         }
 
         /// <summary>

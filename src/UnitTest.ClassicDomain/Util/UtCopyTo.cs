@@ -99,7 +99,8 @@ namespace UnitTest.ClassicDomain.Util
         {
             var source = new Dictionary<string, CopySourceModel>();
             source.Add("hello", CreateSource("world"));
-            var target = source.CopyTo(new Dictionary<string, CopyTargetModel>());
+            var target = new Dictionary<string, CopyTargetModel>();
+            source.CopyTo(target);
 
             Assert.AreEqual(source.Count, target.Count);
             Assert.AreEqual("world", target["hello"].Name);
