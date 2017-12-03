@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Oldmansoft.ClassicDomain.Util
 {
     /// <summary>
-    /// 快速映射
+    /// 数据映射
     /// </summary>
     public class DataMapper
     {

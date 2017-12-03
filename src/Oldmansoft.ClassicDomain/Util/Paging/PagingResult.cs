@@ -20,17 +20,7 @@ namespace Oldmansoft.ClassicDomain.Util.Paging
             OrderedQuery = orderedQuery;
             Size = size;
         }
-
-        public IList<TSource> GetResult(int number)
-        {
-            return ToList(number);
-        }
-
-        public IList<TSource> GetResult(out int totalCount, int number)
-        {
-            return ToList(number, out totalCount);
-        }
-
+        
         public IList<TSource> ToList(int number)
         {
             if (number < 1) number = 1;
