@@ -27,8 +27,9 @@ namespace Oldmansoft.ClassicDomain.Util
         public static object CreateInstance(Type type)
         {
             if (type == null) throw new ArgumentNullException("type");
-            ConstructorInfo constructor;
+            if (type.IsAbstract) return null;
 
+            ConstructorInfo constructor;
             if (!Constructors.TryGetValue(type, out constructor))
             {
                 constructor = type.GetConstructor(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance, null, new Type[0], null);

@@ -20,16 +20,10 @@ namespace Oldmansoft.ClassicDomain.Util
                 return;
             }
             object targetValue = TargetProperty.GetValue(target);
-            if (targetValue == null && !TargetType.IsAbstract)
+            if (targetValue == null)
             {
-                try
-                {
-                    targetValue = ObjectCreator.CreateInstance(TargetType);
-                }
-                catch
-                {
-                    return;
-                }
+                targetValue = ObjectCreator.CreateInstance(TargetType);
+                if (targetValue == null) return;
             }
             TargetProperty.SetValue(target, targetValue);
             DataMapper.CopyNormal(sourceValue, SourceType, ref targetValue, TargetType, string.Format("{0}{1}.", higherName, PropertyName), config);
