@@ -7,19 +7,25 @@ using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Util
 {
-    abstract class MapContent : IMapContent
+    abstract class MapContentProperty : IMapContent
     {
         protected string PropertyName { get; private set; }
 
         protected Type SourceType { get; private set; }
 
         protected Type TargetType { get; private set; }
-        
-        public IMapContent Init(string propertyName, Type sourceType, Type targetType)
+
+        protected PropertyInfo SourceProperty { get; private set; }
+
+        protected PropertyInfo TargetProperty { get; private set; }
+
+        public IMapContent Init(string propertyName, Type sourceType, Type targetType, PropertyInfo sourceProperty, PropertyInfo targetProperty)
         {
             PropertyName = propertyName;
             SourceType = sourceType;
             TargetType = targetType;
+            SourceProperty = sourceProperty;
+            TargetProperty = targetProperty;
             return this;
         }
 

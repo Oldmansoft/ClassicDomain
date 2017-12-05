@@ -8,16 +8,17 @@ using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Util
 {
-    class MapDictionary : MapContent
+    class MapDictionaryProperty : MapContentProperty
     {
         public override void Map<TTarget>(string higherName, object source, ref TTarget target, MapConfig config)
         {
-            if (source == null && config.IgnoreSourceNull) return;
+            var sourceValue = SourceProperty.GetValue(source);
+            if (sourceValue == null && config.IgnoreSourceNull) return;
 
-            var currentSource = source as IDictionary;
+            var currentSource = sourceValue as IDictionary;
             if (currentSource == null)
             {
-                target = default(TTarget);
+                TargetProperty.SetValue(target, null);
                 return;
             }
 
@@ -28,11 +29,12 @@ namespace Oldmansoft.ClassicDomain.Util
 
             var targetType = typeof(Dictionary<,>).MakeGenericType(targetKeyType, targetValueType);
             var isNormalClass = sourceValueType.IsNormalClass() && targetValueType.IsNormalClass();
-            var targetValue = target as IDictionary;
+            var targetValue = ObjectCreator.CreateInstance(targetType) as IDictionary;
             foreach (var key in currentSource.Keys)
             {
                 targetValue.Add(key, DataMapper.ItemValueCopy(sourceValueType, targetValueType, isNormalClass, currentSource[key], config));
             }
+            TargetProperty.SetValue(target, targetValue);
         }
     }
 }

@@ -7,28 +7,31 @@ using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Util
 {
-    class MapNormalClass : MapContent
+    class MapNormalClassProperty : MapContentProperty
     {
         public override void Map<TTarget>(string higherName, object source, ref TTarget target, MapConfig config)
         {
-            object sourceValue = ValueAction.GetValue(source);
+            object sourceValue = SourceProperty.GetValue(source);
             if (sourceValue == null && config.IgnoreSourceNull) return;
 
             if (sourceValue == null)
             {
-                ValueAction.SetValue(ref target, null);
+                TargetProperty.SetValue(target, null);
                 return;
             }
-            object targetValue = ValueAction.GetValue(target);
+            object targetValue = TargetProperty.GetValue(target);
             if (targetValue == null && !TargetType.IsAbstract)
             {
                 try
                 {
                     targetValue = ObjectCreator.CreateInstance(TargetType);
-                    ValueAction.SetValue(ref target, targetValue);
                 }
-                catch { }
+                catch
+                {
+                    return;
+                }
             }
+            TargetProperty.SetValue(target, targetValue);
             DataMapper.CopyNormal(sourceValue, SourceType, ref targetValue, TargetType, string.Format("{0}{1}.", higherName, PropertyName), config);
         }
     }

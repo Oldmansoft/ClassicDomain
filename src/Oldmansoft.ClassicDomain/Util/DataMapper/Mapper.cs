@@ -26,17 +26,17 @@ namespace Oldmansoft.ClassicDomain.Util
 
             if (sourceType.IsArray && targetType.IsArray)
             {
-                result.Add(new MapArray().Init(string.Empty, sourceType, targetType, new SetGetValueDirect()));
+                result.Add(new MapArray().Init(string.Empty, sourceType, targetType));
                 return result;
             }
             else if (new Type[] { sourceType, targetType }.IsGenericList())
             {
-                result.Add(new MapList().Init(string.Empty, sourceType, targetType, new SetGetValueDirect()));
+                result.Add(new MapList().Init(string.Empty, sourceType, targetType));
                 return result;
             }
             else if (new Type[] { sourceType, targetType }.IsGenericDictionary())
             {
-                result.Add(new MapDictionary().Init(string.Empty, sourceType, targetType, new SetGetValueDirect()));
+                result.Add(new MapDictionary().Init(string.Empty, sourceType, targetType));
                 return result;
             }
             EachPropertys(sourceType, targetType, higherName, config, result);
@@ -69,7 +69,7 @@ namespace Oldmansoft.ClassicDomain.Util
                 if (sourcePropertyType.IsArray && targetPropertyType.IsArray)
                 {
                     if (!config.DeepCopy) continue;
-                    result.Add(new MapArray().Init(sourcePropertyInfo.Name, sourcePropertyType, targetPropertyType, new SetGetValueProperty(sourcePropertyInfo, targetPropertyInfo)));
+                    result.Add(new MapArrayProperty().Init(sourcePropertyInfo.Name, sourcePropertyType, targetPropertyType, sourcePropertyInfo, targetPropertyInfo));
                     continue;
                 }
 
@@ -78,7 +78,7 @@ namespace Oldmansoft.ClassicDomain.Util
                     if (!config.DeepCopy) continue;
                     var sourceItemType = sourcePropertyType.GetGenericArguments()[0];
                     var targetItemType = targetPropertyType.GetGenericArguments()[0];
-                    result.Add(new MapList().Init(sourcePropertyInfo.Name, sourcePropertyType, targetPropertyType, new SetGetValueProperty(sourcePropertyInfo, targetPropertyInfo)));
+                    result.Add(new MapListProperty().Init(sourcePropertyInfo.Name, sourcePropertyType, targetPropertyType, sourcePropertyInfo, targetPropertyInfo));
                     continue;
                 }
 
@@ -92,31 +92,31 @@ namespace Oldmansoft.ClassicDomain.Util
                     var targetValueType = targetPropertyType.GetGenericArguments()[1];
                     if (sourceKeyType != targetKeyType) continue;
 
-                    result.Add(new MapDictionary().Init(sourcePropertyInfo.Name, sourcePropertyType, targetPropertyType, new SetGetValueProperty(sourcePropertyInfo, targetPropertyInfo)));
+                    result.Add(new MapDictionaryProperty().Init(sourcePropertyInfo.Name, sourcePropertyType, targetPropertyType, sourcePropertyInfo, targetPropertyInfo));
                     continue;
                 }
 
                 if (sourcePropertyType.IsEnum && targetPropertyType.IsEnum)
                 {
-                    result.Add(new MapEnum().Init(sourcePropertyInfo.Name, sourcePropertyType, targetPropertyType, new SetGetValueProperty(sourcePropertyInfo, targetPropertyInfo)));
+                    result.Add(new MapEnumProperty().Init(sourcePropertyInfo.Name, sourcePropertyType, targetPropertyType, sourcePropertyInfo, targetPropertyInfo));
                     continue;
                 }
 
                 if (sourcePropertyType.IsNullableEnum() && targetPropertyType.IsNullableEnum())
                 {
-                    result.Add(new MapNullableEnum().Init(sourcePropertyInfo.Name, sourcePropertyType, targetPropertyType, new SetGetValueProperty(sourcePropertyInfo, targetPropertyInfo)));
+                    result.Add(new MapNullableEnumProperty().Init(sourcePropertyInfo.Name, sourcePropertyType, targetPropertyType, sourcePropertyInfo, targetPropertyInfo));
                     continue;
                 }
 
                 if (new Type[] { sourcePropertyType, targetPropertyType }.IsNormalClass())
                 {
                     if (!config.DeepCopy) continue;
-                    result.Add(new MapNormalClass().Init(sourcePropertyInfo.Name, sourcePropertyType, targetPropertyType, new SetGetValueProperty(sourcePropertyInfo, targetPropertyInfo)));
+                    result.Add(new MapNormalClassProperty().Init(sourcePropertyInfo.Name, sourcePropertyType, targetPropertyType, sourcePropertyInfo, targetPropertyInfo));
                     continue;
                 }
 
                 if (sourcePropertyType != targetPropertyType) continue;
-                result.Add(new MapStruct().Init(sourcePropertyInfo.Name, sourcePropertyType, targetPropertyType, new SetGetValueProperty(sourcePropertyInfo, targetPropertyInfo)));
+                result.Add(new MapStructProperty().Init(sourcePropertyInfo.Name, sourcePropertyType, targetPropertyType, sourcePropertyInfo, targetPropertyInfo));
             }
         }
     }

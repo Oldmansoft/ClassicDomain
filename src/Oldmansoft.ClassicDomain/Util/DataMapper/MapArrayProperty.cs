@@ -7,24 +7,25 @@ using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Util
 {
-    class MapArray : MapContent
+    class MapArrayProperty : MapContentProperty
     {
         public override void Map<TTarget>(string higherName, object source, ref TTarget target, MapConfig config)
         {
-            if (source == null && config.IgnoreSourceNull) return;
+            var sourceValue = SourceProperty.GetValue(source);
+            if (sourceValue == null && config.IgnoreSourceNull) return;
 
             var sourceItemType = SourceType.GetMethod("Set").GetParameters()[1].ParameterType;
             var targetItemType = TargetType.GetMethod("Set").GetParameters()[1].ParameterType;
 
             var isNormalClass = sourceItemType.IsNormalClass() && targetItemType.IsNormalClass();
-            var currentSource = source as Array;
+            var currentSource = sourceValue as Array;
             if (currentSource == null)
             {
-                target = default(TTarget);
+                TargetProperty.SetValue(target, null);
                 return;
             }
 
-            var targetValue = target as Array;
+            var targetValue = TargetType.InvokeMember("Set", BindingFlags.CreateInstance, null, null, new object[] { currentSource.Length });
             var method = TargetType.GetMethod("SetValue", new Type[] { typeof(object), typeof(int) });
             int index = 0;
             foreach (var item in currentSource)
@@ -32,6 +33,7 @@ namespace Oldmansoft.ClassicDomain.Util
                 method.Invoke(targetValue, new object[] { DataMapper.ItemValueCopy(sourceItemType, targetItemType, isNormalClass, item, config), index });
                 index++;
             }
+            TargetProperty.SetValue(target, targetValue);
         }
     }
 }

@@ -31,8 +31,10 @@ namespace UnitTest.ClassicDomain.Util
             var source = new CopySourceModel[1];
             source[0] = CreateSource("hello");
 
-            var target = source.CopyTo(new CopyTargetModel[1]);
+            var input = new CopyTargetModel[1];
+            var target = source.CopyTo(input);
 
+            Assert.AreEqual(input.GetHashCode(), target.GetHashCode());
             Assert.AreEqual(source.Length, target.Length);
             Assert.AreEqual("hello", target[0].Name);
         }
@@ -43,8 +45,10 @@ namespace UnitTest.ClassicDomain.Util
             var source = new List<CopySourceModel>();
             source.Add(CreateSource("hello"));
 
-            var target = source.CopyTo(new List<CopyTargetModel>());
+            var input = new List<CopyTargetModel>();
+            var target = source.CopyTo(input);
 
+            Assert.AreEqual(input.GetHashCode(), target.GetHashCode());
             Assert.AreEqual(source.Count, target.Count);
             Assert.AreEqual("hello", target[0].Name);
         }

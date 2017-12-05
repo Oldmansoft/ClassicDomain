@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Util
 {
-    class MapEnum : MapContent
+    class MapEnumProperty : MapContentProperty
     {
         public override void Map<TTarget>(string higherName,object source, ref TTarget target, MapConfig config)
         {
             try
             {
-                ValueAction.SetValue(ref target, Enum.Parse(TargetType, ValueAction.GetValue(source).ToString()));
+                TargetProperty.SetValue(target, Enum.Parse(TargetType, SourceProperty.GetValue(source).ToString()));
             }
             catch (ArgumentException)
             {
