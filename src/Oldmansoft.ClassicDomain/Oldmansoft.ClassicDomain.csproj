@@ -99,6 +99,11 @@
     <Compile Include="Util\DataMapper.cs" />
     <Compile Include="Util\ObjectCreator.cs" />
     <Compile Include="Util\DataMapper\PropertyIgnore.cs" />
+    <Compile Include="Util\ObjectCreator\EmptyCreator.cs" />
+    <Compile Include="Util\ObjectCreator\GenericDictionaryCreator.cs" />
+    <Compile Include="Util\ObjectCreator\GenericListCreator.cs" />
+    <Compile Include="Util\ObjectCreator\ICreator.cs" />
+    <Compile Include="Util\ObjectCreator\NormalClassCreator.cs" />
     <Compile Include="Util\OnceSet.cs" />
     <Compile Include="Util\Paging\PagingCondition.cs" />
     <Compile Include="Util\Paging\PagingResult.cs" />

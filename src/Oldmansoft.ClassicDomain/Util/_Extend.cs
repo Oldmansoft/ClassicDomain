@@ -114,6 +114,7 @@ namespace Oldmansoft.ClassicDomain.Util
             var genericArguments = source.GetGenericArguments();
             if (genericArguments.Length != 2) return false;
             var sourceDictionaryType = typeof(IDictionary<,>).MakeGenericType(genericArguments[0], genericArguments[1]);
+            if (sourceDictionaryType == source) return true;
             if (!source.GetInterfaces().Contains(sourceDictionaryType)) return false;
             return true;
         }
@@ -126,7 +127,8 @@ namespace Oldmansoft.ClassicDomain.Util
         public static bool IsGenericList(this Type source)
         {
             if (!source.IsGenericType) return false;
-            var sourceListType = typeof(ICollection<>).MakeGenericType(source.GetGenericArguments()[0]);
+            var sourceListType = typeof(IList<>).MakeGenericType(source.GetGenericArguments()[0]);
+            if (sourceListType == source) return true;
             if (!source.GetInterfaces().Contains(sourceListType)) return false;
             return true;
         }
