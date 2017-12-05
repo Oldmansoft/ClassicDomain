@@ -9,6 +9,6 @@ namespace Oldmansoft.ClassicDomain.Util
 {
     interface IMapContent
     {
-        void Map<TTarget>(string higherName, object source, ref TTarget target, MapConfig config);
+        void Map(string higherName, object source, ref object target, MapConfig config);
     }
 }

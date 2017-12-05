@@ -9,7 +9,7 @@ namespace Oldmansoft.ClassicDomain.Util
 {
     class MapArray : MapContent
     {
-        public override void Map<TTarget>(string higherName, object source, ref TTarget target, MapConfig config)
+        public override void Map(string higherName, object source, ref object target, MapConfig config)
         {
             if (source == null && config.IgnoreSourceNull) return;
 
@@ -20,7 +20,7 @@ namespace Oldmansoft.ClassicDomain.Util
             var currentSource = source as Array;
             if (currentSource == null)
             {
-                target = default(TTarget);
+                target = null;
                 return;
             }
 

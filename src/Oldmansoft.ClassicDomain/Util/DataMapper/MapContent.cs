@@ -23,6 +23,6 @@ namespace Oldmansoft.ClassicDomain.Util
             return this;
         }
 
-        public abstract void Map<TTarget>(string higherName, object source, ref TTarget target, MapConfig config);
+        public abstract void Map(string higherName, object source, ref object target, MapConfig config);
     }
 }

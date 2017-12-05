@@ -10,14 +10,14 @@ namespace Oldmansoft.ClassicDomain.Util
 {
     class MapDictionary : MapContent
     {
-        public override void Map<TTarget>(string higherName, object source, ref TTarget target, MapConfig config)
+        public override void Map(string higherName, object source, ref object target, MapConfig config)
         {
             if (source == null && config.IgnoreSourceNull) return;
 
             var currentSource = source as IDictionary;
             if (currentSource == null)
             {
-                target = default(TTarget);
+                target = null;
                 return;
             }
 

@@ -9,7 +9,7 @@ namespace Oldmansoft.ClassicDomain.Util
 {
     class MapEnumProperty : MapContentProperty
     {
-        public override void Map<TTarget>(string higherName,object source, ref TTarget target, MapConfig config)
+        public override void Map(string higherName,object source, ref object target, MapConfig config)
         {
             try
             {
