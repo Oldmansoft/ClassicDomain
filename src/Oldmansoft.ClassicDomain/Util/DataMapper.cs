@@ -36,6 +36,11 @@ namespace Oldmansoft.ClassicDomain.Util
         
         internal static void CopyNormal(object source, Type sourceType, ref object target, Type targetType, string higherName, MapConfig config)
         {
+            if (source == null)
+            {
+                target = null;
+                return;
+            }
             var maps = Mapper.GetMapper(sourceType, targetType, higherName, config);
             for (var i = 0; i < maps.Count; i++)
             {

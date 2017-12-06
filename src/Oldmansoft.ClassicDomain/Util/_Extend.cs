@@ -272,6 +272,28 @@ namespace Oldmansoft.ClassicDomain.Util
             return DataMapper.Map(source, target);
         }
 
+        private static MapConfig DeepCopyConfig = new MapConfig() { DeepCopy = true };
+
+        private static MapConfig NotDeepCopyConfig = new MapConfig() { DeepCopy = false };
+
+        /// <summary>
+        /// 复制到
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TTarget"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="target"></param>
+        /// <param name="isDeepCopy"></param>
+        /// <returns></returns>
+        public static TTarget CopyTo<TSource, TTarget>(this TSource source, TTarget target, bool isDeepCopy)
+        {
+            if (source is DataMapper) throw new ArgumentException("请不要直接使用 DataMapper.CopyTo(target) 方法", "source");
+            if (isDeepCopy)
+                return DataMapper.Map(source, target, DeepCopyConfig);
+            else
+                return DataMapper.Map(source, target, NotDeepCopyConfig);
+        }
+
         /// <summary>
         /// 转换字符串为值
         /// </summary>
