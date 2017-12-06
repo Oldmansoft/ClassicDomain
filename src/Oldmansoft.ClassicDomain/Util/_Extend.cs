@@ -250,31 +250,12 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <typeparam name="TTarget"></typeparam>
         /// <param name="source"></param>
         /// <param name="target"></param>
-        /// <param name="config"></param>
-        /// <returns></returns>
-        public static TTarget CopyTo<TSource, TTarget>(this TSource source, TTarget target, MapConfig config)
-        {
-            if (source is DataMapper) throw new ArgumentException("请不要直接使用 DataMapper.CopyTo(target) 方法", "source");
-            return DataMapper.Map(source, target, config);
-        }
-
-        /// <summary>
-        /// 复制到
-        /// </summary>
-        /// <typeparam name="TSource"></typeparam>
-        /// <typeparam name="TTarget"></typeparam>
-        /// <param name="source"></param>
-        /// <param name="target"></param>
         /// <returns></returns>
         public static TTarget CopyTo<TSource, TTarget>(this TSource source, TTarget target)
         {
             if (source is DataMapper) throw new ArgumentException("请不要直接使用 DataMapper.CopyTo(target) 方法", "source");
             return DataMapper.Map(source, target);
         }
-
-        private static MapConfig DeepCopyConfig = new MapConfig() { DeepCopy = true };
-
-        private static MapConfig NotDeepCopyConfig = new MapConfig() { DeepCopy = false };
 
         /// <summary>
         /// 复制到
@@ -285,13 +266,11 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <param name="target"></param>
         /// <param name="isDeepCopy"></param>
         /// <returns></returns>
+        [Obsolete("已经停用浅拷贝")]
         public static TTarget CopyTo<TSource, TTarget>(this TSource source, TTarget target, bool isDeepCopy)
         {
             if (source is DataMapper) throw new ArgumentException("请不要直接使用 DataMapper.CopyTo(target) 方法", "source");
-            if (isDeepCopy)
-                return DataMapper.Map(source, target, DeepCopyConfig);
-            else
-                return DataMapper.Map(source, target, NotDeepCopyConfig);
+            return DataMapper.Map(source, target);
         }
 
         /// <summary>

@@ -19,32 +19,29 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <typeparam name="TTarget"></typeparam>
         /// <param name="source">源对象</param>
         /// <param name="target">目标对象</param>
-        /// <param name="config">配置</param>
         /// <returns>返回目标对象</returns>
-        public static TTarget Map<TSource, TTarget>(TSource source, TTarget target, MapConfig config = null)
+        public static TTarget Map<TSource, TTarget>(TSource source, TTarget target)
         {
             if (source == null || target == null) return default(TTarget);
-            if (config == null) config = MapConfig.Empty;
 
             var sourceType = typeof(TSource);
             var targetType = typeof(TTarget);
-
             var targetObject = (object)target;
-            CopyNormal(source, sourceType, ref targetObject, targetType, string.Empty, config);
+            CopyNormal(source, sourceType, ref targetObject, targetType);
             return target;
         }
         
-        internal static void CopyNormal(object source, Type sourceType, ref object target, Type targetType, string higherName, MapConfig config)
+        internal static void CopyNormal(object source, Type sourceType, ref object target, Type targetType)
         {
             if (source == null)
             {
                 target = null;
                 return;
             }
-            var maps = Mapper.GetMapper(sourceType, targetType, higherName, config);
-            for (var i = 0; i < maps.Count; i++)
+            var maps = Mapper.GetMapper(sourceType, targetType);
+            for (var i = 0; i < maps.Length; i++)
             {
-                maps[i].Map(higherName, source, ref target, config);
+                maps[i].Map(source, ref target);
             }
         }
 
@@ -55,9 +52,8 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <param name="targetItemType"></param>
         /// <param name="isNormalClass"></param>
         /// <param name="source"></param>
-        /// <param name="config"></param>
         /// <returns></returns>
-        internal static object ItemValueCopy(Type sourceItemType, Type targetItemType, bool isNormalClass, object source, MapConfig config)
+        internal static object ItemValueCopy(Type sourceItemType, Type targetItemType, bool isNormalClass, object source)
         {
             if (isNormalClass)
             {
@@ -71,7 +67,7 @@ namespace Oldmansoft.ClassicDomain.Util
                 {
                     return null;
                 }
-                CopyNormal(source, sourceItemType, ref targetValue, targetItemType, string.Empty, config);
+                CopyNormal(source, sourceItemType, ref targetValue, targetItemType);
                 return targetValue;
             }
 
@@ -97,11 +93,13 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <summary>
         /// 是否深拷贝
         /// </summary>
+        [Obsolete("全用深拷贝")]
         public bool IsDeepCopy { get { return Config.DeepCopy; } set { Config.DeepCopy = value; } }
 
         /// <summary>
         /// 是否忽略空值
         /// </summary>
+        [Obsolete("全用不忽略空值")]
         public bool IsIgnoreNull { get { return Config.IgnoreSourceNull; } set { Config.IgnoreSourceNull = value; } }
 
         /// <summary>
@@ -109,8 +107,6 @@ namespace Oldmansoft.ClassicDomain.Util
         /// </summary>
         public DataMapper(bool isDeepCopy = true)
         {
-            Config = new MapConfig();
-            Config.DeepCopy = IsDeepCopy;
         }
 
         /// <summary>
@@ -118,6 +114,7 @@ namespace Oldmansoft.ClassicDomain.Util
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <returns></returns>
+        [Obsolete("建议用不同的类代替需要被忽略的字段的类")]
         public IPropertyIgnore<TEntity> SetIgnore<TEntity>()
         {
             return Config.SetIgnore<TEntity>();
@@ -133,7 +130,7 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <returns>返回目标对象</returns>
         public TTarget CopyTo<TSource, TTarget>(TSource source, TTarget target)
         {
-            return Map(source, target, Config);
+            return Map(source, target);
         }
     }
 }

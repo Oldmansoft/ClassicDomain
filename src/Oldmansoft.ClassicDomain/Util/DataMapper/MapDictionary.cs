@@ -10,9 +10,13 @@ namespace Oldmansoft.ClassicDomain.Util
 {
     class MapDictionary : MapContent
     {
-        public override void Map(string higherName, object source, ref object target, MapConfig config)
+        public override void Map(object source, ref object target)
         {
-            if (source == null && config.IgnoreSourceNull) return;
+            if (source == null)
+            {
+                target = null;
+                return;
+            }
 
             var currentSource = source as IDictionary;
             if (currentSource == null)
@@ -31,7 +35,7 @@ namespace Oldmansoft.ClassicDomain.Util
             var targetValue = target as IDictionary;
             foreach (var key in currentSource.Keys)
             {
-                targetValue.Add(key, DataMapper.ItemValueCopy(sourceValueType, targetValueType, isNormalClass, currentSource[key], config));
+                targetValue.Add(key, DataMapper.ItemValueCopy(sourceValueType, targetValueType, isNormalClass, currentSource[key]));
             }
         }
     }

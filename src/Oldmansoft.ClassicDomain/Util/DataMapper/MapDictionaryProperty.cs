@@ -10,10 +10,14 @@ namespace Oldmansoft.ClassicDomain.Util
 {
     class MapDictionaryProperty : MapContentProperty
     {
-        public override void Map(string higherName, object source, ref object target, MapConfig config)
+        public override void Map(object source, ref object target)
         {
             var sourceValue = SourceProperty.GetValue(source);
-            if (sourceValue == null && config.IgnoreSourceNull) return;
+            if (sourceValue == null)
+            {
+                TargetProperty.SetValue(target, null);
+                return;
+            }
 
             var currentSource = sourceValue as IDictionary;
             if (currentSource == null)
@@ -32,7 +36,7 @@ namespace Oldmansoft.ClassicDomain.Util
             var targetValue = ObjectCreator.CreateInstance(targetType) as IDictionary;
             foreach (var key in currentSource.Keys)
             {
-                targetValue.Add(key, DataMapper.ItemValueCopy(sourceValueType, targetValueType, isNormalClass, currentSource[key], config));
+                targetValue.Add(key, DataMapper.ItemValueCopy(sourceValueType, targetValueType, isNormalClass, currentSource[key]));
             }
             TargetProperty.SetValue(target, targetValue);
         }

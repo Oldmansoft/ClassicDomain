@@ -9,9 +9,13 @@ namespace Oldmansoft.ClassicDomain.Util
 {
     class MapArray : MapContent
     {
-        public override void Map(string higherName, object source, ref object target, MapConfig config)
+        public override void Map(object source, ref object target)
         {
-            if (source == null && config.IgnoreSourceNull) return;
+            if (source == null)
+            {
+                target = null;
+                return;
+            }
 
             var sourceItemType = SourceType.GetMethod("Set").GetParameters()[1].ParameterType;
             var targetItemType = TargetType.GetMethod("Set").GetParameters()[1].ParameterType;
@@ -29,7 +33,7 @@ namespace Oldmansoft.ClassicDomain.Util
             int index = 0;
             foreach (var item in currentSource)
             {
-                method.Invoke(targetValue, new object[] { DataMapper.ItemValueCopy(sourceItemType, targetItemType, isNormalClass, item, config), index });
+                method.Invoke(targetValue, new object[] { DataMapper.ItemValueCopy(sourceItemType, targetItemType, isNormalClass, item), index });
                 index++;
             }
         }

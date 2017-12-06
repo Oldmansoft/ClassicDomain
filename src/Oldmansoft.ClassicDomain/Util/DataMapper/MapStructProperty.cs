@@ -9,7 +9,7 @@ namespace Oldmansoft.ClassicDomain.Util
 {
     class MapStructProperty : MapContentProperty
     {
-        public override void Map(string higherName, object source, ref object target, MapConfig config)
+        public override void Map(object source, ref object target)
         {
             TargetProperty.SetValue(target, SourceProperty.GetValue(source));
         }

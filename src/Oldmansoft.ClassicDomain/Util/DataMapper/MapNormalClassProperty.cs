@@ -9,10 +9,14 @@ namespace Oldmansoft.ClassicDomain.Util
 {
     class MapNormalClassProperty : MapContentProperty
     {
-        public override void Map(string higherName, object source, ref object target, MapConfig config)
+        public override void Map(object source, ref object target)
         {
             object sourceValue = SourceProperty.GetValue(source);
-            if (sourceValue == null && config.IgnoreSourceNull) return;
+            if (sourceValue == null)
+            {
+                TargetProperty.SetValue(target, null);
+                return;
+            }
 
             if (sourceValue == null)
             {
@@ -26,7 +30,7 @@ namespace Oldmansoft.ClassicDomain.Util
                 if (targetValue == null) return;
             }
             TargetProperty.SetValue(target, targetValue);
-            DataMapper.CopyNormal(sourceValue, SourceType, ref targetValue, TargetType, string.Format("{0}{1}.", higherName, PropertyName), config);
+            DataMapper.CopyNormal(sourceValue, SourceType, ref targetValue, TargetType);
         }
     }
 }

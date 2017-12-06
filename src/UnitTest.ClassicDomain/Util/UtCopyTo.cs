@@ -86,7 +86,9 @@ namespace UnitTest.ClassicDomain.Util
 
             public CopySourceModel Model { get; set; }
 
-            public E? Enum { get; set; }
+            public E? NullEnum { get; set; }
+
+            public E Enum { get; set; }
 
             public enum E
             {
@@ -140,9 +142,19 @@ namespace UnitTest.ClassicDomain.Util
         {
             var source = new ItemObject();
             var target = new ItemObject();
-            target.Enum = ItemObject.E.B;
+            target.NullEnum = ItemObject.E.B;
             source.CopyTo(target);
-            Assert.IsNull(target.Enum);
+            Assert.IsNull(target.NullEnum);
+        }
+
+        [TestMethod]
+        public void TestCopyEnum()
+        {
+            var source = new ItemObject();
+            var target = new ItemObject();
+            source.Enum = ItemObject.E.B;
+            source.CopyTo(target);
+            Assert.AreEqual(source.Enum, target.Enum);
         }
 
         [TestMethod]

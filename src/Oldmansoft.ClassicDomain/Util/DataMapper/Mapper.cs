@@ -9,17 +9,17 @@ namespace Oldmansoft.ClassicDomain.Util
 {
     class Mapper
     {
-        private static System.Collections.Concurrent.ConcurrentDictionary<long, IList<IMapContent>> Maps;
+        private static System.Collections.Concurrent.ConcurrentDictionary<long, IMapContent[]> Maps;
 
         static Mapper()
         {
-            Maps = new System.Collections.Concurrent.ConcurrentDictionary<long, IList<IMapContent>>();
+            Maps = new System.Collections.Concurrent.ConcurrentDictionary<long, IMapContent[]>();
         }
 
-        public static IList<IMapContent> GetMapper(Type sourceType, Type targetType, string higherName, MapConfig config)
+        public static IMapContent[] GetMapper(Type sourceType, Type targetType)
         {
-            var key = (long)(sourceType.GetHashCode() + config.GetHashCode()) * int.MaxValue + targetType.GetHashCode() + config.GetHashCode();
-            IList<IMapContent> maps;
+            var key = (long)sourceType.GetHashCode() * int.MaxValue + targetType.GetHashCode();
+            IMapContent[] maps;
             if (Maps.TryGetValue(key, out maps)) return maps;
 
             var result = new List<IMapContent>();
@@ -27,22 +27,22 @@ namespace Oldmansoft.ClassicDomain.Util
             if (sourceType.IsArray && targetType.IsArray)
             {
                 result.Add(new MapArray().Init(string.Empty, sourceType, targetType));
-                return result;
+                return result.ToArray();
             }
             else if (new Type[] { sourceType, targetType }.IsGenericList())
             {
                 result.Add(new MapList().Init(string.Empty, sourceType, targetType));
-                return result;
+                return result.ToArray();
             }
             else if (new Type[] { sourceType, targetType }.IsGenericDictionary())
             {
                 result.Add(new MapDictionary().Init(string.Empty, sourceType, targetType));
-                return result;
+                return result.ToArray();
             }
-            EachPropertys(sourceType, targetType, higherName, config, result);
+            EachPropertys(sourceType, targetType, result);
 
-            Maps.TryAdd(key, result);
-            return result;
+            Maps.TryAdd(key, result.ToArray());
+            return result.ToArray();
         }
 
         /// <summary>
@@ -50,15 +50,12 @@ namespace Oldmansoft.ClassicDomain.Util
         /// </summary>
         /// <param name="sourceType"></param>
         /// <param name="targetType"></param>
-        /// <param name="higherName"></param>
-        /// <param name="config"></param>
         /// <param name="result"></param>
-        private static void EachPropertys(Type sourceType, Type targetType, string higherName, MapConfig config, List<IMapContent> result)
+        private static void EachPropertys(Type sourceType, Type targetType, List<IMapContent> result)
         {
             foreach (var sourcePropertyInfo in TypePublicInstanceStore.GetPropertys(sourceType))
             {
                 if (!sourcePropertyInfo.CanRead) continue;
-                if (config.IgnoreProperty.Contains(string.Format("{0}{1}", higherName, sourcePropertyInfo.Name))) continue;
 
                 var targetPropertyInfo = targetType.GetProperty(sourcePropertyInfo.Name, BindingFlags.Public | BindingFlags.Instance);
                 if (targetPropertyInfo == null) continue;
@@ -68,14 +65,12 @@ namespace Oldmansoft.ClassicDomain.Util
 
                 if (sourcePropertyType.IsArray && targetPropertyType.IsArray)
                 {
-                    if (!config.DeepCopy) continue;
                     result.Add(new MapArrayProperty().Init(sourcePropertyInfo.Name, sourcePropertyType, targetPropertyType, sourcePropertyInfo, targetPropertyInfo));
                     continue;
                 }
 
                 if (new Type[] { sourcePropertyType, targetPropertyType }.IsGenericList())
                 {
-                    if (!config.DeepCopy) continue;
                     var sourceItemType = sourcePropertyType.GetGenericArguments()[0];
                     var targetItemType = targetPropertyType.GetGenericArguments()[0];
                     result.Add(new MapListProperty().Init(sourcePropertyInfo.Name, sourcePropertyType, targetPropertyType, sourcePropertyInfo, targetPropertyInfo));
@@ -84,8 +79,6 @@ namespace Oldmansoft.ClassicDomain.Util
 
                 if (new Type[] { sourcePropertyType, targetPropertyType }.IsGenericDictionary())
                 {
-                    if (!config.DeepCopy) continue;
-
                     var sourceKeyType = sourcePropertyType.GetGenericArguments()[0];
                     var sourceValueType = sourcePropertyType.GetGenericArguments()[1];
                     var targetKeyType = targetPropertyType.GetGenericArguments()[0];
@@ -110,7 +103,6 @@ namespace Oldmansoft.ClassicDomain.Util
 
                 if (new Type[] { sourcePropertyType, targetPropertyType }.IsNormalClass())
                 {
-                    if (!config.DeepCopy) continue;
                     result.Add(new MapNormalClassProperty().Init(sourcePropertyInfo.Name, sourcePropertyType, targetPropertyType, sourcePropertyInfo, targetPropertyInfo));
                     continue;
                 }

@@ -9,11 +9,11 @@ namespace Oldmansoft.ClassicDomain.Util
 {
     class MapEnumProperty : MapContentProperty
     {
-        public override void Map(string higherName,object source, ref object target, MapConfig config)
+        public override void Map(object source, ref object target)
         {
             try
             {
-                TargetProperty.SetValue(target, Enum.Parse(TargetType, SourceProperty.GetValue(source).ToString()));
+                TargetProperty.SetValue(target, Enum.ToObject(TargetType, SourceProperty.GetValue(source)));
             }
             catch (ArgumentException)
             {
