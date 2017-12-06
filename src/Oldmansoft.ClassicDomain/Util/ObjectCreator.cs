@@ -31,40 +31,40 @@ namespace Oldmansoft.ClassicDomain.Util
             ICreator creator;
             if (!Creators.TryGetValue(type, out creator))
             {
-                if (type.IsInterface)
-                {
-                    if (type.IsGenericList())
-                    {
-                        creator = new GenericListCreator(type);
-                    }
-                    else if (type.IsGenericDictionary())
-                    {
-                        creator = new GenericDictionaryCreator(type);
-                    }
-                    else
-                    {
-                        creator = EmptyCreator.Instance;
-                    }
-                }
-                else if (type.IsAbstract)
-                {
-                    creator = EmptyCreator.Instance;
-                }
-                else
-                {
-                    var constructor = type.GetConstructor(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance, null, new Type[0], null);
-                    if (constructor == null)
-                    {
-                        creator = EmptyCreator.Instance;
-                    }
-                    else
-                    {
-                        creator = new NormalClassCreator(constructor);
-                    }
-                }
+                creator = CreateCreateor(type);
                 Creators.TryAdd(type, creator);
             }
             return creator.CreateObject();
+        }
+
+        private static ICreator CreateCreateor(Type type)
+        {
+            if (type.IsInterface)
+            {
+                if (type.IsIGenericList() || type.IsIGenericCollection())
+                {
+                    return new GenericListCreator(type);
+                }
+
+                if (type.IsIGenericDictionary())
+                {
+                    return new GenericDictionaryCreator(type);
+                }
+
+                return EmptyCreator.Instance;
+            }
+
+            if (type.IsAbstract)
+            {
+                return EmptyCreator.Instance;
+            }
+
+            var constructor = type.GetConstructor(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance, null, new Type[0], null);
+            if (constructor == null)
+            {
+                return EmptyCreator.Instance;
+            }
+            return new NormalClassCreator(constructor);
         }
 
         /// <summary>

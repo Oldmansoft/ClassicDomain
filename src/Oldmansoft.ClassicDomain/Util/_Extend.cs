@@ -120,6 +120,21 @@ namespace Oldmansoft.ClassicDomain.Util
         }
 
         /// <summary>
+        /// 是否为泛型字典接口
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static bool IsIGenericDictionary(this Type source)
+        {
+            if (!source.IsGenericType) return false;
+            var genericArguments = source.GetGenericArguments();
+            if (genericArguments.Length != 2) return false;
+            var sourceDictionaryType = typeof(IDictionary<,>).MakeGenericType(genericArguments[0], genericArguments[1]);
+            if (sourceDictionaryType != source) return false;
+            return true;
+        }
+
+        /// <summary>
         /// 是否为泛型列表
         /// </summary>
         /// <param name="source"></param>
@@ -130,6 +145,32 @@ namespace Oldmansoft.ClassicDomain.Util
             var sourceListType = typeof(IList<>).MakeGenericType(source.GetGenericArguments()[0]);
             if (sourceListType == source) return true;
             if (!source.GetInterfaces().Contains(sourceListType)) return false;
+            return true;
+        }
+
+        /// <summary>
+        /// 是否为泛型列表接口
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static bool IsIGenericList(this Type source)
+        {
+            if (!source.IsGenericType) return false;
+            var sourceListType = typeof(IList<>).MakeGenericType(source.GetGenericArguments()[0]);
+            if (sourceListType != source) return false;
+            return true;
+        }
+
+        /// <summary>
+        /// 是否为泛型列表接口
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static bool IsIGenericCollection(this Type source)
+        {
+            if (!source.IsGenericType) return false;
+            var sourceListType = typeof(ICollection<>).MakeGenericType(source.GetGenericArguments()[0]);
+            if (sourceListType != source) return false;
             return true;
         }
 
