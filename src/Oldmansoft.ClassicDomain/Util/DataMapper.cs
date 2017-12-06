@@ -27,7 +27,11 @@ namespace Oldmansoft.ClassicDomain.Util
             var sourceType = typeof(TSource);
             var targetType = typeof(TTarget);
             var targetObject = (object)target;
-            CopyNormal(source, sourceType, ref targetObject, targetType);
+            var maps = Mapper.GetMapper(sourceType, targetType);
+            for (var i = 0; i < maps.Length; i++)
+            {
+                maps[i].Map(source, ref targetObject);
+            }
             return target;
         }
         
