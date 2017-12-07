@@ -41,5 +41,51 @@ namespace UnitTest.ClassicDomain.Util
             var list = Oldmansoft.ClassicDomain.Util.ObjectCreator.CreateInstance<IDictionary<int, int>>();
             Assert.IsNotNull(list);
         }
+
+        [TestMethod]
+        public void TestPublicCreateClass()
+        {
+            var obj = Oldmansoft.ClassicDomain.Util.ObjectCreator.CreateInstance<PublicCreate>();
+            Assert.IsNotNull(obj);
+        }
+
+        [TestMethod]
+        public void TestPrivateCreateClass()
+        {
+            var obj = Oldmansoft.ClassicDomain.Util.ObjectCreator.CreateInstance<PrivateCreate>();
+            Assert.IsNotNull(obj);
+        }
+
+        [TestMethod]
+        public void TestInternalPublicCreateClass()
+        {
+            var obj = Oldmansoft.ClassicDomain.Util.ObjectCreator.CreateInstance<InternalPublicCreate>();
+            Assert.IsNotNull(obj);
+        }
+
+        [TestMethod]
+        public void TestInternalPrivateCreateClass()
+        {
+            var obj = Oldmansoft.ClassicDomain.Util.ObjectCreator.CreateInstance<InternalPrivateCreate>();
+            Assert.IsNotNull(obj);
+        }
+    }
+
+    public class PublicCreate
+    {
+    }
+
+    public class PrivateCreate
+    {
+        private PrivateCreate() { }
+    }
+
+    internal class InternalPublicCreate
+    {
+    }
+
+    internal class InternalPrivateCreate
+    {
+        private InternalPrivateCreate() { }
     }
 }

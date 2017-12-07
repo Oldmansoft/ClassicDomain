@@ -60,11 +60,12 @@ namespace Oldmansoft.ClassicDomain.Util
             }
 
             var constructor = type.GetConstructor(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance, null, new Type[0], null);
-            if (constructor == null)
+            if (constructor != null)
             {
-                return EmptyCreator.Instance;
+                return new NormalClassCreator(type, constructor);
+
             }
-            return new NormalClassCreator(constructor);
+            return EmptyCreator.Instance;
         }
 
         /// <summary>

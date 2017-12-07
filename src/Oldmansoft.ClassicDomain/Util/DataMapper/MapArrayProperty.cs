@@ -29,7 +29,7 @@ namespace Oldmansoft.ClassicDomain.Util
                 return;
             }
 
-            var targetValue = TargetType.InvokeMember("Set", BindingFlags.CreateInstance, null, null, new object[] { currentSource.Length });
+            var targetValue = Array.CreateInstance(targetItemType, currentSource.Length);
             var method = TargetType.GetMethod("SetValue", new Type[] { typeof(object), typeof(int) });
             int index = 0;
             foreach (var item in currentSource)
