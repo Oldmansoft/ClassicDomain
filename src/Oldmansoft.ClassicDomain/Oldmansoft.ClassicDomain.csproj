@@ -78,10 +78,10 @@
     <Compile Include="UniqueException.cs" />
     <Compile Include="UnitOfWorkManagedItem.cs" />
     <Compile Include="UnitOfWork.cs" />
-    <Compile Include="Util\DataMapper\IMapContent.cs" />
+    <Compile Include="Util\DataMapper\IMap.cs" />
     <Compile Include="Util\DataMapper\MapArray.cs" />
     <Compile Include="Util\DataMapper\MapContent.cs" />
-    <Compile Include="Util\DataMapper\MapContentProperty.cs" />
+    <Compile Include="Util\DataMapper\MapProperty.cs" />
     <Compile Include="Util\DataMapper\MapArrayProperty.cs" />
     <Compile Include="Util\DataMapper\MapConfig.cs" />
     <Compile Include="Util\DataMapper\MapDictionary.cs" />

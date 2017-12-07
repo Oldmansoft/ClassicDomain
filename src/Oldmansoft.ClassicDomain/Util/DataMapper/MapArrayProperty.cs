@@ -7,37 +7,37 @@ using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Util
 {
-    class MapArrayProperty : MapContentProperty
+    class MapArrayProperty : MapProperty
     {
         public override void Map(object source, ref object target)
         {
-            var sourceValue = SourceProperty.GetValue(source);
+            var sourceValue = Getter.Get(source);
             if (sourceValue == null)
             {
-                TargetProperty.SetValue(target, null);
+                Setter.Set(target, null);
                 return;
             }
 
-            var sourceItemType = SourceType.GetMethod("Set").GetParameters()[1].ParameterType;
-            var targetItemType = TargetType.GetMethod("Set").GetParameters()[1].ParameterType;
+            var sourceItemType = SourcePropertyType.GetMethod("Set").GetParameters()[1].ParameterType;
+            var targetItemType = TargetPropertyType.GetMethod("Set").GetParameters()[1].ParameterType;
 
             var isNormalClass = sourceItemType.IsNormalClass() && targetItemType.IsNormalClass();
             var currentSource = sourceValue as Array;
             if (currentSource == null)
             {
-                TargetProperty.SetValue(target, null);
+                Setter.Set(target, null);
                 return;
             }
 
             var targetValue = Array.CreateInstance(targetItemType, currentSource.Length);
-            var method = TargetType.GetMethod("SetValue", new Type[] { typeof(object), typeof(int) });
+            var method = TargetPropertyType.GetMethod("SetValue", new Type[] { typeof(object), typeof(int) });
             int index = 0;
             foreach (var item in currentSource)
             {
                 method.Invoke(targetValue, new object[] { DataMapper.ItemValueCopy(sourceItemType, targetItemType, isNormalClass, item), index });
                 index++;
             }
-            TargetProperty.SetValue(target, targetValue);
+            Setter.Set(target, targetValue);
         }
     }
 }

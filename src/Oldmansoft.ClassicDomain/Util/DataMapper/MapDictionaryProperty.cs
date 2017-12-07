@@ -8,37 +8,37 @@ using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Util
 {
-    class MapDictionaryProperty : MapContentProperty
+    class MapDictionaryProperty : MapProperty
     {
         public override void Map(object source, ref object target)
         {
-            var sourceValue = SourceProperty.GetValue(source);
+            var sourceValue = Getter.Get(source);
             if (sourceValue == null)
             {
-                TargetProperty.SetValue(target, null);
+                Setter.Set(target, null);
                 return;
             }
 
             var currentSource = sourceValue as IDictionary;
             if (currentSource == null)
             {
-                TargetProperty.SetValue(target, null);
+                Setter.Set(target, null);
                 return;
             }
 
-            var sourceKeyType = SourceType.GetGenericArguments()[0];
-            var sourceValueType = SourceType.GetGenericArguments()[1];
-            var targetKeyType = TargetType.GetGenericArguments()[0];
-            var targetValueType = TargetType.GetGenericArguments()[1];
+            var sourceKeyType = SourcePropertyType.GetGenericArguments()[0];
+            var sourceValueType = SourcePropertyType.GetGenericArguments()[1];
+            var targetKeyType = TargetPropertyType.GetGenericArguments()[0];
+            var targetValueType = TargetPropertyType.GetGenericArguments()[1];
 
             var targetType = typeof(Dictionary<,>).MakeGenericType(targetKeyType, targetValueType);
             var isNormalClass = sourceValueType.IsNormalClass() && targetValueType.IsNormalClass();
-            var targetValue = ObjectCreator.CreateInstance(targetType) as IDictionary;
+            var targetValue = Activator.CreateInstance(targetType) as IDictionary;
             foreach (var key in currentSource.Keys)
             {
                 targetValue.Add(key, DataMapper.ItemValueCopy(sourceValueType, targetValueType, isNormalClass, currentSource[key]));
             }
-            TargetProperty.SetValue(target, targetValue);
+            Setter.Set(target, targetValue);
         }
     }
 }

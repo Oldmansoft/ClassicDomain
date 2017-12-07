@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Util
 {
-    class MapNullableEnumProperty : MapContentProperty
+    class MapNullableEnumProperty : MapProperty
     {
         public override void Map(object source, ref object target)
         {
-            var sourceValue = SourceProperty.GetValue(source);
+            var sourceValue = Getter.Get(source);
             if (sourceValue == null)
             {
-                TargetProperty.SetValue(target, null);
+                Setter.Set(target, null);
                 return;
             }
-            var targetValue = Enum.ToObject(TargetType.GenericTypeArguments[0], (int)sourceValue);
-            TargetProperty.SetValue(target, Activator.CreateInstance(TargetType, targetValue));
+            var targetValue = Enum.ToObject(TargetPropertyType.GenericTypeArguments[0], (int)sourceValue);
+            Setter.Set(target, Activator.CreateInstance(TargetPropertyType, targetValue));
         }
     }
 }

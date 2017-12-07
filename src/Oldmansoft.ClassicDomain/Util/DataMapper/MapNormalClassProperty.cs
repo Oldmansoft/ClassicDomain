@@ -7,30 +7,38 @@ using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Util
 {
-    class MapNormalClassProperty : MapContentProperty
+    class MapNormalClassProperty : MapProperty
     {
+        private IGetter TargetGetter { get; set; }
+
+        public override IMap Init(Type sourceType, Type targetType, PropertyInfo sourceProperty, PropertyInfo targetProperty)
+        {
+            TargetGetter = (IGetter)Activator.CreateInstance(typeof(GetterWrapper<,>).MakeGenericType(targetType, targetProperty.PropertyType), targetProperty);
+            return base.Init(sourceType, targetType, sourceProperty, targetProperty);
+        }
+
         public override void Map(object source, ref object target)
         {
-            object sourceValue = SourceProperty.GetValue(source);
+            var sourceValue = Getter.Get(source);
             if (sourceValue == null)
             {
-                TargetProperty.SetValue(target, null);
+                Setter.Set(target, null);
                 return;
             }
 
             if (sourceValue == null)
             {
-                TargetProperty.SetValue(target, null);
+                Setter.Set(target, null);
                 return;
             }
-            object targetValue = TargetProperty.GetValue(target);
+            var targetValue = TargetGetter.Get(target);
             if (targetValue == null)
             {
-                targetValue = ObjectCreator.CreateInstance(TargetType);
+                targetValue = ObjectCreator.CreateInstance(TargetPropertyType);
                 if (targetValue == null) return;
             }
-            TargetProperty.SetValue(target, targetValue);
-            DataMapper.CopyNormal(sourceValue, SourceType, ref targetValue, TargetType);
+            Setter.Set(target, targetValue);
+            DataMapper.CopyNormal(sourceValue, SourcePropertyType, ref targetValue, TargetPropertyType);
         }
     }
 }

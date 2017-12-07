@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Util
 {
-    interface IMapContent
+    interface IMap
     {
         void Map(object source, ref object target);
     }

@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Util
 {
-    class MapStructProperty : MapContentProperty
+    class MapStructProperty : MapProperty
     {
         public override void Map(object source, ref object target)
         {
-            TargetProperty.SetValue(target, SourceProperty.GetValue(source));
+            Setter.Set(target, Getter.Get(source));
         }
     }
 }

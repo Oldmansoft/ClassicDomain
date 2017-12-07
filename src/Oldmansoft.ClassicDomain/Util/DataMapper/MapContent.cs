@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Util
 {
-    abstract class MapContent : IMapContent
+    abstract class MapContent : IMap
     {
         protected string PropertyName { get; private set; }
 
@@ -15,7 +15,7 @@ namespace Oldmansoft.ClassicDomain.Util
 
         protected Type TargetType { get; private set; }
         
-        public IMapContent Init(string propertyName, Type sourceType, Type targetType)
+        public IMap Init(string propertyName, Type sourceType, Type targetType)
         {
             PropertyName = propertyName;
             SourceType = sourceType;
