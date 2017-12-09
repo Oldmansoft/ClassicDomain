@@ -44,7 +44,7 @@ namespace Oldmansoft.ClassicDomain.Driver
         public void Set(TDomain domain)
         {
             if (domain == null) return;
-            var storeDomain = Util.ObjectCreator.CreateInstance<TDomain>();
+            var storeDomain = ObjectCreator.CreateInstance<TDomain>();
             Store[GetKey(domain).ToString()] = Util.DataMapper.Map(domain, storeDomain);
         }
 

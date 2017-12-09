@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Oldmansoft.ClassicDomain.Util;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oldmansoft.ClassicDomain.Util
+namespace Oldmansoft.ClassicDomain
 {
     /// <summary>
     /// 对象创建器

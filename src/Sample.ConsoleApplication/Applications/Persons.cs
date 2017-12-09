@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Oldmansoft.ClassicDomain;
-using Oldmansoft.ClassicDomain.Util;
 
 namespace Sample.ConsoleApplication.Applications
 {

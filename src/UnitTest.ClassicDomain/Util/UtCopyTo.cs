@@ -3,7 +3,6 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Oldmansoft.ClassicDomain;
-using Oldmansoft.ClassicDomain.Util;
 
 namespace UnitTest.ClassicDomain.Util
 {

@@ -10,13 +10,12 @@ namespace UnitTest.ClassicDomain.Util
         [TestMethod]
         public void TestPrivateContent()
         {
-            var mapper = new DataMapper();
             var source = new CopySourceModel();
             source.SetName("hello");
             source.CreateSub();
             source.Sub.Value = "world";
 
-            var target = mapper.CopyTo(source, new CopySourceModel());
+            var target = DataMapper.Map(source, new CopySourceModel());
             Assert.AreEqual("world", target.Sub.Value);
         }
     }

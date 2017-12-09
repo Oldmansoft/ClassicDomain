@@ -109,18 +109,12 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <summary>
         /// 创建数据映射
         /// </summary>
+        /// <param name="isDeepCopy"></param>
         [Obsolete("全用深拷贝")]
-        public DataMapper(bool isDeepCopy)
+        public DataMapper(bool isDeepCopy = true)
         {
         }
-
-        /// <summary>
-        /// 创建数据映射
-        /// </summary>
-        public DataMapper()
-        {
-        }
-
+        
         /// <summary>
         /// 设置忽略属性的实体
         /// </summary>
@@ -140,6 +134,7 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <param name="source">源对象</param>
         /// <param name="target">目标对象</param>
         /// <returns>返回目标对象</returns>
+        [Obsolete("建议用扩展方法")]
         public TTarget CopyTo<TSource, TTarget>(TSource source, TTarget target)
         {
             return Map(source, target);
