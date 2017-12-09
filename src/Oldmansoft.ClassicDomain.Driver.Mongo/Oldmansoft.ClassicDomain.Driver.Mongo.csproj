@@ -85,7 +85,7 @@
     <Compile Include="Library\MongoCursorEnumerator.cs" />
     <Compile Include="Library\MongoDatabase.cs" />
     <Compile Include="Library\MongoServer.cs" />
-    <Compile Include="Library\UpdateContext .cs" />
+    <Compile Include="Library\UpdateContext.cs" />
     <Compile Include="Library\UpdatedItem.cs" />
     <Compile Include="Library\_Extend.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

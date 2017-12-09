@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Oldmansoft.ClassicDomain.Driver.Mongo;
+using Oldmansoft.ClassicDomain;
 
 namespace UnitTest.ClassicDomain.Drvier.Mongo
 {

@@ -43,17 +43,17 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
                 {
                     if (propertyType.GetInterfaces().Contains(typeof(System.Collections.IDictionary)))
                     {
-                        DealDictionary(result, compareTarget, propertyType, name, sourceValue, targetValue);
+                        DealDictionary(result, propertyType, name, sourceValue, targetValue);
                         continue;
                     }
 
-                    DealList(result, compareTarget, propertyType, name, sourceValue, targetValue);
+                    DealList(result, propertyType, name, sourceValue, targetValue);
                     continue;
                 }
 
                 if (propertyType.IsNormalClass())
                 {
-                    DealNormalClass(propertyType, result, name, sourceValue, targetValue);
+                    DealNormalClass(result, propertyType, name, sourceValue, targetValue);
                     continue;
                 }
 
@@ -64,7 +64,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
             }
         }
 
-        private static void DealNormalClass(Type type, UpdatedItem result, string name, object sourceValue, object targetValue)
+        private static void DealNormalClass(UpdatedItem result, Type type, string name, object sourceValue, object targetValue)
         {
             if (sourceValue == null && targetValue == null)
             {
@@ -83,7 +83,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
             result.Add(Update.Set(name, targetValue.ToBsonValue()));
         }
 
-        private static void DealList(UpdatedItem result, object compareTarget, Type propertyType, string name, object sourceValue, object targetValue)
+        private static void DealList(UpdatedItem result, Type propertyType, string name, object sourceValue, object targetValue)
         {
             if (sourceValue == null && targetValue == null)
             {
@@ -122,7 +122,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
                 }
                 if (isNormalClass)
                 {
-                    DealNormalClass(itemType, result, GetListKey(name, i), sourceList[i], targetList[i]);
+                    DealNormalClass(result, itemType, GetListKey(name, i), sourceList[i], targetList[i]);
                     continue;
                 }
                 if (!sourceList[i].IsEquals(targetList[i]))
@@ -167,7 +167,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
             return value.ToBsonValue();
         }
 
-        private static void DealDictionary(UpdatedItem result, object compareTarget, Type propertyType, string name, object sourceValue, object targetValue)
+        private static void DealDictionary(UpdatedItem result, Type propertyType, string name, object sourceValue, object targetValue)
         {
             if (sourceValue == null && targetValue == null)
             {
@@ -197,7 +197,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
                 }
                 if (isNormalClass)
                 {
-                    DealNormalClass(valueType, result, GetHashKey(name, key.ToString()), sourceDictionary[key], targetDictionary[key]);
+                    DealNormalClass(result, valueType, GetHashKey(name, key.ToString()), sourceDictionary[key], targetDictionary[key]);
                     continue;
                 }
                 if (!sourceDictionary[key].IsEquals(targetDictionary[key]))

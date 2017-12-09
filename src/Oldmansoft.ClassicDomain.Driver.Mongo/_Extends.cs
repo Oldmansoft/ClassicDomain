@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Oldmansoft.ClassicDomain.Driver.Mongo;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oldmansoft.ClassicDomain.Driver.Mongo
+namespace Oldmansoft.ClassicDomain
 {
     /// <summary>
     /// 扩展方法
