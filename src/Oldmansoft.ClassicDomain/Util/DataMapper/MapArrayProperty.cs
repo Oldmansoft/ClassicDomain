@@ -9,19 +9,24 @@ namespace Oldmansoft.ClassicDomain.Util
 {
     class MapArrayProperty : MapProperty
     {
+        private Type SourceItemType;
+
+        private Type TargetItemType;
+
+        private bool IsNormalClass;
+
+        public override IMap Init(Type sourceType, Type targetType, PropertyInfo sourceProperty, PropertyInfo targetProperty)
+        {
+            base.Init(sourceType, targetType, sourceProperty, targetProperty);
+            SourceItemType = SourcePropertyType.GetMethod("Set").GetParameters()[1].ParameterType;
+            TargetItemType = TargetPropertyType.GetMethod("Set").GetParameters()[1].ParameterType;
+            IsNormalClass = SourceItemType.IsNormalClass() && TargetItemType.IsNormalClass();
+            return this;
+        }
+
         public override void Map(object source, ref object target)
         {
             var sourceValue = Getter.Get(source);
-            if (sourceValue == null)
-            {
-                Setter.Set(target, null);
-                return;
-            }
-
-            var sourceItemType = SourcePropertyType.GetMethod("Set").GetParameters()[1].ParameterType;
-            var targetItemType = TargetPropertyType.GetMethod("Set").GetParameters()[1].ParameterType;
-
-            var isNormalClass = sourceItemType.IsNormalClass() && targetItemType.IsNormalClass();
             var currentSource = sourceValue as Array;
             if (currentSource == null)
             {
@@ -29,12 +34,11 @@ namespace Oldmansoft.ClassicDomain.Util
                 return;
             }
 
-            var targetValue = Array.CreateInstance(targetItemType, currentSource.Length);
-            var method = TargetPropertyType.GetMethod("SetValue", new Type[] { typeof(object), typeof(int) });
+            var targetValue = Array.CreateInstance(TargetItemType, currentSource.Length);
             int index = 0;
             foreach (var item in currentSource)
             {
-                method.Invoke(targetValue, new object[] { DataMapper.ItemValueCopy(sourceItemType, targetItemType, isNormalClass, item), index });
+                targetValue.SetValue(DataMapper.ItemValueCopy(SourceItemType, TargetItemType, IsNormalClass, item), index);
                 index++;
             }
             Setter.Set(target, targetValue);

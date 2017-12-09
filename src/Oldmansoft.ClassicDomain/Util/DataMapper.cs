@@ -109,7 +109,15 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <summary>
         /// 创建数据映射
         /// </summary>
-        public DataMapper(bool isDeepCopy = true)
+        [Obsolete("全用深拷贝")]
+        public DataMapper(bool isDeepCopy)
+        {
+        }
+
+        /// <summary>
+        /// 创建数据映射
+        /// </summary>
+        public DataMapper()
         {
         }
 
@@ -118,7 +126,7 @@ namespace Oldmansoft.ClassicDomain.Util
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <returns></returns>
-        [Obsolete("建议用不同的类代替需要被忽略的字段的类")]
+        [Obsolete("用不同的类代替需要被忽略的字段的类")]
         public IPropertyIgnore<TEntity> SetIgnore<TEntity>()
         {
             return Config.SetIgnore<TEntity>();

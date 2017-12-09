@@ -10,14 +10,22 @@ namespace Oldmansoft.ClassicDomain.Util
 {
     class MapDictionary : MapContent
     {
+        private Type SourceValueType;
+
+        private Type TargetValueType;
+
+        private bool IsNormalClass;
+
+        public override IMap Init(Type sourceType, Type targetType)
+        {
+            SourceValueType = sourceType.GetGenericArguments()[1];
+            TargetValueType = targetType.GetGenericArguments()[1];
+            IsNormalClass = SourceValueType.IsNormalClass() && TargetValueType.IsNormalClass();
+            return base.Init(sourceType, targetType);
+        }
+
         public override void Map(object source, ref object target)
         {
-            if (source == null)
-            {
-                target = null;
-                return;
-            }
-
             var currentSource = source as IDictionary;
             if (currentSource == null)
             {
@@ -25,17 +33,10 @@ namespace Oldmansoft.ClassicDomain.Util
                 return;
             }
 
-            var sourceKeyType = SourceType.GetGenericArguments()[0];
-            var sourceValueType = SourceType.GetGenericArguments()[1];
-            var targetKeyType = TargetType.GetGenericArguments()[0];
-            var targetValueType = TargetType.GetGenericArguments()[1];
-
-            var targetType = typeof(Dictionary<,>).MakeGenericType(targetKeyType, targetValueType);
-            var isNormalClass = sourceValueType.IsNormalClass() && targetValueType.IsNormalClass();
             var targetValue = target as IDictionary;
             foreach (var key in currentSource.Keys)
             {
-                targetValue.Add(key, DataMapper.ItemValueCopy(sourceValueType, targetValueType, isNormalClass, currentSource[key]));
+                targetValue.Add(key, DataMapper.ItemValueCopy(SourceValueType, TargetValueType, IsNormalClass, currentSource[key]));
             }
         }
     }

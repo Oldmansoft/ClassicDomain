@@ -9,18 +9,22 @@ namespace Oldmansoft.ClassicDomain.Util
 {
     class MapList : MapContent
     {
+        private Type SourceItemType;
+
+        private Type TargetItemType;
+
+        private bool IsNormalClass;
+
+        public override IMap Init(Type sourceType, Type targetType)
+        {
+            SourceItemType = sourceType.GetGenericArguments()[0];
+            TargetItemType = targetType.GetGenericArguments()[0];
+            IsNormalClass = SourceItemType.IsNormalClass() && TargetItemType.IsNormalClass();
+            return base.Init(sourceType, targetType);
+        }
+
         public override void Map(object source, ref object target)
         {
-            if (source == null)
-            {
-                target = null;
-                return;
-            }
-
-            var sourceItemType = SourceType.GetGenericArguments()[0];
-            var targetItemType = TargetType.GetGenericArguments()[0];
-            var targetType = typeof(List<>).MakeGenericType(targetItemType);
-
             var currentSource = (source as IEnumerable);
             if (currentSource == null)
             {
@@ -28,11 +32,10 @@ namespace Oldmansoft.ClassicDomain.Util
                 return;
             }
 
-            var isNormalClass = sourceItemType.IsNormalClass() && targetItemType.IsNormalClass();
             var targetValue = target as IList;
             foreach (var item in currentSource)
             {
-                targetValue.Add(DataMapper.ItemValueCopy(sourceItemType, targetItemType, isNormalClass, item));
+                targetValue.Add(DataMapper.ItemValueCopy(SourceItemType, TargetItemType, IsNormalClass, item));
             }
         }
     }

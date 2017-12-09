@@ -9,15 +9,12 @@ namespace Oldmansoft.ClassicDomain.Util
 {
     abstract class MapContent : IMap
     {
-        protected string PropertyName { get; private set; }
-
         protected Type SourceType { get; private set; }
 
         protected Type TargetType { get; private set; }
         
-        public IMap Init(string propertyName, Type sourceType, Type targetType)
+        public virtual IMap Init(Type sourceType, Type targetType)
         {
-            PropertyName = propertyName;
             SourceType = sourceType;
             TargetType = targetType;
             return this;

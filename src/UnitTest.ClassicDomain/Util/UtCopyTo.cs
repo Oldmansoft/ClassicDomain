@@ -40,6 +40,33 @@ namespace UnitTest.ClassicDomain.Util
         }
 
         [TestMethod]
+        public void TestCopyIntArray()
+        {
+            var source = new int[1];
+            source[0] = 1;
+
+            var input = new int[1];
+            var target = source.CopyTo(input);
+
+            Assert.AreEqual(input.GetHashCode(), target.GetHashCode());
+            Assert.AreEqual(source.Length, target.Length);
+            Assert.AreEqual(1, target[0]);
+        }
+
+        [TestMethod]
+        public void TestCopyIntStringArray()
+        {
+            var source = new int[1];
+            source[0] = 1;
+
+            var input = new string[1];
+            var target = source.CopyTo(input);
+
+            Assert.AreEqual(input.GetHashCode(), target.GetHashCode());
+            Assert.AreEqual(source.Length, target.Length);
+        }
+
+        [TestMethod]
         public void TestCopyList()
         {
             var source = new List<CopySourceModel>();
@@ -64,6 +91,18 @@ namespace UnitTest.ClassicDomain.Util
             Assert.AreEqual(input.GetHashCode(), target.GetHashCode());
             Assert.AreEqual(source.Count, target.Count);
             Assert.AreEqual("world", target["hello"].Name);
+        }
+
+        [TestMethod]
+        public void TestCopyDiffKeyDictionary()
+        {
+            var source = new Dictionary<string, CopySourceModel>();
+            source.Add("hello", CreateSource("world"));
+            var input = new Dictionary<int, CopyTargetModel>();
+            var target = source.CopyTo(input);
+
+            Assert.AreEqual(input.GetHashCode(), target.GetHashCode());
+            Assert.AreEqual(0, target.Count);
         }
 
         [TestMethod]

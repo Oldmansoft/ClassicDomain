@@ -26,17 +26,18 @@ namespace Oldmansoft.ClassicDomain.Util
 
             if (sourceType.IsArray && targetType.IsArray)
             {
-                result.Add(new MapArray().Init(string.Empty, sourceType, targetType));
+                result.Add(new MapArray().Init(sourceType, targetType));
                 return result.ToArray();
             }
             else if (new Type[] { sourceType, targetType }.IsGenericList())
             {
-                result.Add(new MapList().Init(string.Empty, sourceType, targetType));
+                result.Add(new MapList().Init(sourceType, targetType));
                 return result.ToArray();
             }
             else if (new Type[] { sourceType, targetType }.IsGenericDictionary())
             {
-                result.Add(new MapDictionary().Init(string.Empty, sourceType, targetType));
+                if (sourceType.GetGenericArguments()[0] != targetType.GetGenericArguments()[0]) return result.ToArray();
+                result.Add(new MapDictionary().Init(sourceType, targetType));
                 return result.ToArray();
             }
             EachPropertys(sourceType, targetType, result);
@@ -79,12 +80,7 @@ namespace Oldmansoft.ClassicDomain.Util
 
                 if (new Type[] { sourcePropertyType, targetPropertyType }.IsGenericDictionary())
                 {
-                    var sourceKeyType = sourcePropertyType.GetGenericArguments()[0];
-                    var sourceValueType = sourcePropertyType.GetGenericArguments()[1];
-                    var targetKeyType = targetPropertyType.GetGenericArguments()[0];
-                    var targetValueType = targetPropertyType.GetGenericArguments()[1];
-                    if (sourceKeyType != targetKeyType) continue;
-
+                    if (sourcePropertyType.GetGenericArguments()[0] != targetPropertyType.GetGenericArguments()[0]) continue;
                     result.Add(new MapDictionaryProperty().Init(sourceType, targetType, sourcePropertyInfo, targetPropertyInfo));
                     continue;
                 }

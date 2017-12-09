@@ -9,18 +9,22 @@ namespace Oldmansoft.ClassicDomain.Util
 {
     class MapArray : MapContent
     {
+        private Type SourceItemType;
+
+        private Type TargetItemType;
+
+        private bool IsNormalClass;
+
+        public override IMap Init(Type sourceType, Type targetType)
+        {
+            SourceItemType = sourceType.GetMethod("Set").GetParameters()[1].ParameterType;
+            TargetItemType = targetType.GetMethod("Set").GetParameters()[1].ParameterType;
+            IsNormalClass = SourceItemType.IsNormalClass() && TargetItemType.IsNormalClass();
+            return base.Init(sourceType, targetType);
+        }
+
         public override void Map(object source, ref object target)
         {
-            if (source == null)
-            {
-                target = null;
-                return;
-            }
-
-            var sourceItemType = SourceType.GetMethod("Set").GetParameters()[1].ParameterType;
-            var targetItemType = TargetType.GetMethod("Set").GetParameters()[1].ParameterType;
-
-            var isNormalClass = sourceItemType.IsNormalClass() && targetItemType.IsNormalClass();
             var currentSource = source as Array;
             if (currentSource == null)
             {
@@ -29,11 +33,10 @@ namespace Oldmansoft.ClassicDomain.Util
             }
 
             var targetValue = target as Array;
-            var method = TargetType.GetMethod("SetValue", new Type[] { typeof(object), typeof(int) });
             int index = 0;
             foreach (var item in currentSource)
             {
-                method.Invoke(targetValue, new object[] { DataMapper.ItemValueCopy(sourceItemType, targetItemType, isNormalClass, item), index });
+                targetValue.SetValue(DataMapper.ItemValueCopy(SourceItemType, TargetItemType, IsNormalClass, item), index);
                 index++;
             }
         }

@@ -10,15 +10,27 @@ namespace Oldmansoft.ClassicDomain.Util
 {
     class MapDictionaryProperty : MapProperty
     {
+        private Type SourceValueType;
+
+        private Type TargetKeyType;
+
+        private Type TargetValueType;
+
+        private bool IsNormalClass;
+
+        public override IMap Init(Type sourceType, Type targetType, PropertyInfo sourceProperty, PropertyInfo targetProperty)
+        {
+            base.Init(sourceType, targetType, sourceProperty, targetProperty);
+            SourceValueType = SourcePropertyType.GetGenericArguments()[1];
+            TargetKeyType = TargetPropertyType.GetGenericArguments()[0];
+            TargetValueType = TargetPropertyType.GetGenericArguments()[1];
+            IsNormalClass = SourceValueType.IsNormalClass() && TargetValueType.IsNormalClass();
+            return this;
+        }
+
         public override void Map(object source, ref object target)
         {
             var sourceValue = Getter.Get(source);
-            if (sourceValue == null)
-            {
-                Setter.Set(target, null);
-                return;
-            }
-
             var currentSource = sourceValue as IDictionary;
             if (currentSource == null)
             {
@@ -26,17 +38,11 @@ namespace Oldmansoft.ClassicDomain.Util
                 return;
             }
 
-            var sourceKeyType = SourcePropertyType.GetGenericArguments()[0];
-            var sourceValueType = SourcePropertyType.GetGenericArguments()[1];
-            var targetKeyType = TargetPropertyType.GetGenericArguments()[0];
-            var targetValueType = TargetPropertyType.GetGenericArguments()[1];
-
-            var targetType = typeof(Dictionary<,>).MakeGenericType(targetKeyType, targetValueType);
-            var isNormalClass = sourceValueType.IsNormalClass() && targetValueType.IsNormalClass();
+            var targetType = typeof(Dictionary<,>).MakeGenericType(TargetKeyType, TargetValueType);
             var targetValue = Activator.CreateInstance(targetType) as IDictionary;
             foreach (var key in currentSource.Keys)
             {
-                targetValue.Add(key, DataMapper.ItemValueCopy(sourceValueType, targetValueType, isNormalClass, currentSource[key]));
+                targetValue.Add(key, DataMapper.ItemValueCopy(SourceValueType, TargetValueType, IsNormalClass, currentSource[key]));
             }
             Setter.Set(target, targetValue);
         }
