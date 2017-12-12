@@ -37,8 +37,8 @@ namespace Oldmansoft.ClassicDomain.Util
                 targetValue = ObjectCreator.CreateInstance(TargetPropertyType);
                 if (targetValue == null) return;
             }
-            Setter.Set(target, targetValue);
             DataMapper.NormalClassCopy(sourceValue, SourcePropertyType, ref targetValue, TargetPropertyType);
+            Setter.Set(target, targetValue);
         }
     }
 }

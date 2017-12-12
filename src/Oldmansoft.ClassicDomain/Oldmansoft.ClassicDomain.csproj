@@ -93,8 +93,8 @@
     <Compile Include="Util\DataMapper\MapNullableEnumProperty.cs" />
     <Compile Include="Util\DataMapper\Mapper.cs" />
     <Compile Include="Util\DataMapper\MapStructPropertyCreator.cs" />
-    <Compile Include="Util\DataMapper\StructProvider\PropertyDelegateItem.cs" />
-    <Compile Include="Util\DataMapper\StructProvider\MapTypeBuilder.cs" />
+    <Compile Include="Util\DataMapper\PropertyDelegateItem.cs" />
+    <Compile Include="Util\DataMapper\MapTypeBuilder.cs" />
     <Compile Include="Util\ExpressionHelper.cs" />
     <Compile Include="IPagingCondition.cs" />
     <Compile Include="Util\DataMapper\IPropertyIgnore.cs" />

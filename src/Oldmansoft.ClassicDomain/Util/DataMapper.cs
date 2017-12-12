@@ -15,7 +15,7 @@ namespace Oldmansoft.ClassicDomain.Util
     public class DataMapper
     {
         /// <summary>
-        /// 复制
+        /// 复制到
         /// </summary>
         /// <typeparam name="TSource"></typeparam>
         /// <typeparam name="TTarget"></typeparam>
@@ -28,15 +28,35 @@ namespace Oldmansoft.ClassicDomain.Util
 
             var sourceType = typeof(TSource);
             var targetType = typeof(TTarget);
-            var targetObject = (object)target;
             var maps = Mapper.GetMapper(sourceType, targetType);
             for (var i = 0; i < maps.Length; i++)
             {
-                maps[i].Map(source, targetObject);
+                maps[i].Map(source, target);
             }
             return target;
         }
-        
+
+        /// <summary>
+        /// 复制
+        /// </summary>
+        /// <typeparam name="TTarget"></typeparam>
+        /// <param name="source">源对象</param>
+        /// <returns>返回目标对象</returns>
+        public static TTarget Map<TTarget>(object source)
+        {
+            if (source == null) return default(TTarget);
+
+            var sourceType = source.GetType();
+            var targetType = typeof(TTarget);
+            var target = ObjectCreator.CreateInstance<TTarget>();
+            var maps = Mapper.GetMapper(sourceType, targetType);
+            for (var i = 0; i < maps.Length; i++)
+            {
+                maps[i].Map(source, target);
+            }
+            return target;
+        }
+
         /// <summary>
         /// 复制普通类
         /// </summary>

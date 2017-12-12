@@ -9,13 +9,6 @@ namespace Oldmansoft.ClassicDomain.Util
 {
     class MapStructPropertyCreator
     {
-        private static System.Collections.Concurrent.ConcurrentDictionary<long, IMap> Instances;
-
-        static MapStructPropertyCreator()
-        {
-            Instances = new System.Collections.Concurrent.ConcurrentDictionary<long, IMap>();
-        }
-
         private Type SourceType;
 
         private Type TargetType;
@@ -41,15 +34,8 @@ namespace Oldmansoft.ClassicDomain.Util
 
         public IMap CreateMap()
         {
-            var key = (long)SourceType.GetHashCode() * int.MaxValue + TargetType.GetHashCode();
-            IMap instance;
-            if (!Instances.TryGetValue(key, out instance))
-            {
-                var type = MapTypeBuilder.CreateType(SourceType, TargetType, Properties.ToArray());
-                instance = (IMap)Activator.CreateInstance(type);
-                Instances.TryAdd(key, instance);
-            }
-            return instance;
+            var type = MapTypeBuilder.CreateType(SourceType, TargetType, Properties.ToArray());
+            return (IMap)Activator.CreateInstance(type);
         }
     }
 }

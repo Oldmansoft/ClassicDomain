@@ -11,8 +11,6 @@ namespace Oldmansoft.ClassicDomain.Util
     /// </summary>
     public class MapConfig
     {
-        internal static MapConfig Empty = new MapConfig();
-
         /// <summary>
         /// 忽略属性
         /// </summary>

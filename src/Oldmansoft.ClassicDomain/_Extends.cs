@@ -38,16 +38,15 @@ namespace Oldmansoft.ClassicDomain
         }
 
         /// <summary>
-        /// 复制到
+        /// 复制
         /// </summary>
-        /// <typeparam name="TSource"></typeparam>
         /// <typeparam name="TTarget"></typeparam>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static TTarget MapTo<TSource, TTarget>(this TSource source)
+        public static TTarget MapTo<TTarget>(this object source)
         {
             if (source is Util.DataMapper) throw new ArgumentException("不能是 DataMapper 类型", "source");
-            return Util.DataMapper.Map(source, ObjectCreator.CreateInstance<TTarget>());
+            return Util.DataMapper.Map<TTarget>(source);
         }
 
         /// <summary>
