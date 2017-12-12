@@ -54,7 +54,7 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <param name="result"></param>
         private static void EachPropertys(Type sourceType, Type targetType, List<IMap> result)
         {
-            var normals = new MapStructProperty(sourceType, targetType);
+            var normals = new MapStructPropertyCreator(sourceType, targetType);
             foreach (var sourcePropertyInfo in TypePublicInstanceStore.GetPropertys(sourceType))
             {
                 if (!sourcePropertyInfo.CanRead) continue;
@@ -106,10 +106,10 @@ namespace Oldmansoft.ClassicDomain.Util
 
                 if (sourcePropertyType == targetPropertyType)
                 {
-                    normals.Add(sourcePropertyInfo, targetPropertyInfo);
+                    normals.Add(sourcePropertyInfo);
                 }
             }
-            if (normals.HasValue()) result.Add(normals);
+            if (normals.HasValue()) result.Add(normals.CreateMap());
         }
     }
 }

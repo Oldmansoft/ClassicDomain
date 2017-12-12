@@ -127,7 +127,7 @@ namespace Oldmansoft.ClassicDomain.Util
         }
 
         /// <summary>
-        /// 分页列表复制到
+        /// 复制到
         /// </summary>
         /// <typeparam name="TSource"></typeparam>
         /// <typeparam name="TTarget"></typeparam>

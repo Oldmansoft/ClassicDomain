@@ -81,7 +81,6 @@
     <Compile Include="Util\DataMapper\IMap.cs" />
     <Compile Include="Util\DataMapper\MapArray.cs" />
     <Compile Include="Util\DataMapper\MapContent.cs" />
-    <Compile Include="Util\DataMapper\MapStructProperty.cs" />
     <Compile Include="Util\DataMapper\MapProperty.cs" />
     <Compile Include="Util\DataMapper\MapArrayProperty.cs" />
     <Compile Include="Util\DataMapper\MapConfig.cs" />
@@ -93,6 +92,9 @@
     <Compile Include="Util\DataMapper\MapNormalClassProperty.cs" />
     <Compile Include="Util\DataMapper\MapNullableEnumProperty.cs" />
     <Compile Include="Util\DataMapper\Mapper.cs" />
+    <Compile Include="Util\DataMapper\MapStructPropertyCreator.cs" />
+    <Compile Include="Util\DataMapper\StructProvider\PropertyDelegateItem.cs" />
+    <Compile Include="Util\DataMapper\StructProvider\MapTypeBuilder.cs" />
     <Compile Include="Util\ExpressionHelper.cs" />
     <Compile Include="IPagingCondition.cs" />
     <Compile Include="Util\DataMapper\IPropertyIgnore.cs" />
@@ -113,9 +115,7 @@
     <Compile Include="Util\TypePublicInstanceStore.cs" />
     <Compile Include="_Extends.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Util\DataMapper\StructProvider\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
