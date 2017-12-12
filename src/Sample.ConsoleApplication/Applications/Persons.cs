@@ -60,7 +60,7 @@ namespace Sample.ConsoleApplication.Applications
             var factory = new Repositories.RepositoryFactory();
             var repository = factory.CreatePerson();
             var result = repository.PageByName().Size(size).ToList(index, out totalCount);
-            return result.CopyTo(new List<Data.PersonData>());
+            return result.MapTo(new List<Data.PersonData>());
         }
     }
 }

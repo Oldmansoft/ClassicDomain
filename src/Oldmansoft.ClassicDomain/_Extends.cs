@@ -22,8 +22,7 @@ namespace Oldmansoft.ClassicDomain
         {
             return new Util.Paging.PagingCondition<TSource>(source);
         }
-
-
+        
         /// <summary>
         /// 复制到
         /// </summary>
@@ -32,10 +31,23 @@ namespace Oldmansoft.ClassicDomain
         /// <param name="source"></param>
         /// <param name="target"></param>
         /// <returns></returns>
-        public static TTarget CopyTo<TSource, TTarget>(this TSource source, TTarget target)
+        public static TTarget MapTo<TSource, TTarget>(this TSource source, TTarget target)
         {
-            if (source is Util.DataMapper) throw new ArgumentException("请不要直接使用 DataMapper.CopyTo(target) 方法", "source");
+            if (source is Util.DataMapper) throw new ArgumentException("不能是 DataMapper 类型", "source");
             return Util.DataMapper.Map(source, target);
+        }
+
+        /// <summary>
+        /// 复制到
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TTarget"></typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static TTarget MapTo<TSource, TTarget>(this TSource source)
+        {
+            if (source is Util.DataMapper) throw new ArgumentException("不能是 DataMapper 类型", "source");
+            return Util.DataMapper.Map(source, ObjectCreator.CreateInstance<TTarget>());
         }
 
         /// <summary>

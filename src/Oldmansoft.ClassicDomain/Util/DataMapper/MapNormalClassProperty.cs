@@ -38,7 +38,7 @@ namespace Oldmansoft.ClassicDomain.Util
                 if (targetValue == null) return;
             }
             Setter.Set(target, targetValue);
-            DataMapper.CopyNormal(sourceValue, SourcePropertyType, ref targetValue, TargetPropertyType);
+            DataMapper.NormalClassCopy(sourceValue, SourcePropertyType, ref targetValue, TargetPropertyType);
         }
     }
 }

@@ -250,24 +250,10 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <typeparam name="TTarget"></typeparam>
         /// <param name="source"></param>
         /// <param name="target"></param>
-        /// <returns></returns>
-        public static TTarget CopyTo<TSource, TTarget>(this TSource source, TTarget target)
-        {
-            if (source is DataMapper) throw new ArgumentException("请不要直接使用 DataMapper.CopyTo(target) 方法", "source");
-            return DataMapper.Map(source, target);
-        }
-
-        /// <summary>
-        /// 复制到
-        /// </summary>
-        /// <typeparam name="TSource"></typeparam>
-        /// <typeparam name="TTarget"></typeparam>
-        /// <param name="source"></param>
-        /// <param name="target"></param>
         /// <param name="isDeepCopy"></param>
         /// <returns></returns>
-        [Obsolete("已经停用浅拷贝")]
-        public static TTarget CopyTo<TSource, TTarget>(this TSource source, TTarget target, bool isDeepCopy)
+        [Obsolete("请使用 Oldmansoft.ClassicDomain 命名空间下的 MapTo 扩展方法")]
+        public static TTarget CopyTo<TSource, TTarget>(this TSource source, TTarget target, bool isDeepCopy = true)
         {
             if (source is DataMapper) throw new ArgumentException("请不要直接使用 DataMapper.CopyTo(target) 方法", "source");
             return DataMapper.Map(source, target);

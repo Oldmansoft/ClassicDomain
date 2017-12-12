@@ -20,7 +20,7 @@ namespace UnitTest.ClassicDomain.Util
         public void TestCopyNormalClass()
         {
             var source = CreateSource("hello");
-            var target = source.CopyTo(new CopyTargetModel());
+            var target = source.MapTo(new CopyTargetModel());
             Assert.AreEqual(source.Name, target.Name);
         }
         
@@ -30,7 +30,7 @@ namespace UnitTest.ClassicDomain.Util
             var source = new CopySourceModel[1];
             source[0] = CreateSource("hello");
             CopyTargetModel[] target = null;
-            target = source.CopyTo(target);
+            target = source.MapTo(target);
             Assert.IsNull(target);
         }
 
@@ -41,7 +41,7 @@ namespace UnitTest.ClassicDomain.Util
             source[0] = CreateSource("hello");
 
             var input = new CopyTargetModel[1];
-            var target = source.CopyTo(input);
+            var target = source.MapTo(input);
 
             Assert.AreEqual(input.GetHashCode(), target.GetHashCode());
             Assert.AreEqual(source.Length, target.Length);
@@ -55,7 +55,7 @@ namespace UnitTest.ClassicDomain.Util
             source[0] = 1;
 
             var input = new int[1];
-            var target = source.CopyTo(input);
+            var target = source.MapTo(input);
 
             Assert.AreEqual(input.GetHashCode(), target.GetHashCode());
             Assert.AreEqual(source.Length, target.Length);
@@ -69,7 +69,7 @@ namespace UnitTest.ClassicDomain.Util
             source[0] = 1;
 
             var input = new string[1];
-            var target = source.CopyTo(input);
+            var target = source.MapTo(input);
 
             Assert.AreEqual(input.GetHashCode(), target.GetHashCode());
             Assert.AreEqual(source.Length, target.Length);
@@ -82,7 +82,7 @@ namespace UnitTest.ClassicDomain.Util
             source.Add(CreateSource("hello"));
 
             var input = new List<CopyTargetModel>();
-            var target = source.CopyTo(input);
+            var target = source.MapTo(input);
 
             Assert.AreEqual(input.GetHashCode(), target.GetHashCode());
             Assert.AreEqual(source.Count, target.Count);
@@ -95,7 +95,7 @@ namespace UnitTest.ClassicDomain.Util
             var source = new Dictionary<string, CopySourceModel>();
             source.Add("hello", CreateSource("world"));
             var input = new Dictionary<string, CopyTargetModel>();
-            var target = source.CopyTo(input);
+            var target = source.MapTo(input);
 
             Assert.AreEqual(input.GetHashCode(), target.GetHashCode());
             Assert.AreEqual(source.Count, target.Count);
@@ -108,7 +108,7 @@ namespace UnitTest.ClassicDomain.Util
             var source = new Dictionary<string, CopySourceModel>();
             source.Add("hello", CreateSource("world"));
             var input = new Dictionary<int, CopyTargetModel>();
-            var target = source.CopyTo(input);
+            var target = source.MapTo(input);
 
             Assert.AreEqual(input.GetHashCode(), target.GetHashCode());
             Assert.AreEqual(0, target.Count);
@@ -120,7 +120,7 @@ namespace UnitTest.ClassicDomain.Util
             var source = new ItemObject();
             source.Dic = new Dictionary<string, string>();
             source.Dic.Add("hello", "world");
-            var target = source.CopyTo(new ItemObject());
+            var target = source.MapTo(new ItemObject());
             Assert.AreEqual(source.Dic.Count, target.Dic.Count);
         }
 
@@ -130,7 +130,7 @@ namespace UnitTest.ClassicDomain.Util
             var source = new ItemObject();
             source.List = new List<string>();
             source.List.Add("hello");
-            var target = source.CopyTo(new ItemObject());
+            var target = source.MapTo(new ItemObject());
             Assert.AreEqual(source.List.Count, target.List.Count);
         }
 
@@ -140,7 +140,7 @@ namespace UnitTest.ClassicDomain.Util
             var source = new ItemObject();
             source.Array = new string[1];
             source.Array[0] = "hello";
-            var target = source.CopyTo(new ItemObject());
+            var target = source.MapTo(new ItemObject());
             Assert.AreEqual(source.Array.Length, target.Array.Length);
             Assert.AreEqual(source.Array[0], target.Array[0]);
         }
@@ -172,7 +172,7 @@ namespace UnitTest.ClassicDomain.Util
             var source = new ItemObject();
             var target = new ItemObject();
             target.Dic = new Dictionary<string, string>();
-            source.CopyTo(target);
+            source.MapTo(target);
             Assert.IsNull(target.Dic);
         }
 
@@ -182,7 +182,7 @@ namespace UnitTest.ClassicDomain.Util
             var source = new ItemObject();
             var target = new ItemObject();
             target.Array = new string[0];
-            source.CopyTo(target);
+            source.MapTo(target);
             Assert.IsNull(target.Array);
         }
 
@@ -192,7 +192,7 @@ namespace UnitTest.ClassicDomain.Util
             var source = new ItemObject();
             var target = new ItemObject();
             target.List = new List<string>();
-            source.CopyTo(target);
+            source.MapTo(target);
             Assert.IsNull(target.List);
         }
 
@@ -202,7 +202,7 @@ namespace UnitTest.ClassicDomain.Util
             var source = new ItemObject();
             var target = new ItemObject();
             target.Model = new CopySourceModel();
-            source.CopyTo(target);
+            source.MapTo(target);
             Assert.IsNull(target.Model);
         }
 
@@ -212,7 +212,7 @@ namespace UnitTest.ClassicDomain.Util
             var source = new ItemObject();
             var target = new ItemObject();
             target.NullEnum = ItemObject.E.B;
-            source.CopyTo(target);
+            source.MapTo(target);
             Assert.IsNull(target.NullEnum);
         }
 
@@ -222,7 +222,7 @@ namespace UnitTest.ClassicDomain.Util
             var source = new ItemObject();
             var target = new ItemObject();
             source.Enum = ItemObject.E.B;
-            source.CopyTo(target);
+            source.MapTo(target);
             Assert.AreEqual(source.Enum, target.Enum);
         }
 
@@ -232,7 +232,7 @@ namespace UnitTest.ClassicDomain.Util
             IList<int> source = new List<int>();
             source.Add(1);
             var target = new List<int>();
-            source.CopyTo(target);
+            source.MapTo(target);
             Assert.AreEqual(source.Count, target.Count);
         }
     }
