@@ -9,6 +9,6 @@ namespace Oldmansoft.ClassicDomain.Util
 {
     interface IMap
     {
-        void Map(object source, ref object target);
+        void Map(object source, object target);
     }
 }

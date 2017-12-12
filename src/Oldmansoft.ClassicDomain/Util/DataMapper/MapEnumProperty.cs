@@ -9,7 +9,7 @@ namespace Oldmansoft.ClassicDomain.Util
 {
     class MapEnumProperty : MapProperty
     {
-        public override void Map(object source, ref object target)
+        public override void Map(object source, object target)
         {
             try
             {

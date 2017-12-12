@@ -26,7 +26,7 @@ namespace Oldmansoft.ClassicDomain.Util
             return this;
         }
 
-        public abstract void Map(object source, ref object target);
+        public abstract void Map(object source, object target);
     }
 
     interface ISetter

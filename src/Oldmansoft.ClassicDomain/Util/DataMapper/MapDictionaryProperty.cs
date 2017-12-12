@@ -28,7 +28,7 @@ namespace Oldmansoft.ClassicDomain.Util
             return this;
         }
 
-        public override void Map(object source, ref object target)
+        public override void Map(object source, object target)
         {
             var sourceValue = Getter.Get(source);
             var currentSource = sourceValue as IDictionary;

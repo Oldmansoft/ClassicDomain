@@ -25,6 +25,16 @@ namespace UnitTest.ClassicDomain.Util
         }
         
         [TestMethod]
+        public void TestCopyTargetNull()
+        {
+            var source = new CopySourceModel[1];
+            source[0] = CreateSource("hello");
+            CopyTargetModel[] target = null;
+            target = source.CopyTo(target);
+            Assert.IsNull(target);
+        }
+
+        [TestMethod]
         public void TestCopyArray()
         {
             var source = new CopySourceModel[1];

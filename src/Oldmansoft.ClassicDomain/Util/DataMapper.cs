@@ -30,7 +30,7 @@ namespace Oldmansoft.ClassicDomain.Util
             var maps = Mapper.GetMapper(sourceType, targetType);
             for (var i = 0; i < maps.Length; i++)
             {
-                maps[i].Map(source, ref targetObject);
+                maps[i].Map(source, targetObject);
             }
             return target;
         }
@@ -45,7 +45,7 @@ namespace Oldmansoft.ClassicDomain.Util
             var maps = Mapper.GetMapper(sourceType, targetType);
             for (var i = 0; i < maps.Length; i++)
             {
-                maps[i].Map(source, ref target);
+                maps[i].Map(source, target);
             }
         }
 

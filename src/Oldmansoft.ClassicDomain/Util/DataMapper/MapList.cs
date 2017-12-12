@@ -23,15 +23,9 @@ namespace Oldmansoft.ClassicDomain.Util
             return base.Init(sourceType, targetType);
         }
 
-        public override void Map(object source, ref object target)
+        public override void Map(object source, object target)
         {
             var currentSource = (source as IEnumerable);
-            if (currentSource == null)
-            {
-                target = null;
-                return;
-            }
-
             var targetValue = target as IList;
             foreach (var item in currentSource)
             {

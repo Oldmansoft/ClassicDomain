@@ -36,7 +36,7 @@ namespace Oldmansoft.ClassicDomain.Util
             return Setters.Count > 0;
         }
 
-        public void Map(object source, ref object target)
+        public void Map(object source, object target)
         {
             for (var i = 0; i < Setters.Count; i++)
             {

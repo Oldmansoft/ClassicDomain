@@ -9,7 +9,7 @@ namespace Oldmansoft.ClassicDomain.Util
 {
     class MapNullableEnumProperty : MapProperty
     {
-        public override void Map(object source, ref object target)
+        public override void Map(object source, object target)
         {
             var sourceValue = Getter.Get(source);
             if (sourceValue == null)
