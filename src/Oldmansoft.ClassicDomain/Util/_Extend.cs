@@ -111,12 +111,10 @@ namespace Oldmansoft.ClassicDomain.Util
         public static bool IsGenericDictionary(this Type source)
         {
             if (!source.IsGenericType) return false;
-            var genericArguments = source.GetGenericArguments();
-            if (genericArguments.Length != 2) return false;
-            var sourceDictionaryType = typeof(IDictionary<,>).MakeGenericType(genericArguments[0], genericArguments[1]);
-            if (sourceDictionaryType == source) return true;
-            if (!source.GetInterfaces().Contains(sourceDictionaryType)) return false;
-            return true;
+            var sourceGenericTypeDefinition = source.GetGenericTypeDefinition();
+            if (sourceGenericTypeDefinition == typeof(IDictionary<,>)) return true;
+            if (sourceGenericTypeDefinition == typeof(Dictionary<,>)) return true;
+            return false;
         }
 
         /// <summary>
@@ -127,11 +125,9 @@ namespace Oldmansoft.ClassicDomain.Util
         public static bool IsIGenericDictionary(this Type source)
         {
             if (!source.IsGenericType) return false;
-            var genericArguments = source.GetGenericArguments();
-            if (genericArguments.Length != 2) return false;
-            var sourceDictionaryType = typeof(IDictionary<,>).MakeGenericType(genericArguments[0], genericArguments[1]);
-            if (sourceDictionaryType != source) return false;
-            return true;
+            var sourceGenericTypeDefinition = source.GetGenericTypeDefinition();
+            if (sourceGenericTypeDefinition == typeof(IDictionary<,>)) return true;
+            return false;
         }
 
         /// <summary>
@@ -142,10 +138,10 @@ namespace Oldmansoft.ClassicDomain.Util
         public static bool IsGenericList(this Type source)
         {
             if (!source.IsGenericType) return false;
-            var sourceListType = typeof(IList<>).MakeGenericType(source.GetGenericArguments()[0]);
-            if (sourceListType == source) return true;
-            if (!source.GetInterfaces().Contains(sourceListType)) return false;
-            return true;
+            var sourceGenericTypeDefinition = source.GetGenericTypeDefinition();
+            if (sourceGenericTypeDefinition == typeof(IList<>)) return true;
+            if (sourceGenericTypeDefinition == typeof(List<>)) return true;
+            return false;
         }
 
         /// <summary>
@@ -156,9 +152,9 @@ namespace Oldmansoft.ClassicDomain.Util
         public static bool IsIGenericList(this Type source)
         {
             if (!source.IsGenericType) return false;
-            var sourceListType = typeof(IList<>).MakeGenericType(source.GetGenericArguments()[0]);
-            if (sourceListType != source) return false;
-            return true;
+            var sourceGenericTypeDefinition = source.GetGenericTypeDefinition();
+            if (sourceGenericTypeDefinition == typeof(IList<>)) return true;
+            return false;
         }
 
         /// <summary>
@@ -169,9 +165,9 @@ namespace Oldmansoft.ClassicDomain.Util
         public static bool IsIGenericCollection(this Type source)
         {
             if (!source.IsGenericType) return false;
-            var sourceListType = typeof(ICollection<>).MakeGenericType(source.GetGenericArguments()[0]);
-            if (sourceListType != source) return false;
-            return true;
+            var sourceGenericTypeDefinition = source.GetGenericTypeDefinition();
+            if (sourceGenericTypeDefinition == typeof(ICollection<>)) return true;
+            return false;
         }
 
         /// <summary>
