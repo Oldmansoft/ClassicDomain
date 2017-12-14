@@ -23,7 +23,18 @@ namespace UnitTest.ClassicDomain.Util
             var target = source.MapTo(new CopyTargetModel());
             Assert.AreEqual(source.Name, target.Name);
         }
-        
+
+        [TestMethod]
+        public void TestCopySubClass()
+        {
+            var source = CreateSource("hello");
+            source.CreateSub();
+            source.Sub.Value = "world";
+            var target = source.MapTo(new CopySourceModel());
+            Assert.AreNotEqual(source.Sub, target.Sub);
+            Assert.AreEqual(source.Sub.Value, target.Sub.Value);
+        }
+
         [TestMethod]
         public void TestCopyTargetNull()
         {
