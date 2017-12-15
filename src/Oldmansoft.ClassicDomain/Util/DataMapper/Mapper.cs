@@ -9,40 +9,40 @@ namespace Oldmansoft.ClassicDomain.Util
 {
     class Mapper
     {
-        private static SafeAddDictionary<MapType, IMap[]> Maps;
+        private static System.Collections.Concurrent.ConcurrentDictionary<long, IMap[]> Maps;
 
         static Mapper()
         {
-            Maps = new SafeAddDictionary<MapType, IMap[]>(CreateContent);
+            Maps = new System.Collections.Concurrent.ConcurrentDictionary<long, IMap[]>();
         }
 
         public static IMap[] GetMapper(Type sourceType, Type targetType)
         {
-            var key = new MapType(sourceType, targetType);
-            return Maps.GetOrAdd(key);
-        }
+            var key = (long)sourceType.GetHashCode() * int.MaxValue + targetType.GetHashCode();
+            IMap[] maps;
+            if (Maps.TryGetValue(key, out maps)) return maps;
 
-        private static IMap[] CreateContent(MapType type)
-        {
             var result = new List<IMap>();
 
-            if (type.Source.IsArray && type.Target.IsArray)
+            if (sourceType.IsArray && targetType.IsArray)
             {
-                result.Add(new MapArray().Init(type.Source, type.Target));
+                result.Add(new MapArray().Init(sourceType, targetType));
                 return result.ToArray();
             }
-            else if (new Type[] { type.Source, type.Target }.IsGenericList())
+            else if (new Type[] { sourceType, targetType }.IsGenericList())
             {
-                result.Add(new MapList().Init(type.Source, type.Target));
+                result.Add(new MapList().Init(sourceType, targetType));
                 return result.ToArray();
             }
-            else if (new Type[] { type.Source, type.Target }.IsGenericDictionary())
+            else if (new Type[] { sourceType, targetType }.IsGenericDictionary())
             {
-                if (type.Source.GetGenericArguments()[0] != type.Target.GetGenericArguments()[0]) return result.ToArray();
-                result.Add(new MapDictionary().Init(type.Source, type.Target));
+                if (sourceType.GetGenericArguments()[0] != targetType.GetGenericArguments()[0]) return result.ToArray();
+                result.Add(new MapDictionary().Init(sourceType, targetType));
                 return result.ToArray();
             }
-            EachPropertys(type.Source, type.Target, result);
+            EachPropertys(sourceType, targetType, result);
+
+            Maps.TryAdd(key, result.ToArray());
             return result.ToArray();
         }
 
