@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 namespace Oldmansoft.ClassicDomain.Util
 {
     /// <summary>
-    /// 线程安全字典
+    /// 线程添加安全字典
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class LazyDictionary<TKey, TValue>
+    public class SafeAddDictionary<TKey, TValue>
     {
         private ConcurrentDictionary<TKey, Lazy<TValue>> Store;
 
@@ -21,7 +21,7 @@ namespace Oldmansoft.ClassicDomain.Util
         /// 创建字典
         /// </summary>
         /// <param name="valueCreate"></param>
-        public LazyDictionary(Func<TKey, TValue> valueCreate)
+        public SafeAddDictionary(Func<TKey, TValue> valueCreate)
         {
             Store = new ConcurrentDictionary<TKey, Lazy<TValue>>();
             ValueCreate = (key) => new Lazy<TValue>(() => valueCreate(key));

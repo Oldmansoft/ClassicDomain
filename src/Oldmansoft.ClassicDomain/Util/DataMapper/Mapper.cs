@@ -9,11 +9,11 @@ namespace Oldmansoft.ClassicDomain.Util
 {
     class Mapper
     {
-        private static LazyDictionary<MapType, IMap[]> Maps;
+        private static SafeAddDictionary<MapType, IMap[]> Maps;
 
         static Mapper()
         {
-            Maps = new LazyDictionary<MapType, IMap[]>(CreateContent);
+            Maps = new SafeAddDictionary<MapType, IMap[]>(CreateContent);
         }
 
         public static IMap[] GetMapper(Type sourceType, Type targetType)

@@ -29,6 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Oldmansoft.ClassicDomain.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -100,7 +101,7 @@
     <Compile Include="IPagingCondition.cs" />
     <Compile Include="Util\DataMapper\IPropertyIgnore.cs" />
     <Compile Include="Util\DataMapper.cs" />
-    <Compile Include="Util\LazyDictionary.cs" />
+    <Compile Include="Util\SafeAddDictionary.cs" />
     <Compile Include="Util\ObjectCreator.cs" />
     <Compile Include="Util\DataMapper\PropertyIgnore.cs" />
     <Compile Include="Util\ObjectCreator\EmptyCreator.cs" />
