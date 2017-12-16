@@ -9,21 +9,21 @@ namespace Oldmansoft.ClassicDomain.Util
 {
     class MapStructPropertyCreator
     {
-        private Type SourceType;
-
-        private Type TargetType;
-
-        private IList<PropertyInfo> Properties;
-
-        private static Dictionary<MapType, IMap> Maps;
+        private static Dictionary<long, IMap> Maps;
 
         private static object Locker;
 
         static MapStructPropertyCreator()
         {
-            Maps = new Dictionary<MapType, IMap>();
+            Maps = new Dictionary<long, IMap>();
             Locker = new object();
         }
+
+        private Type SourceType;
+
+        private Type TargetType;
+
+        private IList<PropertyInfo> Properties;
 
         public MapStructPropertyCreator(Type sourceType, Type targetType)
         {
@@ -44,7 +44,7 @@ namespace Oldmansoft.ClassicDomain.Util
 
         public IMap CreateMap()
         {
-            var key = new MapType(SourceType, TargetType);
+            var key = (long)SourceType.GetHashCode() * int.MaxValue + TargetType.GetHashCode();
             IMap map;
             if (Maps.TryGetValue(key, out map)) return map;
             lock (Locker)
