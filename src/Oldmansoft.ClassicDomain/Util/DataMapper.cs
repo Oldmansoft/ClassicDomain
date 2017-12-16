@@ -48,7 +48,22 @@ namespace Oldmansoft.ClassicDomain.Util
 
             var sourceType = source.GetType();
             var targetType = typeof(TTarget);
-            var target = ObjectCreator.CreateInstance<TTarget>();
+            TTarget target;
+            if (targetType.IsArray)
+            {
+                if (sourceType.IsArray)
+                {
+                    target = (TTarget)Activator.CreateInstance(targetType, (source as Array).Length);
+                }
+                else
+                {
+                    return default(TTarget);
+                }
+            }
+            else
+            {
+                target = ObjectCreator.CreateInstance<TTarget>();
+            }
             var maps = Mapper.GetMapper(sourceType, targetType);
             for (var i = 0; i < maps.Length; i++)
             {

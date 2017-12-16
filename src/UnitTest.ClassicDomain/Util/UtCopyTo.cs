@@ -86,14 +86,12 @@ namespace UnitTest.ClassicDomain.Util
             var source = new CopySourceModel[2];
             source[0] = CreateSource("hello");
             source[1] = CreateSource("world");
-            /*
             var target = source.MapTo<CopyTargetModel[]>();
             
             for (var i = 0; i < source.Length; i++)
             {
                 Assert.AreEqual(source[i].Name, target[i].Name);
             }
-            */
         }
 
         [TestMethod]
