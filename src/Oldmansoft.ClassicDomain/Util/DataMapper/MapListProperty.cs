@@ -27,17 +27,15 @@ namespace Oldmansoft.ClassicDomain.Util
 
         public override void Map(object source, object target)
         {
-            var sourceValue = Getter.Get(source);
-            var currentSource = (sourceValue as IEnumerable);
-            if (currentSource == null)
+            var sourceValue = (Getter.Get(source) as IEnumerable);
+            if (sourceValue == null)
             {
                 Setter.Set(target, null);
                 return;
             }
 
-            var targetType = typeof(List<>).MakeGenericType(TargetItemType);
-            var targetValue = Activator.CreateInstance(targetType) as IList;
-            foreach (var item in currentSource)
+            var targetValue = ObjectCreator.CreateInstance(TargetPropertyType) as IList;
+            foreach (var item in sourceValue)
             {
                 targetValue.Add(DataMapper.ItemValueCopy(SourceItemType, TargetItemType, IsNormalClass, item));
             }

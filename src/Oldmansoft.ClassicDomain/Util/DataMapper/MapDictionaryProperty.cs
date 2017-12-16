@@ -10,39 +10,37 @@ namespace Oldmansoft.ClassicDomain.Util
 {
     class MapDictionaryProperty : MapProperty
     {
-        private Type SourceValueType;
+        private Type SourcePropertyValueType;
 
-        private Type TargetKeyType;
+        private Type TargetPropertyKeyType;
 
-        private Type TargetValueType;
+        private Type TargetPropertyValueType;
 
         private bool IsNormalClass;
 
         public override IMap Init(Type sourceType, Type targetType, PropertyInfo sourceProperty, PropertyInfo targetProperty)
         {
             base.Init(sourceType, targetType, sourceProperty, targetProperty);
-            SourceValueType = SourcePropertyType.GetGenericArguments()[1];
-            TargetKeyType = TargetPropertyType.GetGenericArguments()[0];
-            TargetValueType = TargetPropertyType.GetGenericArguments()[1];
-            IsNormalClass = SourceValueType.IsNormalClass() && TargetValueType.IsNormalClass();
+            SourcePropertyValueType = SourcePropertyType.GetGenericArguments()[1];
+            TargetPropertyKeyType = TargetPropertyType.GetGenericArguments()[0];
+            TargetPropertyValueType = TargetPropertyType.GetGenericArguments()[1];
+            IsNormalClass = SourcePropertyValueType.IsNormalClass() && TargetPropertyValueType.IsNormalClass();
             return this;
         }
 
         public override void Map(object source, object target)
         {
-            var sourceValue = Getter.Get(source);
-            var currentSource = sourceValue as IDictionary;
-            if (currentSource == null)
+            var sourceValue = Getter.Get(source) as IDictionary;
+            if (sourceValue == null)
             {
                 Setter.Set(target, null);
                 return;
             }
 
-            var targetType = typeof(Dictionary<,>).MakeGenericType(TargetKeyType, TargetValueType);
-            var targetValue = Activator.CreateInstance(targetType) as IDictionary;
-            foreach (var key in currentSource.Keys)
+            var targetValue = ObjectCreator.CreateInstance(TargetPropertyType) as IDictionary;
+            foreach (var key in sourceValue.Keys)
             {
-                targetValue.Add(key, DataMapper.ItemValueCopy(SourceValueType, TargetValueType, IsNormalClass, currentSource[key]));
+                targetValue.Add(key, DataMapper.ItemValueCopy(SourcePropertyValueType, TargetPropertyValueType, IsNormalClass, sourceValue[key]));
             }
             Setter.Set(target, targetValue);
         }

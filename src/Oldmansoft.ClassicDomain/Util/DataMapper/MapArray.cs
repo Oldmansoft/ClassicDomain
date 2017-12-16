@@ -25,13 +25,11 @@ namespace Oldmansoft.ClassicDomain.Util
 
         public override void Map(object source, object target)
         {
-            var currentSource = source as Array;
+            var sourceValue = source as Array;
             var targetValue = target as Array;
-            int index = 0;
-            foreach (var item in currentSource)
+            for (var i = 0; i < sourceValue.Length; i++)
             {
-                targetValue.SetValue(DataMapper.ItemValueCopy(SourceItemType, TargetItemType, IsNormalClass, item), index);
-                index++;
+                targetValue.SetValue(DataMapper.ItemValueCopy(SourceItemType, TargetItemType, IsNormalClass, sourceValue.GetValue(i)), i);
             }
         }
     }

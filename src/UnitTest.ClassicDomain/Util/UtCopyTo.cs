@@ -48,15 +48,52 @@ namespace UnitTest.ClassicDomain.Util
         [TestMethod]
         public void TestCopyArray()
         {
-            var source = new CopySourceModel[1];
+            var source = new CopySourceModel[2];
             source[0] = CreateSource("hello");
+            source[1] = CreateSource("world");
 
-            var input = new CopyTargetModel[1];
+            var input = new CopyTargetModel[2];
             var target = source.MapTo(input);
 
             Assert.AreEqual(input.GetHashCode(), target.GetHashCode());
-            Assert.AreEqual(source.Length, target.Length);
-            Assert.AreEqual("hello", target[0].Name);
+            for (var i = 0; i < source.Length; i++)
+            {
+                Assert.AreEqual(source[i].Name, target[i].Name);
+            }
+        }
+
+        [TestMethod]
+        public void TestCopyPropertyArray()
+        {
+            var source = new CopySourceModel();
+            source.SubArray = new CopySourceSubModel[2];
+            source.SubArray[0] = CopySourceSubModel.Create("hello");
+            source.SubArray[1] = CopySourceSubModel.Create("world");
+
+            var input = new CopyTargetModel();
+            var target = source.MapTo(input);
+
+            Assert.AreEqual(input.GetHashCode(), target.GetHashCode());
+            for (var i = 0; i < source.SubArray.Length; i++)
+            {
+                Assert.AreEqual(source.SubArray[i].Value, target.SubArray[i].Value);
+            }
+        }
+
+        [TestMethod]
+        public void TestCopyToArray()
+        {
+            var source = new CopySourceModel[2];
+            source[0] = CreateSource("hello");
+            source[1] = CreateSource("world");
+            /*
+            var target = source.MapTo<CopyTargetModel[]>();
+            
+            for (var i = 0; i < source.Length; i++)
+            {
+                Assert.AreEqual(source[i].Name, target[i].Name);
+            }
+            */
         }
 
         [TestMethod]
@@ -101,6 +138,35 @@ namespace UnitTest.ClassicDomain.Util
         }
 
         [TestMethod]
+        public void TestCopyPropertyList()
+        {
+            var source = new CopySourceModel();
+            source.SubList = new List<CopySourceSubModel>();
+            source.SubList.Add(CopySourceSubModel.Create("hello"));
+            source.SubList.Add(CopySourceSubModel.Create("world"));
+
+            var input = new CopyTargetModel();
+            var target = source.MapTo(input);
+
+            Assert.AreEqual(input.GetHashCode(), target.GetHashCode());
+            for (var i = 0; i < source.SubList.Count; i++)
+            {
+                Assert.AreEqual(source.SubList[0].Value, target.SubList[0].Value);
+            }
+        }
+
+        [TestMethod]
+        public void TestCopyToList()
+        {
+            var source = new List<CopySourceModel>();
+            source.Add(CreateSource("hello"));
+
+            var target = source.MapTo<List<CopyTargetModel>>();
+            Assert.AreEqual(source.Count, target.Count);
+            Assert.AreEqual("hello", target[0].Name);
+        }
+
+        [TestMethod]
         public void TestCopyDictionary()
         {
             var source = new Dictionary<string, CopySourceModel>();
@@ -109,6 +175,34 @@ namespace UnitTest.ClassicDomain.Util
             var target = source.MapTo(input);
 
             Assert.AreEqual(input.GetHashCode(), target.GetHashCode());
+            Assert.AreEqual(source.Count, target.Count);
+            Assert.AreEqual("world", target["hello"].Name);
+        }
+
+        [TestMethod]
+        public void TestCopyPropertyDictionary()
+        {
+            var source = new CopySourceModel();
+            source.SubDictionary = new Dictionary<int, CopySourceSubModel>();
+            source.SubDictionary.Add(1, CopySourceSubModel.Create("hello"));
+            source.SubDictionary.Add(2, CopySourceSubModel.Create("world"));
+            var input = new CopyTargetModel();
+            var target = source.MapTo(input);
+
+            Assert.AreEqual(input.GetHashCode(), target.GetHashCode());
+            foreach (var item in source.SubDictionary)
+            {
+                Assert.AreEqual(item.Value.Value, target.SubDictionary[item.Key].Value);
+            }
+        }
+
+        [TestMethod]
+        public void TestCopyToDictionary()
+        {
+            var source = new Dictionary<string, CopySourceModel>();
+            source.Add("hello", CreateSource("world"));
+            var target = source.MapTo<Dictionary<string, CopyTargetModel>>();
+            
             Assert.AreEqual(source.Count, target.Count);
             Assert.AreEqual("world", target["hello"].Name);
         }

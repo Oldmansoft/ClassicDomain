@@ -26,11 +26,12 @@ namespace Oldmansoft.ClassicDomain.Util
 
         public override void Map(object source, object target)
         {
-            var currentSource = source as IDictionary;
+            var sourceValue = source as IDictionary;
             var targetValue = target as IDictionary;
-            foreach (var key in currentSource.Keys)
+            foreach (var key in sourceValue.Keys)
             {
-                targetValue.Add(key, DataMapper.ItemValueCopy(SourceValueType, TargetValueType, IsNormalClass, currentSource[key]));
+                if (targetValue.Contains(key)) continue;
+                targetValue.Add(key, DataMapper.ItemValueCopy(SourceValueType, TargetValueType, IsNormalClass, sourceValue[key]));
             }
         }
     }

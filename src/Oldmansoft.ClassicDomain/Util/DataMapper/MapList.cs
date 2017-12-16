@@ -25,9 +25,9 @@ namespace Oldmansoft.ClassicDomain.Util
 
         public override void Map(object source, object target)
         {
-            var currentSource = (source as IEnumerable);
+            var sourceValue = (source as IEnumerable);
             var targetValue = target as IList;
-            foreach (var item in currentSource)
+            foreach (var item in sourceValue)
             {
                 targetValue.Add(DataMapper.ItemValueCopy(SourceItemType, TargetItemType, IsNormalClass, item));
             }

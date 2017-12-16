@@ -25,12 +25,7 @@ namespace Oldmansoft.ClassicDomain.Util
                 Setter.Set(target, null);
                 return;
             }
-
-            if (sourceValue == null)
-            {
-                Setter.Set(target, null);
-                return;
-            }
+            
             var targetValue = TargetGetter.Get(target);
             if (targetValue == null)
             {
