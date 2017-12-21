@@ -12,55 +12,55 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
         public static UpdatedCommand<TKey> GetContext<TKey>(TKey key, Type domainType, object compareSource, object compareTarget)
         {
             var result = new UpdatedCommand<TKey>(key);
-            SetContext(domainType, result, string.Empty, compareSource, compareTarget);
+            SetContext(domainType, result, new string[0], compareSource, compareTarget);
             return result;
         }
 
-        private static void SetContext(Type type, UpdatedCommand result, string prefixName, object compareSource, object compareTarget)
+        private static void SetContext(Type type, UpdatedCommand result, string[] prefixNames, object compareSource, object compareTarget)
         {
             foreach (var property in TypePublicInstanceStore.GetPropertys(type))
             {
-                var name = string.Format("{0}{1}", prefixName, property.Name);
+                var currentNames = prefixNames.AddToNew(property.Name);
                 var sourceValue = compareSource == null ? null : property.GetValue(compareSource);
                 var targetValue = compareTarget == null ? null : property.GetValue(compareTarget);
                 var propertyType = property.PropertyType;
                 if (propertyType.IsArrayOrGenericList())
                 {
-                    DealList(result, propertyType, name, sourceValue, targetValue);
+                    DealList(result, propertyType, currentNames.JoinDot(), sourceValue, targetValue);
                     continue;
                 }
 
                 if (propertyType.IsGenericDictionary())
                 {
-                    DealDictionary(result, propertyType, name, sourceValue, targetValue);
+                    DealDictionary(result, propertyType, currentNames.JoinDot(), sourceValue, targetValue);
                     continue;
                 }
 
                 if (propertyType.IsNormalClass())
                 {
-                    DealNormalClass(result, propertyType, name, sourceValue, targetValue);
+                    DealNormalClass(result, propertyType, currentNames, sourceValue, targetValue);
                     continue;
                 }
 
                 if (!sourceValue.IsEquals(targetValue))
                 {
-                    DealValue(result, name, targetValue);
+                    DealValue(result, currentNames.JoinDot(), targetValue);
                 }
             }
         }
 
-        private static void DealNormalClass(UpdatedCommand result, Type propertyType, string name, object sourceValue, object targetValue)
+        private static void DealNormalClass(UpdatedCommand result, Type propertyType, string[] prefixNames, object sourceValue, object targetValue)
         {
             if (sourceValue != null && targetValue == null)
             {
-                result.HashDelete.Add(name);
+                result.HashDelete.Add(prefixNames.JoinDot());
             }
             else if (sourceValue == null && targetValue != null)
             {
-                result.HashSet.Add(name, propertyType.FullName);
+                result.HashSet.Add(prefixNames.JoinDot(), propertyType.FullName);
             }
 
-            SetContext(propertyType, result, string.Format("{0}.", name), sourceValue, targetValue);
+            SetContext(propertyType, result, prefixNames, sourceValue, targetValue);
         }
 
         private static void DealValue(UpdatedCommand result, string name, object targetValue)

@@ -13,6 +13,30 @@ namespace Oldmansoft.ClassicDomain.Util
     public static class Extends
     {
         /// <summary>
+        /// 在数组后面添加新的项，并创建出新的数组
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public static T[] AddToNew<T>(this T[] source, T item)
+        {
+            var result = new T[source.Length + 1];
+            if (source.Length > 0) Array.Copy(source, result, source.Length);
+            result[result.Length - 1] = item;
+            return result;
+        }
+
+        /// <summary>
+        /// 加入点到字符串之间
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static string JoinDot(this string[] source)
+        {
+            return string.Join<string>(".", source);
+        }
+
+        /// <summary>
         /// 两个对象是否内容相同
         /// </summary>
         /// <param name="source"></param>

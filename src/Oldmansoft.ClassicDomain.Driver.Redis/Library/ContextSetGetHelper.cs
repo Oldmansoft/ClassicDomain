@@ -13,31 +13,31 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
         public static ReflectionItem GetReflection(Type type)
         {
             var result = new ReflectionItem();
-            SetReflection(type, result, string.Empty);
+            SetReflection(type, result, new string[0]);
             return result;
         }
 
-        private static void SetReflection(Type type, ReflectionItem result, string prefixName)
+        private static void SetReflection(Type type, ReflectionItem result, string[] prefixNames)
         {
             foreach (var property in TypePublicInstanceStore.GetPropertys(type))
             {
-                var name = string.Format("{0}{1}", prefixName, property.Name);
+                var currentNames = prefixNames.AddToNew(property.Name);
                 var propertyType = property.PropertyType;
                 if (propertyType.IsArrayOrGenericList())
                 {
-                    result.ListNames.Add(name);
+                    result.ListNames.Add(currentNames.JoinDot());
                     continue;
                 }
 
                 if (propertyType.IsGenericDictionary())
                 {
-                    result.HashNames.Add(name);
+                    result.HashNames.Add(currentNames.JoinDot());
                     continue;
                 }
 
                 if (propertyType.IsNormalClass())
                 {
-                    SetReflection(propertyType, result, string.Format("{0}.", name));
+                    SetReflection(propertyType, result, currentNames);
                     continue;
                 }
             }
@@ -47,15 +47,16 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
         {
             if (mapping == null || mapping.Fields.Count == 0) return default(T);
             var result = new T();
-            SetContext(mapping, typeof(T), result, string.Empty);
+            SetContext(mapping, typeof(T), result, string.Empty, new string[0]);
             return result;
         }
 
-        private static void SetContext<T>(DataGetMapping mapping, Type type, T instance, string prefixName)
+        private static void SetContext<T>(DataGetMapping mapping, Type type, T instance, string prefixName, string[] prefixNames)
         {
             foreach (var property in TypePublicInstanceStore.GetPropertys(type))
             {
-                var name = string.Format("{0}{1}", prefixName, property.Name);
+                var currentNames = prefixNames.AddToNew(property.Name);
+                var name = currentNames.JoinDot();
                 var propertyType = property.PropertyType;
                 if (propertyType.IsArray)
                 {
@@ -63,7 +64,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
                     continue;
                 }
 
-                if (propertyType.IsDictionary())
+                if (propertyType.IsGenericDictionary())
                 {
                     SetDictionary(mapping, instance, property, name);
                     continue;
@@ -79,7 +80,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
                 if (propertyType.IsNormalClass())
                 {
                     var obj = ObjectCreator.CreateInstance(propertyType);
-                    SetContext(mapping, propertyType, obj, string.Format("{0}.", name));
+                    SetContext(mapping, propertyType, obj, string.Format("{0}.", name), currentNames);
                     property.SetValue(instance, obj);
                     continue;
                 }

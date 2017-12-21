@@ -59,19 +59,5 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
                 return BsonValue.Create(source);
             }
         }
-
-        /// <summary>
-        /// 两个对象是否内容相同
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="target"></param>
-        /// <returns></returns>
-        public static bool IsEquals(this object source, object target)
-        {
-            if (source == null && target == null) return true;
-            if (source == null) return false;
-            if (target == null) return false;
-            return source.Equals(target);
-        }
     }
 }

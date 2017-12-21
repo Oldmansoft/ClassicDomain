@@ -35,7 +35,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
             {
                 var propertyName = property.Name;
                 if (propertyName.ToLower() == "id") propertyName = "_id";
-                var currentNames = Append(names, propertyName);
+                var currentNames = names.AddToNew(propertyName);
 
                 var sourceValue = compareSource == null ? null : property.GetValue(compareSource);
                 var targetValue = compareTarget == null ? null : property.GetValue(compareTarget);
@@ -62,7 +62,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
 
                 if (!sourceValue.IsEquals(targetValue))
                 {
-                    result.Add(Update.Set(GetPropertyName(currentNames), targetValue.ToBsonValue()));
+                    result.Add(Update.Set(currentNames.JoinDot(), targetValue.ToBsonValue()));
                 }
             }
         }
@@ -74,7 +74,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
                 GetUpdateContext(type, result, names, sourceValue, targetValue);
                 return;
             }
-            result.Add(new UpdateBuilder().SetObjectWrapped(GetPropertyName(names), targetValue));
+            result.Add(new UpdateBuilder().SetObjectWrapped(names.JoinDot(), targetValue));
         }
         
         private static void DealList(UpdatedItem result, Type propertyType, string[] names, object sourceValue, object targetValue)
@@ -84,7 +84,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
                 DealListChange(result, propertyType, names, sourceValue, targetValue);
                 return;
             }
-            result.Add(new UpdateBuilder().SetObjectWrapped(GetPropertyName(names), targetValue));
+            result.Add(new UpdateBuilder().SetObjectWrapped(names.JoinDot(), targetValue));
         }
 
         private static void DealListChange(UpdatedItem result, Type propertyType, string[] names, object sourceValue, object targetValue)
@@ -93,7 +93,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
             var isNormalClass = itemType.IsNormalClass();
             var sourceList = sourceValue as System.Collections.IList;
             var targetList = targetValue as System.Collections.IList;
-            var name = GetPropertyName(names);
+            var name = names.JoinDot();
 
             if (IsByteArray(propertyType, itemType))
             {
@@ -113,7 +113,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
                 }
                 if (isNormalClass)
                 {
-                    DealNormalClass(result, itemType, Append(names, i.ToString()), sourceList[i], targetList[i]);
+                    DealNormalClass(result, itemType, names.AddToNew(i.ToString()), sourceList[i], targetList[i]);
                     continue;
                 }
                 if (!sourceList[i].IsEquals(targetList[i]))
@@ -138,7 +138,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
                 DealDictionaryChange(result, propertyType, names, sourceValue, targetValue);
                 return;
             }
-            result.Add(new UpdateBuilder().SetObjectWrapped(GetPropertyName(names), targetValue));
+            result.Add(new UpdateBuilder().SetObjectWrapped(names.JoinDot(), targetValue));
         }
 
         private static void DealDictionaryChange(UpdatedItem result, Type propertyType, string[] names, object sourceValue, object targetValue)
@@ -157,7 +157,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
                 }
                 if (isNormalClass)
                 {
-                    DealNormalClass(result, valueType, Append(names, key.ToString()), sourceDictionary[key], targetDictionary[key]);
+                    DealNormalClass(result, valueType, names.AddToNew(key.ToString()), sourceDictionary[key], targetDictionary[key]);
                     continue;
                 }
                 if (!sourceDictionary[key].IsEquals(targetDictionary[key]))
@@ -203,28 +203,15 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
 
         private static string GetHashKey(string[] source, string key)
         {
-            if (string.IsNullOrEmpty(key)) throw new ArgumentException(string.Format("属性 {0} 的键不允许为空", GetPropertyName(source)));
-            if (key.IndexOf('.') > -1) throw new ArgumentException(string.Format("属性 {0} 的键不允许有字符“.”", GetPropertyName(source)));
-            if (key.IndexOf('$') > -1) throw new ArgumentException(string.Format("属性 {0} 的键不允许有字符“$”", GetPropertyName(source)));
-            return GetPropertyName(Append(source, key));
+            if (string.IsNullOrEmpty(key)) throw new ArgumentException(string.Format("属性 {0} 的键不允许为空", source.JoinDot()));
+            if (key.IndexOf('.') > -1) throw new ArgumentException(string.Format("属性 {0} 的键不允许有字符“.”", source.JoinDot()));
+            if (key.IndexOf('$') > -1) throw new ArgumentException(string.Format("属性 {0} 的键不允许有字符“$”", source.JoinDot()));
+            return source.AddToNew(key).JoinDot();
         }
 
         private static string GetListKey(string[] source, int index)
         {
-            return GetPropertyName(Append(source, index.ToString()));
-        }
-
-        private static string[] Append(string[] source, string item)
-        {
-            var result = new string[source.Length + 1];
-            if (source.Length > 0) Array.Copy(source, result, source.Length);
-            result[result.Length - 1] = item;
-            return result;
-        }
-
-        private static string GetPropertyName(string[] source)
-        {
-            return string.Join<string>(".", source);
+            return source.AddToNew(index.ToString()).JoinDot();
         }
     }
 }
