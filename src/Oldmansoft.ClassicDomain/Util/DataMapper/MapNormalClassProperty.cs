@@ -13,7 +13,7 @@ namespace Oldmansoft.ClassicDomain.Util
 
         public override IMap Init(Type sourceType, Type targetType, PropertyInfo sourceProperty, PropertyInfo targetProperty)
         {
-            TargetGetter = (IGetter)Activator.CreateInstance(typeof(GetterWrapper<,>).MakeGenericType(targetType, targetProperty.PropertyType), targetProperty);
+            TargetGetter = (IGetter)Activator.CreateInstance(typeof(PropertyGetter<,>).MakeGenericType(targetType, targetProperty.PropertyType), targetProperty);
             return base.Init(sourceType, targetType, sourceProperty, targetProperty);
         }
 

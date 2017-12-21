@@ -101,6 +101,10 @@
     <Compile Include="IPagingCondition.cs" />
     <Compile Include="Util\DataMapper\IPropertyIgnore.cs" />
     <Compile Include="Util\DataMapper.cs" />
+    <Compile Include="Util\PropertyGetter.cs" />
+    <Compile Include="Util\IGetter.cs" />
+    <Compile Include="Util\ISetter.cs" />
+    <Compile Include="Util\PropertyWrapper.cs" />
     <Compile Include="Util\SafeAddDictionary.cs" />
     <Compile Include="Util\ObjectCreator.cs" />
     <Compile Include="Util\DataMapper\PropertyIgnore.cs" />
@@ -113,6 +117,7 @@
     <Compile Include="Util\Paging\PagingCondition.cs" />
     <Compile Include="Util\Paging\PagingResult.cs" />
     <Compile Include="Util\Paging\PagingOrdered.cs" />
+    <Compile Include="Util\PropertySetter.cs" />
     <Compile Include="Util\TypeParse.cs" />
     <Compile Include="Util\_Extends.cs" />
     <Compile Include="Util\TypePublicInstanceStore.cs" />
