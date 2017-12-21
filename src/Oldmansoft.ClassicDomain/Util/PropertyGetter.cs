@@ -12,8 +12,12 @@ namespace Oldmansoft.ClassicDomain.Util
     /// </summary>
     /// <typeparam name="TCaller"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class PropertyGetter<TCaller, TValue> : IGetter
+    public class PropertyGetter<TCaller, TValue> : IGetterData
     {
+        private Type PropertyType;
+
+        private string PropertyName;
+
         private Func<TCaller, TValue> Getter;
 
         /// <summary>
@@ -22,7 +26,26 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <param name="property"></param>
         public PropertyGetter(PropertyInfo property)
         {
+            if (property == null) throw new ArgumentNullException();
+            PropertyName = property.Name;
+            PropertyType = property.PropertyType;
             Getter = (Func<TCaller, TValue>)Delegate.CreateDelegate(typeof(Func<TCaller, TValue>), property.GetGetMethod(true));
+        }
+
+        string IGetterData.Name
+        {
+            get
+            {
+                return PropertyName;
+            }
+        }
+
+        Type IGetterData.Type
+        {
+            get
+            {
+                return PropertyType;
+            }
         }
 
         object IGetter.Get(object caller)

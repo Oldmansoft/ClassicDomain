@@ -58,7 +58,7 @@ namespace Oldmansoft.ClassicDomain.Util
         private static void EachPropertys(Type sourceType, Type targetType, List<IMap> result)
         {
             var normalMap = new MapStructPropertyCreator(sourceType, targetType);
-            foreach (var sourcePropertyInfo in TypePublicInstanceStore.GetPropertys(sourceType))
+            foreach (var sourcePropertyInfo in TypePublicInstancePropertyInfoStore.GetPropertys(sourceType))
             {
                 if (!sourcePropertyInfo.CanRead) continue;
 

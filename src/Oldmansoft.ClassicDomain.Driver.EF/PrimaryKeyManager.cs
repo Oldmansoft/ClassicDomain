@@ -46,7 +46,7 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
             if (keyNames.Length == 0) throw new KeyNotFoundException("实体没有定义主键");
             if (keyNames.Length > 1) throw new ArgumentOutOfRangeException("domain", "实体的主键只能定义一个");
             
-            var property = TypePublicInstanceStore.GetPropertys<TDomain>().First(o => o.Name == keyNames[0]);
+            var property = TypePublicInstancePropertyInfoStore.GetPropertys<TDomain>().First(o => o.Name == keyNames[0]);
             PropertyWrapper<TDomain, Guid> result = null;
             if (property.PropertyType == typeof(Guid))
             {

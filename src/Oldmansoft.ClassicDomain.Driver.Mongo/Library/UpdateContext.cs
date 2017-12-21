@@ -31,15 +31,15 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
 
         private static void GetUpdateContext(Type type, UpdatedItem result, string[] names, object compareSource, object compareTarget)
         {
-            foreach (var property in TypePublicInstanceStore.GetPropertys(type))
+            foreach (var property in TypePublicInstancePropertyGetterStore.GetPropertys(type))
             {
                 var propertyName = property.Name;
                 if (propertyName.ToLower() == "id") propertyName = "_id";
                 var currentNames = names.AddToNew(propertyName);
 
-                var sourceValue = compareSource == null ? null : property.GetValue(compareSource);
-                var targetValue = compareTarget == null ? null : property.GetValue(compareTarget);
-                var propertyType = property.PropertyType;
+                var sourceValue = compareSource == null ? null : property.Get(compareSource);
+                var targetValue = compareTarget == null ? null : property.Get(compareTarget);
+                var propertyType = property.Type;
                 if (sourceValue == null && targetValue == null) continue;
 
                 if (propertyType.IsArrayOrGenericList())

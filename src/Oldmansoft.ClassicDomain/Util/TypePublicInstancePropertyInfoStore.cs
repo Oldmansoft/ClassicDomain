@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 namespace Oldmansoft.ClassicDomain.Util
 {
     /// <summary>
-    /// 类型公共实例存储器
+    /// 类型公共实例属性存储器
     /// </summary>
-    public static class TypePublicInstanceStore
+    public static class TypePublicInstancePropertyInfoStore
     {
         private static ConcurrentDictionary<Type, PropertyInfo[]> Propertys { get; set; }
 
-        static TypePublicInstanceStore()
+        static TypePublicInstancePropertyInfoStore()
         {
             Propertys = new ConcurrentDictionary<Type, PropertyInfo[]>();
         }

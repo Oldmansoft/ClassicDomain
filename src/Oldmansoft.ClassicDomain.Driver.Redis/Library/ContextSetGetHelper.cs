@@ -19,7 +19,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
 
         private static void SetReflection(Type type, ReflectionItem result, string[] prefixNames)
         {
-            foreach (var property in TypePublicInstanceStore.GetPropertys(type))
+            foreach (var property in TypePublicInstancePropertyInfoStore.GetPropertys(type))
             {
                 var currentNames = prefixNames.AddToNew(property.Name);
                 var propertyType = property.PropertyType;
@@ -53,7 +53,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
 
         private static void SetContext<T>(DataGetMapping mapping, Type type, T instance, string prefixName, string[] prefixNames)
         {
-            foreach (var property in TypePublicInstanceStore.GetPropertys(type))
+            foreach (var property in TypePublicInstancePropertyInfoStore.GetPropertys(type))
             {
                 var currentNames = prefixNames.AddToNew(property.Name);
                 var name = currentNames.JoinDot();

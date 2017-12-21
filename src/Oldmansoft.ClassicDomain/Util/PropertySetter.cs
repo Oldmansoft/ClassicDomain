@@ -22,6 +22,7 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <param name="property"></param>
         public PropertySetter(PropertyInfo property)
         {
+            if (property == null) throw new ArgumentNullException();
             Setter = (Action<TCaller, TValue>)Delegate.CreateDelegate(typeof(Action<TCaller, TValue>), property.GetSetMethod(true));
         }
 

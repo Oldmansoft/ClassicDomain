@@ -320,7 +320,7 @@ namespace Oldmansoft.ClassicDomain.Util
             var sourceType = source.GetType();
             var targetType = target.GetType();
 
-            foreach (var sourcePropertyInfo in TypePublicInstanceStore.GetPropertys(sourceType))
+            foreach (var sourcePropertyInfo in TypePublicInstancePropertyInfoStore.GetPropertys(sourceType))
             {
                 if (!sourcePropertyInfo.CanRead) continue;
                 if (IgnoreProperty.Contains(string.Format("{0}{1}", refPropertyName, sourcePropertyInfo.Name))) continue;

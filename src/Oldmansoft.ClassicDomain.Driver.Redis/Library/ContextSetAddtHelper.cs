@@ -27,12 +27,12 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
 
         private static void SetContext(Type type, object context, UpdatedCommand result, string[] prefixNames)
         {
-            foreach(var property in TypePublicInstanceStore.GetPropertys(type))
+            foreach(var property in TypePublicInstancePropertyGetterStore.GetPropertys(type))
             {
-                var value = property.GetValue(context);
+                var value = property.Get(context);
                 if (value == null) continue;
 
-                var propertyType = property.PropertyType;
+                var propertyType = property.Type;
                 var currentNames = prefixNames.AddToNew(property.Name);
                 var name = currentNames.JoinDot();
 
@@ -57,7 +57,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
                     continue;
                 }
 
-                result.HashSet.Add(name, property.GetValue(context).ToString());
+                result.HashSet.Add(name, value.ToString());
             }
         }
     }
