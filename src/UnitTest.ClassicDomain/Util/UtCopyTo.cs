@@ -9,6 +9,18 @@ namespace UnitTest.ClassicDomain.Util
     [TestClass]
     public class UtCopyTo
     {
+        [TestMethod]
+        public void TestPrivateContent()
+        {
+            var source = new CopySourceModel();
+            source.SetName("hello");
+            source.CreateSub();
+            source.Sub.Value = "world";
+
+            var target = source.MapTo(new CopySourceModel());
+            Assert.AreEqual("world", target.Sub.Value);
+        }
+
         private CopySourceModel CreateSource(string name)
         {
             var source = new CopySourceModel();

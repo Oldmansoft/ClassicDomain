@@ -48,29 +48,5 @@ namespace Oldmansoft.ClassicDomain
             if (source is Util.DataMapper) throw new ArgumentException("不能是 DataMapper 类型", "source");
             return Util.DataMapper.Map<TTarget>(source);
         }
-
-        /// <summary>
-        /// 创建属性的获值方法委托
-        /// </summary>
-        /// <typeparam name="TCaller"></typeparam>
-        /// <typeparam name="TValue"></typeparam>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static Func<TCaller, TValue> CreateGetMethod<TCaller, TValue>(string name)
-        {
-            return (Func<TCaller, TValue>)Delegate.CreateDelegate(typeof(Func<TCaller, TValue>), typeof(TCaller).GetProperty(name).GetGetMethod(true));
-        }
-
-        /// <summary>
-        /// 创建属性的赋值方法委托
-        /// </summary>
-        /// <typeparam name="TCaller"></typeparam>
-        /// <typeparam name="TValue"></typeparam>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static Action<TCaller, TValue> CreateSetMethod<TCaller, TValue>(string name)
-        {
-            return (Action<TCaller, TValue>)Delegate.CreateDelegate(typeof(Action<TCaller, TValue>), typeof(TCaller).GetProperty(name).GetSetMethod(true));
-        }
     }
 }

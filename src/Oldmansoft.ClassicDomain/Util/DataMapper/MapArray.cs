@@ -27,7 +27,9 @@ namespace Oldmansoft.ClassicDomain.Util
         {
             var sourceValue = source as Array;
             var targetValue = target as Array;
-            for (var i = 0; i < sourceValue.Length; i++)
+            var length = sourceValue.Length;
+            if (targetValue.Length < length) length = targetValue.Length;
+            for (var i = 0; i < length; i++)
             {
                 targetValue.SetValue(DataMapper.ItemValueCopy(SourceItemType, TargetItemType, IsNormalClass, sourceValue.GetValue(i)), i);
             }

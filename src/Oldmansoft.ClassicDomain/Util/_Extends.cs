@@ -10,9 +10,8 @@ namespace Oldmansoft.ClassicDomain.Util
     /// <summary>
     /// 扩展方法
     /// </summary>
-    public static class Extend
+    public static class Extends
     {
-
         /// <summary>
         /// 两个对象是否内容相同
         /// </summary>
@@ -26,8 +25,7 @@ namespace Oldmansoft.ClassicDomain.Util
             if (target == null) return false;
             return source.Equals(target);
         }
-
-
+        
         /// <summary>
         /// 是否为非字符串的类
         /// </summary>
@@ -112,7 +110,6 @@ namespace Oldmansoft.ClassicDomain.Util
         {
             if (!source.IsGenericType) return false;
             var sourceGenericTypeDefinition = source.GetGenericTypeDefinition();
-            if (sourceGenericTypeDefinition == typeof(IDictionary<,>)) return true;
             if (sourceGenericTypeDefinition == typeof(Dictionary<,>)) return true;
             return false;
         }
@@ -131,6 +128,20 @@ namespace Oldmansoft.ClassicDomain.Util
         }
 
         /// <summary>
+        /// 是否为泛型字典或其接口
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static bool IsGenericDictionaryOrIGenericDictionary(this Type source)
+        {
+            if (!source.IsGenericType) return false;
+            var sourceGenericTypeDefinition = source.GetGenericTypeDefinition();
+            if (sourceGenericTypeDefinition == typeof(Dictionary<,>)) return true;
+            if (sourceGenericTypeDefinition == typeof(IDictionary<,>)) return true;
+            return false;
+        }
+
+        /// <summary>
         /// 是否为泛型列表
         /// </summary>
         /// <param name="source"></param>
@@ -139,7 +150,6 @@ namespace Oldmansoft.ClassicDomain.Util
         {
             if (!source.IsGenericType) return false;
             var sourceGenericTypeDefinition = source.GetGenericTypeDefinition();
-            if (sourceGenericTypeDefinition == typeof(IList<>)) return true;
             if (sourceGenericTypeDefinition == typeof(List<>)) return true;
             return false;
         }
@@ -153,6 +163,20 @@ namespace Oldmansoft.ClassicDomain.Util
         {
             if (!source.IsGenericType) return false;
             var sourceGenericTypeDefinition = source.GetGenericTypeDefinition();
+            if (sourceGenericTypeDefinition == typeof(IList<>)) return true;
+            return false;
+        }
+
+        /// <summary>
+        /// 是否为泛型列表
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static bool IsGenericListOrIGenericList(this Type source)
+        {
+            if (!source.IsGenericType) return false;
+            var sourceGenericTypeDefinition = source.GetGenericTypeDefinition();
+            if (sourceGenericTypeDefinition == typeof(List<>)) return true;
             if (sourceGenericTypeDefinition == typeof(IList<>)) return true;
             return false;
         }
@@ -188,6 +212,57 @@ namespace Oldmansoft.ClassicDomain.Util
         }
 
         /// <summary>
+        /// 是否为数组
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static bool IsArray(this IEnumerable<Type> source)
+        {
+            foreach (var item in source)
+            {
+                if (!item.IsArray)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 是否为枚举
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static bool IsEnum(this IEnumerable<Type> source)
+        {
+            foreach (var item in source)
+            {
+                if (!item.IsEnum)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 是否为可空枚举
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static bool IsNullableEnum(this IEnumerable<Type> source)
+        {
+            foreach(var item in source)
+            {
+                if (!item.IsNullableEnum())
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
         /// 是否为泛型字典
         /// </summary>
         /// <param name="source"></param>
@@ -205,6 +280,40 @@ namespace Oldmansoft.ClassicDomain.Util
         }
 
         /// <summary>
+        /// 是否为泛型字典接口
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static bool IsIGenericDictionary(this IEnumerable<Type> source)
+        {
+            foreach (var item in source)
+            {
+                if (!item.IsIGenericDictionary())
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 是否为泛型字典或其接口
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static bool IsGenericDictionaryOrIGenericDictionary(this IEnumerable<Type> source)
+        {
+            foreach (var item in source)
+            {
+                if (!item.IsGenericDictionaryOrIGenericDictionary())
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
         /// 是否为泛型列表
         /// </summary>
         /// <param name="source"></param>
@@ -214,6 +323,40 @@ namespace Oldmansoft.ClassicDomain.Util
             foreach (var item in source)
             {
                 if (!item.IsGenericList())
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 是否为泛型列表接口
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static bool IsIGenericList(this IEnumerable<Type> source)
+        {
+            foreach (var item in source)
+            {
+                if (!item.IsIGenericList())
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        /// <summary>
+        /// 是否为泛型列表或其接口
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static bool IsGenericListOrIGenericList(this IEnumerable<Type> source)
+        {
+            foreach (var item in source)
+            {
+                if (!item.IsGenericListOrIGenericList())
                 {
                     return false;
                 }
@@ -264,6 +407,30 @@ namespace Oldmansoft.ClassicDomain.Util
         public static object FromString(this Type source, string context)
         {
             return TypeParse.Get(source)(context);
+        }
+        
+        /// <summary>
+        /// 创建属性的获值方法委托
+        /// </summary>
+        /// <typeparam name="TCaller"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static Func<TCaller, TValue> CreateGetMethod<TCaller, TValue>(string name)
+        {
+            return (Func<TCaller, TValue>)Delegate.CreateDelegate(typeof(Func<TCaller, TValue>), typeof(TCaller).GetProperty(name).GetGetMethod(true));
+        }
+
+        /// <summary>
+        /// 创建属性的赋值方法委托
+        /// </summary>
+        /// <typeparam name="TCaller"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static Action<TCaller, TValue> CreateSetMethod<TCaller, TValue>(string name)
+        {
+            return (Action<TCaller, TValue>)Delegate.CreateDelegate(typeof(Action<TCaller, TValue>), typeof(TCaller).GetProperty(name).GetSetMethod(true));
         }
     }
 }

@@ -103,7 +103,6 @@
     <Compile Include="Util\CopySourceModel.cs" />
     <Compile Include="Util\CopyTargetModel.cs" />
     <Compile Include="Util\UtObjectCreator.cs" />
-    <Compile Include="Util\UtDataMapper.cs" />
     <Compile Include="Util\UtPaging.cs" />
     <Compile Include="Util\UtCopyTo.cs" />
   </ItemGroup>

@@ -23,24 +23,27 @@ namespace Oldmansoft.ClassicDomain.Util
             if (Maps.TryGetValue(key, out maps)) return maps;
 
             var result = new List<IMap>();
+            var types = new Type[] { sourceType, targetType };
 
-            if (sourceType.IsArray && targetType.IsArray)
+            if (types.IsArray())
             {
                 result.Add(new MapArray().Init(sourceType, targetType));
-                return result.ToArray();
             }
-            else if (new Type[] { sourceType, targetType }.IsGenericList())
+            else if (types.IsGenericListOrIGenericList())
             {
                 result.Add(new MapList().Init(sourceType, targetType));
-                return result.ToArray();
             }
-            else if (new Type[] { sourceType, targetType }.IsGenericDictionary())
+            else if (types.IsGenericDictionaryOrIGenericDictionary())
             {
-                if (sourceType.GetGenericArguments()[0] != targetType.GetGenericArguments()[0]) return result.ToArray();
-                result.Add(new MapDictionary().Init(sourceType, targetType));
-                return result.ToArray();
+                if (sourceType.GetGenericArguments()[0] == targetType.GetGenericArguments()[0])
+                {
+                    result.Add(new MapDictionary().Init(sourceType, targetType));
+                }
             }
-            EachPropertys(sourceType, targetType, result);
+            else
+            {
+                EachPropertys(sourceType, targetType, result);
+            }
 
             Maps.TryAdd(key, result.ToArray());
             return result.ToArray();
@@ -64,14 +67,15 @@ namespace Oldmansoft.ClassicDomain.Util
                 if (!targetPropertyInfo.CanWrite) continue;
                 var sourcePropertyType = sourcePropertyInfo.PropertyType;
                 var targetPropertyType = targetPropertyInfo.PropertyType;
+                var propertyTypes = new Type[] { sourcePropertyType, targetPropertyType };
 
-                if (sourcePropertyType.IsArray && targetPropertyType.IsArray)
+                if (propertyTypes.IsArray())
                 {
                     result.Add(new MapArrayProperty().Init(sourceType, targetType, sourcePropertyInfo, targetPropertyInfo));
                     continue;
                 }
 
-                if (new Type[] { sourcePropertyType, targetPropertyType }.IsGenericList())
+                if (propertyTypes.IsGenericListOrIGenericList())
                 {
                     var sourceItemType = sourcePropertyType.GetGenericArguments()[0];
                     var targetItemType = targetPropertyType.GetGenericArguments()[0];
@@ -79,26 +83,26 @@ namespace Oldmansoft.ClassicDomain.Util
                     continue;
                 }
 
-                if (new Type[] { sourcePropertyType, targetPropertyType }.IsGenericDictionary())
+                if (propertyTypes.IsGenericDictionaryOrIGenericDictionary())
                 {
                     if (sourcePropertyType.GetGenericArguments()[0] != targetPropertyType.GetGenericArguments()[0]) continue;
                     result.Add(new MapDictionaryProperty().Init(sourceType, targetType, sourcePropertyInfo, targetPropertyInfo));
                     continue;
                 }
 
-                if (sourcePropertyType.IsEnum && targetPropertyType.IsEnum)
+                if (propertyTypes.IsEnum())
                 {
                     result.Add(new MapEnumProperty().Init(sourceType, targetType, sourcePropertyInfo, targetPropertyInfo));
                     continue;
                 }
 
-                if (sourcePropertyType.IsNullableEnum() && targetPropertyType.IsNullableEnum())
+                if (propertyTypes.IsNullableEnum())
                 {
                     result.Add(new MapNullableEnumProperty().Init(sourceType, targetType, sourcePropertyInfo, targetPropertyInfo));
                     continue;
                 }
 
-                if (new Type[] { sourcePropertyType, targetPropertyType }.IsNormalClass())
+                if (propertyTypes.IsNormalClass())
                 {
                     result.Add(new MapNormalClassProperty().Init(sourceType, targetType, sourcePropertyInfo, targetPropertyInfo));
                     continue;
