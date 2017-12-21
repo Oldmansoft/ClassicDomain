@@ -19,5 +19,7 @@ namespace UnitTest.ClassicDomain.Drvier.Domain
         public List<Author> Authors { get; set; }
 
         public List<string> Tags { get; set; }
+
+        public Dictionary<string, string> DictionaryValue { get; set; }
     }
 }

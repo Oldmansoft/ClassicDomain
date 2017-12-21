@@ -24,15 +24,15 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
                 var sourceValue = compareSource == null ? null : property.GetValue(compareSource);
                 var targetValue = compareTarget == null ? null : property.GetValue(compareTarget);
                 var propertyType = property.PropertyType;
-                if (propertyType.IsArray || (propertyType.IsGenericType && propertyType.GetInterfaces().Contains(typeof(System.Collections.IEnumerable))))
+                if (propertyType.IsArrayOrGenericList())
                 {
-                    if (propertyType.GetInterfaces().Contains(typeof(System.Collections.IDictionary)))
-                    {
-                        DealDictionary(result, propertyType, name, sourceValue, targetValue);
-                        continue;
-                    }
-
                     DealList(result, propertyType, name, sourceValue, targetValue);
+                    continue;
+                }
+
+                if (propertyType.IsGenericDictionary())
+                {
+                    DealDictionary(result, propertyType, name, sourceValue, targetValue);
                     continue;
                 }
 

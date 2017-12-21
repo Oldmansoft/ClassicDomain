@@ -38,13 +38,14 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
                 if (propertyType.IsArrayOrGenericList())
                 {
                     result.HashSet.Add(name, propertyType.FullName);
-                    if (propertyType.IsDictionary())
-                    {
-                        result.HashSetList.Add(name, propertyType.ConvertToDictionary(value));
-                        continue;
-                    }
-
                     result.ListRightPush.Add(name, propertyType.ConvertToList(value));
+                    continue;
+                }
+                
+                if (propertyType.IsGenericDictionary())
+                {
+                    result.HashSet.Add(name, propertyType.FullName);
+                    result.HashSetList.Add(name, propertyType.ConvertToDictionary(value));
                     continue;
                 }
 

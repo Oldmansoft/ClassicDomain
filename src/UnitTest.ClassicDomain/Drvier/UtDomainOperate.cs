@@ -24,12 +24,15 @@ namespace UnitTest.ClassicDomain.Drvier
             addDomain.Name = "hello";
             addDomain.Authors = new List<Domain.Author>();
             addDomain.Authors.Add(new Domain.Author() { Name = "one" });
+            addDomain.DictionaryValue = new Dictionary<string, string>();
+            addDomain.DictionaryValue.Add("1", "1");
             repository.Add(addDomain);
             factory.GetUnitOfWork().Commit();
 
             var replaceDomain = repository.Get(addDomain.Id);
             replaceDomain.Name = null;
             replaceDomain.Authors = null;
+            replaceDomain.DictionaryValue = null;
             repository.Replace(replaceDomain);
             factory.GetUnitOfWork().Commit();
 
@@ -65,6 +68,8 @@ namespace UnitTest.ClassicDomain.Drvier
             replaceDomain.Name = "hello";
             replaceDomain.Authors = new List<Domain.Author>();
             replaceDomain.Authors.Add(new Domain.Author() { Name = "one" });
+            replaceDomain.DictionaryValue = new Dictionary<string, string>();
+            replaceDomain.DictionaryValue.Add("1", "1");
             repository.Replace(replaceDomain);
             factory.GetUnitOfWork().Commit();
 

@@ -25,13 +25,13 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
                 var propertyType = property.PropertyType;
                 if (propertyType.IsArrayOrGenericList())
                 {
-                    if (propertyType.IsDictionary())
-                    {
-                        result.HashNames.Add(name);
-                        continue;
-                    }
-
                     result.ListNames.Add(name);
+                    continue;
+                }
+
+                if (propertyType.IsGenericDictionary())
+                {
+                    result.HashNames.Add(name);
                     continue;
                 }
 

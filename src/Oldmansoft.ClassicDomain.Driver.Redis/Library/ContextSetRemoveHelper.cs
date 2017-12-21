@@ -26,11 +26,11 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
 
         private static void SetContext(Type type, UpdatedCommand result, string prefixName)
         {
-            foreach(var property in TypePublicInstanceStore.GetPropertys(type))
+            foreach (var property in TypePublicInstanceStore.GetPropertys(type))
             {
                 var name = string.Format("{0}{1}", prefixName, property.Name);
                 var propertyType = property.PropertyType;
-                if (propertyType.IsArrayOrGenericList())
+                if (propertyType.IsArrayOrGenericList() || propertyType.IsGenericDictionary())
                 {
                     result.KeyDelete.Add(name);
                     continue;
