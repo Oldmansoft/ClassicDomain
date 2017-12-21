@@ -8,6 +8,78 @@ namespace UnitTest.ClassicDomain.Drvier
     public class UtDomainOperate
     {
         [TestMethod]
+        public void TestReplaceNull()
+        {
+            TestReplaceNull_Core(new Mongo.Factory());
+            TestReplaceNull_Core(new Mongo.FastModeFactory());
+            TestReplaceNull_Core(new Redis.Factory());
+            TestReplaceNull_Core(new Redis.FastModeFactory());
+        }
+
+        private static void TestReplaceNull_Core(IFactory factory)
+        {
+            var repository = factory.CreateBook();
+
+            var addDomain = new Domain.Book();
+            addDomain.Name = "hello";
+            addDomain.Authors = new List<Domain.Author>();
+            addDomain.Authors.Add(new Domain.Author() { Name = "one" });
+            repository.Add(addDomain);
+            factory.GetUnitOfWork().Commit();
+
+            var replaceDomain = repository.Get(addDomain.Id);
+            replaceDomain.Name = null;
+            replaceDomain.Authors = null;
+            repository.Replace(replaceDomain);
+            factory.GetUnitOfWork().Commit();
+
+            var getDomain = repository.Get(addDomain.Id);
+            repository.Remove(getDomain);
+            factory.GetUnitOfWork().Commit();
+
+            var removeDomain = repository.Get(addDomain.Id);
+
+            Assert.IsNotNull(replaceDomain);
+            Assert.IsNull(getDomain.Authors);
+            Assert.IsNull(removeDomain);
+        }
+
+        [TestMethod]
+        public void TestReplaceNullToNew()
+        {
+            TestReplaceNullToNew_Core(new Mongo.Factory());
+            TestReplaceNullToNew_Core(new Mongo.FastModeFactory());
+            TestReplaceNullToNew_Core(new Redis.Factory());
+            TestReplaceNullToNew_Core(new Redis.FastModeFactory());
+        }
+
+        private static void TestReplaceNullToNew_Core(IFactory factory)
+        {
+            var repository = factory.CreateBook();
+
+            var addDomain = new Domain.Book();
+            repository.Add(addDomain);
+            factory.GetUnitOfWork().Commit();
+
+            var replaceDomain = repository.Get(addDomain.Id);
+            replaceDomain.Name = "hello";
+            replaceDomain.Authors = new List<Domain.Author>();
+            replaceDomain.Authors.Add(new Domain.Author() { Name = "one" });
+            repository.Replace(replaceDomain);
+            factory.GetUnitOfWork().Commit();
+
+            var getDomain = repository.Get(addDomain.Id);
+            repository.Remove(getDomain);
+            factory.GetUnitOfWork().Commit();
+
+            var removeDomain = repository.Get(addDomain.Id);
+
+            Assert.IsNotNull(replaceDomain);
+            Assert.IsNotNull(getDomain.Authors);
+            Assert.IsNull(removeDomain);
+        }
+
+        [TestMethod]
         public void TestAddReplaceRemove()
         {
             TestAddReplaceRemove_Core(new Mongo.Factory());

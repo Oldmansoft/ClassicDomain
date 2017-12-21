@@ -64,7 +64,7 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <returns></returns>
         public static bool IsArrayOrGenericList(this Type source)
         {
-            return source.IsArray || (source.IsGenericType && source.GetInterfaces().Contains(typeof(IEnumerable)));
+            return source.IsArray || (source.IsGenericType && source.GetInterfaces().Contains(typeof(IList)));
         }
 
         /// <summary>
