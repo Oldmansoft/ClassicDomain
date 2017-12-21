@@ -101,6 +101,7 @@
     <Compile Include="IPagingCondition.cs" />
     <Compile Include="Util\DataMapper\IPropertyIgnore.cs" />
     <Compile Include="Util\DataMapper.cs" />
+    <Compile Include="Util\IPropertyValue.cs" />
     <Compile Include="Util\PropertyGetter.cs" />
     <Compile Include="Util\IGetter.cs" />
     <Compile Include="Util\ISetter.cs" />
