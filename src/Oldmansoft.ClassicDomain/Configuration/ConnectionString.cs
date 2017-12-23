@@ -12,18 +12,18 @@ namespace Oldmansoft.ClassicDomain.Configuration
     /// </summary>
     public class ConnectionString
     {
-        private static Dictionary<string, PropertyInfo> Propertys { get; set; }
+        private static Dictionary<string, Util.ISetter> Propertys { get; set; }
 
         static ConnectionString()
         {
-            Propertys = new Dictionary<string, PropertyInfo>(StringComparer.CurrentCultureIgnoreCase);
+            Propertys = new Dictionary<string, Util.ISetter>(StringComparer.CurrentCultureIgnoreCase);
             Type type = typeof(ConnectionString);
             foreach (var item in type.GetProperties())
             {
                 if (item.Name == "Name") continue;
                 if (item.Name == "ProviderName") continue;
                 if (item.Name == "DataSource") continue;
-                Propertys.Add(item.Name, item);
+                Propertys.Add(item.Name, (Util.ISetter)Activator.CreateInstance(typeof(Util.PropertySetter<,>).MakeGenericType(type, item.PropertyType), item));
             }
         }
 
@@ -80,7 +80,7 @@ namespace Oldmansoft.ClassicDomain.Configuration
 
                 if (!Propertys.ContainsKey(key)) continue;
 
-                Propertys[key].SetValue(this, value);
+                Propertys[key].Set(this, value);
             }
         }
     }

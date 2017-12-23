@@ -27,7 +27,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
 
         private static void SetContext(Type type, object context, UpdatedCommand result, string[] prefixNames)
         {
-            foreach(var property in TypePublicInstancePropertyGetterStore.GetPropertys(type))
+            foreach(var property in TypePublicInstancePropertyValueStore.GetPropertys(type))
             {
                 var value = property.Get(context);
                 if (value == null) continue;

@@ -18,20 +18,23 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// 表名
         /// </summary>
         protected string TableName { get; private set; }
-
         
-
         private ConcurrentQueue<Func<MongoCollection<TDomain>, bool>> ExecuteList { get; set; }
 
         /// <summary>
         /// 主键表达式
         /// </summary>
-        protected System.Linq.Expressions.Expression<Func<TDomain, TKey>> KeyExpression { get; set; }
+        protected System.Linq.Expressions.Expression<Func<TDomain, TKey>> KeyExpression { get; private set; }
 
         /// <summary>
         /// 主键获取
         /// </summary>
-        protected Func<TDomain, TKey> KeyExpressionCompile { get; set; }
+        protected Func<TDomain, TKey> KeyExpressionCompile { get; private set; }
+
+        /// <summary>
+        /// 属性设值器
+        /// </summary>
+        private ISetter PropertySetter { get; set; }
 
         /// <summary>
         /// 创建实体集
@@ -46,6 +49,10 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
             ExecuteList = new ConcurrentQueue<Func<MongoCollection<TDomain>, bool>>();
             KeyExpression = keyExpression;
             KeyExpressionCompile = keyExpression.Compile();
+            if (typeof(TKey) == typeof(Guid))
+            {
+                PropertySetter = new PropertySetter<TDomain, TKey>(KeyExpression.GetProperty());
+            }
         }
 
         /// <summary>
@@ -54,11 +61,11 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// <param name="domain"></param>
         protected void TrySetDomainKey(TDomain domain)
         {
-            if (typeof(TKey) == typeof(Guid))
+            if (PropertySetter != null)
             {
                 if ((Guid)(object)KeyExpressionCompile(domain) == Guid.Empty)
                 {
-                    KeyExpression.GetProperty().SetValue(domain, GuidGenerator.Default.Create(StorageMapping.MongoMapping));
+                    PropertySetter.Set(domain, GuidGenerator.Default.Create(StorageMapping.MongoMapping));
                 }
             }
         }

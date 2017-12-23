@@ -9,7 +9,7 @@ namespace Oldmansoft.ClassicDomain.Util
     /// <summary>
     /// 设值器
     /// </summary>
-    public interface ISetter
+    public interface ISetter : IContent
     {
         /// <summary>
         /// 设置

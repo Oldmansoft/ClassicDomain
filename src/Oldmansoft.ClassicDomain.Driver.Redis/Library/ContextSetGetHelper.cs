@@ -53,11 +53,11 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
 
         private static void SetContext<T>(DataGetMapping mapping, Type type, T instance, string prefixName, string[] prefixNames)
         {
-            foreach (var property in TypePublicInstancePropertyInfoStore.GetPropertys(type))
+            foreach (var property in TypePublicInstancePropertyValueStore.GetPropertys(type))
             {
                 var currentNames = prefixNames.AddToNew(property.Name);
                 var name = currentNames.JoinDot();
-                var propertyType = property.PropertyType;
+                var propertyType = property.Type;
                 if (propertyType.IsArray)
                 {
                     SetArray(mapping, instance, property, name);
@@ -81,26 +81,26 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
                 {
                     var obj = ObjectCreator.CreateInstance(propertyType);
                     SetContext(mapping, propertyType, obj, string.Format("{0}.", name), currentNames);
-                    property.SetValue(instance, obj);
+                    property.Set(instance, obj);
                     continue;
                 }
 
                 var value = mapping.Fields[name];
-                property.SetValue(instance, propertyType.FromString(value));
+                property.Set(instance, propertyType.FromString(value));
             }
         }
 
-        private static void SetArray(DataGetMapping mapping, object instance, PropertyInfo property, string name)
+        private static void SetArray(DataGetMapping mapping, object instance, IValue property, string name)
         {
             if (!mapping.Lists.ContainsKey(name)) return;
-            property.SetValue(instance, mapping.Lists[name].GetArrayFromString(property.PropertyType));
+            property.Set(instance, mapping.Lists[name].GetArrayFromString(property.Type));
         }
 
-        private static void SetDictionary(DataGetMapping mapping, object instance, PropertyInfo property, string name)
+        private static void SetDictionary(DataGetMapping mapping, object instance, IValue property, string name)
         {
             if (!mapping.Hashs.ContainsKey(name)) return;
 
-            var propertyType = property.PropertyType;
+            var propertyType = property.Type;
             var keyType = propertyType.GetGenericArguments()[0];
             var valueType = propertyType.GetGenericArguments()[1];
             var isKeyNormalClass = keyType.IsNormalClass();
@@ -113,37 +113,37 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
                 {
                     dictionary.Add(item.Key.GetValueFromString(keyType, isKeyNormalClass), item.Value.GetValueFromString(valueType, isValueNormalClass));
                 }
-                property.SetValue(instance, dictionary);
+                property.Set(instance, dictionary);
                 return;
             }
 
             throw new NotSupportedException(string.Format("不支持 {0} 类型序列化", propertyType.FullName));
         }
 
-        private static void SetList(DataGetMapping mapping, object instance, PropertyInfo property, string name)
+        private static void SetList(DataGetMapping mapping, object instance, IValue property, string name)
         {
             if (!mapping.Lists.ContainsKey(name)) return;
 
-            var propertyType = property.PropertyType;
+            var propertyType = property.Type;
             var itemType = propertyType.GetEnumerableItemType();
             var listType = typeof(List<>).MakeGenericType(itemType);
             if (propertyType == listType)
             {
-                property.SetValue(instance, mapping.Lists[name].GetListFromString(listType, itemType));
+                property.Set(instance, mapping.Lists[name].GetListFromString(listType, itemType));
                 return;
             }
 
             var queueType = typeof(Queue<>).MakeGenericType(itemType);
             if (propertyType == queueType)
             {
-                property.SetValue(instance, Activator.CreateInstance(queueType, mapping.Lists[name].GetListFromString(listType, itemType)));
+                property.Set(instance, Activator.CreateInstance(queueType, mapping.Lists[name].GetListFromString(listType, itemType)));
                 return;
             }
 
             var stackType = typeof(Stack<>).MakeGenericType(itemType);
             if (propertyType == stackType)
             {
-                property.SetValue(instance, Activator.CreateInstance(stackType, mapping.Lists[name].GetListFromString(listType, itemType)));
+                property.Set(instance, Activator.CreateInstance(stackType, mapping.Lists[name].GetListFromString(listType, itemType)));
                 return;
             }
 

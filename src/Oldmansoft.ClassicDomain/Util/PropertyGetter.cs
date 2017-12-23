@@ -12,13 +12,16 @@ namespace Oldmansoft.ClassicDomain.Util
     /// </summary>
     /// <typeparam name="TCaller"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class PropertyGetter<TCaller, TValue> : IGetterData
+    public class PropertyGetter<TCaller, TValue> : IGetter
     {
         private Type PropertyType;
 
         private string PropertyName;
 
-        private Func<TCaller, TValue> Getter;
+        /// <summary>
+        /// 获值
+        /// </summary>
+        public Func<TCaller, TValue> Get { get; private set; }
 
         /// <summary>
         /// 创建属性获值器
@@ -29,10 +32,10 @@ namespace Oldmansoft.ClassicDomain.Util
             if (property == null) throw new ArgumentNullException();
             PropertyName = property.Name;
             PropertyType = property.PropertyType;
-            Getter = (Func<TCaller, TValue>)Delegate.CreateDelegate(typeof(Func<TCaller, TValue>), property.GetGetMethod(true));
+            Get = (Func<TCaller, TValue>)Delegate.CreateDelegate(typeof(Func<TCaller, TValue>), property.GetGetMethod(true));
         }
 
-        string IGetterData.Name
+        string IContent.Name
         {
             get
             {
@@ -40,7 +43,7 @@ namespace Oldmansoft.ClassicDomain.Util
             }
         }
 
-        Type IGetterData.Type
+        Type IContent.Type
         {
             get
             {
@@ -50,7 +53,7 @@ namespace Oldmansoft.ClassicDomain.Util
 
         object IGetter.Get(object caller)
         {
-            return Getter((TCaller)caller);
+            return Get((TCaller)caller);
         }
     }
 }

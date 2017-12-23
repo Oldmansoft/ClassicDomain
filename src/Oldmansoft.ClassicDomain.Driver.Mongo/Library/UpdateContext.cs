@@ -31,7 +31,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
 
         private static void GetUpdateContext(Type type, UpdatedItem result, string[] names, object compareSource, object compareTarget)
         {
-            foreach (var property in TypePublicInstancePropertyGetterStore.GetPropertys(type))
+            foreach (var property in TypePublicInstancePropertyValueStore.GetPropertys(type))
             {
                 var propertyName = property.Name;
                 if (propertyName.ToLower() == "id") propertyName = "_id";

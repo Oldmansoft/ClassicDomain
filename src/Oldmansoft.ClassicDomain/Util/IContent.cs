@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace Oldmansoft.ClassicDomain.Util
 {
     /// <summary>
-    /// 获值器数据
+    /// 内容
     /// </summary>
-    public interface IGetterData : IGetter
+    public interface IContent
     {
         /// <summary>
         /// 类型

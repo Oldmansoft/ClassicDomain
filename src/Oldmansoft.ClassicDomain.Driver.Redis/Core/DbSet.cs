@@ -34,6 +34,11 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         protected Func<TDomain, TKey> KeyExpressionCompile { get; private set; }
 
         /// <summary>
+        /// 属性设值器
+        /// </summary>
+        private ISetter PropertySetter { get; set; }
+
+        /// <summary>
         /// 配置
         /// </summary>
         protected ConfigItem Config { get; private set; }
@@ -57,6 +62,10 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
             Db = db;
             KeyExpression = keyExpression;
             KeyExpressionCompile = keyExpression.Compile();
+            if (typeof(TKey) == typeof(Guid))
+            {
+                PropertySetter = new PropertySetter<TDomain, TKey>(KeyExpression.GetProperty());
+            }
         }
 
         /// <summary>
@@ -156,11 +165,11 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <param name="domain"></param>
         protected void TrySetDomainKey(TDomain domain)
         {
-            if (typeof(TKey) == typeof(Guid))
+            if (PropertySetter != null)
             {
                 if ((Guid)(object)KeyExpressionCompile(domain) == Guid.Empty)
                 {
-                    KeyExpression.GetProperty().SetValue(domain, Guid.NewGuid());
+                    PropertySetter.Set(domain, Guid.NewGuid());
                 }
             }
         }

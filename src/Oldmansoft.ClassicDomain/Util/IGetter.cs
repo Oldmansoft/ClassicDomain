@@ -9,7 +9,7 @@ namespace Oldmansoft.ClassicDomain.Util
     /// <summary>
     /// 获值器
     /// </summary>
-    public interface IGetter
+    public interface IGetter : IContent
     {
         /// <summary>
         /// 获取

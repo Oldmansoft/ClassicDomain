@@ -14,7 +14,14 @@ namespace Oldmansoft.ClassicDomain.Util
     /// <typeparam name="TValue"></typeparam>
     public class PropertySetter<TCaller, TValue> : ISetter
     {
-        private Action<TCaller, TValue> Setter;
+        private Type PropertyType;
+
+        private string PropertyName;
+
+        /// <summary>
+        /// 设值
+        /// </summary>
+        public Action<TCaller, TValue> Set { get; private set; }
 
         /// <summary>
         /// 创建属性设值器
@@ -23,12 +30,30 @@ namespace Oldmansoft.ClassicDomain.Util
         public PropertySetter(PropertyInfo property)
         {
             if (property == null) throw new ArgumentNullException();
-            Setter = (Action<TCaller, TValue>)Delegate.CreateDelegate(typeof(Action<TCaller, TValue>), property.GetSetMethod(true));
+            PropertyName = property.Name;
+            PropertyType = property.PropertyType;
+            Set = (Action<TCaller, TValue>)Delegate.CreateDelegate(typeof(Action<TCaller, TValue>), property.GetSetMethod(true));
+        }
+
+        string IContent.Name
+        {
+            get
+            {
+                return PropertyName;
+            }
+        }
+
+        Type IContent.Type
+        {
+            get
+            {
+                return PropertyType;
+            }
         }
 
         void ISetter.Set(object caller, object value)
         {
-            Setter((TCaller)caller, (TValue)value);
+            Set((TCaller)caller, (TValue)value);
         }
     }
 }

@@ -14,11 +14,11 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
     {
         public static readonly PrimaryKeyManager Instance = new PrimaryKeyManager();
 
-        private ConcurrentDictionary<Type, IPropertyValue> GuidPrimaryKeySet { get; set; }
+        private ConcurrentDictionary<Type, IValue> GuidPrimaryKeySet { get; set; }
 
         private PrimaryKeyManager()
         {
-            GuidPrimaryKeySet = new ConcurrentDictionary<Type, IPropertyValue>();
+            GuidPrimaryKeySet = new ConcurrentDictionary<Type, IValue>();
         }
 
         public void TrySetDomainGuidEmptyKey<TDomain>(TDomain domain, Context context) where TDomain : class
@@ -30,15 +30,15 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
             property.Set(domain, GuidGenerator.Default.Create(StorageMapping.MssqlMapping));
         }
 
-        private IPropertyValue GetPrimaryKeyGuidProperty<TDomain>(Context context) where TDomain : class
+        private IValue GetPrimaryKeyGuidProperty<TDomain>(Context context) where TDomain : class
         {
-            IPropertyValue result;
+            IValue result;
             if (GuidPrimaryKeySet.TryGetValue(typeof(TDomain), out result)) return result;
 
             return SetPrimaryKeyGuidProperty<TDomain>(context);
         }
 
-        private IPropertyValue SetPrimaryKeyGuidProperty<TDomain>(Context context) where TDomain : class
+        private IValue SetPrimaryKeyGuidProperty<TDomain>(Context context) where TDomain : class
         {
             var objectContext = ((IObjectContextAdapter)context).ObjectContext;
             var keyNames = objectContext.CreateObjectSet<TDomain>().EntitySet.ElementType.KeyMembers

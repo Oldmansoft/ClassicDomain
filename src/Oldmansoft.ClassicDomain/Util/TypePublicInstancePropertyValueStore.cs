@@ -11,23 +11,23 @@ namespace Oldmansoft.ClassicDomain.Util
     /// <summary>
     /// 类型公共实例属性取值存储器
     /// </summary>
-    public class TypePublicInstancePropertyGetterStore
+    public class TypePublicInstancePropertyValueStore
     {
-        private static ConcurrentDictionary<Type, IGetterData[]> Propertys { get; set; }
+        private static ConcurrentDictionary<Type, IValue[]> Propertys { get; set; }
 
-        static TypePublicInstancePropertyGetterStore()
+        static TypePublicInstancePropertyValueStore()
         {
-            Propertys = new ConcurrentDictionary<Type, IGetterData[]>();
+            Propertys = new ConcurrentDictionary<Type, IValue[]>();
         }
 
-        private static IGetterData[] Init(Type type)
+        private static IValue[] Init(Type type)
         {
-            var list = new List<IGetterData>();
+            var list = new List<IValue>();
             foreach (var item in TypePublicInstancePropertyInfoStore.GetPropertys(type))
             {
                 if (!item.CanRead) continue;
                 if (!item.CanWrite) continue;
-                list.Add((IGetterData)Activator.CreateInstance(typeof(PropertyGetter<,>).MakeGenericType(type, item.PropertyType), item));
+                list.Add((IValue)Activator.CreateInstance(typeof(PropertyWrapper<,>).MakeGenericType(type, item.PropertyType), item));
             }
             var result = list.ToArray();
             Propertys.TryAdd(type, result);
@@ -39,9 +39,9 @@ namespace Oldmansoft.ClassicDomain.Util
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static IGetterData[] GetPropertys(Type type)
+        public static IValue[] GetPropertys(Type type)
         {
-            IGetterData[] result;
+            IValue[] result;
             if (Propertys.TryGetValue(type, out result))
             {
                 return result;
