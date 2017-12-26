@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Oldmansoft.ClassicDomain.Util;
 
 namespace Oldmansoft.ClassicDomain.Driver.InProcess
 {
@@ -20,18 +21,50 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
         /// <summary>
         /// 主键表达式
         /// </summary>
-        internal System.Linq.Expressions.Expression<Func<TDomain, TKey>> KeyExpression
+        private System.Linq.Expressions.Expression<Func<TDomain, TKey>> KeyExpression
         {
             get { return Store.KeyExpression; }
             set { Store.KeyExpression = value; }
         }
 
         /// <summary>
+        /// 主键获取
+        /// </summary>
+        private Func<TDomain, TKey> KeyExpressionCompile { get; set; }
+
+        /// <summary>
+        /// 属性设值器
+        /// </summary>
+        private ISetter PropertySetter { get; set; }
+
+        /// <summary>
         /// 创建 In Process 实体集
         /// </summary>
-        public DbSet()
+        /// <param name="keyExpression"></param>
+        public DbSet(System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
         {
             List = new ChangeList<TDomain>();
+            KeyExpression = keyExpression;
+            KeyExpressionCompile = KeyExpression.Compile();
+            if (typeof(TKey) == typeof(Guid))
+            {
+                PropertySetter = new PropertySetter<TDomain, TKey>(KeyExpression.GetProperty());
+            }
+        }
+
+        /// <summary>
+        /// 尝试设置主键
+        /// </summary>
+        /// <param name="domain"></param>
+        protected void TrySetDomainKey(TDomain domain)
+        {
+            if (PropertySetter != null)
+            {
+                if ((Guid)(object)KeyExpressionCompile(domain) == Guid.Empty)
+                {
+                    PropertySetter.Set(domain, GuidGenerator.Default.Create(StorageMapping.MemoryMapping));
+                }
+            }
         }
 
         /// <summary>
@@ -40,6 +73,7 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
         /// <param name="domain"></param>
         public void WillAdd(TDomain domain)
         {
+            TrySetDomainKey(domain);
             List.Addeds.Enqueue(domain);
         }
 
@@ -69,6 +103,15 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
         public TDomain Get(TKey id)
         {
             return Store.Get(id);
+        }
+
+        /// <summary>
+        /// 查询
+        /// </summary>
+        /// <returns></returns>
+        public IQueryable<TDomain> Query()
+        {
+            return Store.Query();
         }
 
         /// <summary>

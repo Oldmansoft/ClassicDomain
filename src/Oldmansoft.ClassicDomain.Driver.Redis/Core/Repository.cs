@@ -25,6 +25,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <param name="domain"></param>
         public void Add(TDomain domain)
         {
+            if (domain == null) return;
             Context.Set<TDomain, TKey>().RegisterAdd(domain);
         }
 
@@ -44,6 +45,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <param name="domain"></param>
         public void Remove(TDomain domain)
         {
+            if (domain == null) return;
             Context.Set<TDomain, TKey>().RegisterRemove(domain);
         }
 
@@ -53,6 +55,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <param name="domain"></param>
         public void Replace(TDomain domain)
         {
+            if (domain == null) return;
             Context.Set<TDomain, TKey>().RegisterReplace(domain);
         }
 

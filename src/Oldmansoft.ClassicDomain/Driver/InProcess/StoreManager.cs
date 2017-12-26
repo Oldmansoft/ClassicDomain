@@ -99,5 +99,14 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
                 return default(TDomain);
             }
         }
+
+        /// <summary>
+        /// 查询
+        /// </summary>
+        /// <returns></returns>
+        public IQueryable<TDomain> Query()
+        {
+            return Store.Values.AsQueryable();
+        }
     }
 }

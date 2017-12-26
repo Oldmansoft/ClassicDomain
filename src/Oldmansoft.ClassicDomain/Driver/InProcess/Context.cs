@@ -30,7 +30,7 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
         /// <param name="keyExpression">主键表达式</param>
         public void Add<TDomain, TKey>(System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
         {
-            if (!DbSet.TryAdd(typeof(TDomain), new DbSet<TDomain, TKey>() { KeyExpression = keyExpression }))
+            if (!DbSet.TryAdd(typeof(TDomain), new DbSet<TDomain, TKey>(keyExpression)))
             {
                 throw new ArgumentException("已添加了具有相同键的项。");
             }
