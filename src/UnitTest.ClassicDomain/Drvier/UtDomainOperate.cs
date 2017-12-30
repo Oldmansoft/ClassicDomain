@@ -324,6 +324,27 @@ namespace UnitTest.ClassicDomain.Drvier
         }
 
         [TestMethod]
+        public void TestField()
+        {
+            TestField_Core(new Mongo.FastModeFactory());
+        }
+
+        private static void TestField_Core(IFactory factory)
+        {
+            var repository = factory.CreateBook();
+            var addDomain = new Domain.Book();
+            addDomain.FieldValue = "hello";
+            repository.Add(addDomain);
+            factory.GetUnitOfWork().Commit();
+            
+            var getDomain = repository.Get(addDomain.Id);
+            repository.Remove(getDomain);
+            factory.GetUnitOfWork().Commit();
+
+            Assert.AreEqual("hello", getDomain.FieldValue);
+        }
+
+        [TestMethod]
         public void TestReplaceBinaryByMongo()
         {
             var factory = new Mongo.Factory();

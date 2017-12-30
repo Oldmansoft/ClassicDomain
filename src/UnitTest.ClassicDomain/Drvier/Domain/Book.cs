@@ -21,5 +21,7 @@ namespace UnitTest.ClassicDomain.Drvier.Domain
         public List<string> Tags { get; set; }
 
         public Dictionary<string, string> DictionaryValue { get; set; }
+
+        public string FieldValue;
     }
 }
