@@ -21,3 +21,6 @@ using System.Runtime.InteropServices;
 [assembly: Guid("4932c605-579e-49d1-9696-a1fd904a3dcc")]
 
 [assembly: InternalsVisibleTo("UnitTest.ClassicDomain")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyCopyright("Copyright ©  2016")]
+[assembly: AssemblyVersion("3.8.98")]
