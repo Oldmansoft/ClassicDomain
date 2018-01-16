@@ -50,6 +50,7 @@ namespace Sample.Domain
 
 #### Repositories
 ```C#
+using Oldmansoft.ClassicDomain;
 namespace Sample.Repositories
 {
 	class Mapping : Oldmansoft.ClassicDomain.Driver.Mongo.Context
