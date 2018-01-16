@@ -58,6 +58,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Oldmansoft.ClassicDomain.Shared\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Core\DbSet.cs" />
     <Compile Include="Core\RepositoryDefinedSuperClass.cs" />
     <Compile Include="Core\SafeModeConfig.cs" />

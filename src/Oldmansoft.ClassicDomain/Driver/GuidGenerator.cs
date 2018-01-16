@@ -11,16 +11,18 @@ namespace Oldmansoft.ClassicDomain.Driver
     /// </summary>
     public class GuidGenerator
     {
+        /// <summary>
+        /// 默认实例
+        /// </summary>
+        public static readonly GuidGenerator Default = new GuidGenerator();
+
         private byte[] Hash { get; set; }
 
         private uint Seed { get; set; }
 
         private byte[] LastTime { get; set; }
 
-        /// <summary>
-        /// 默认实例
-        /// </summary>
-        public static readonly GuidGenerator Default = new GuidGenerator();
+        private readonly object Locker = new object();
 
         /// <summary>
         /// 创建生成器
@@ -41,7 +43,7 @@ namespace Oldmansoft.ClassicDomain.Driver
 
         private uint GetNextSeed(byte[] time)
         {
-            lock (this)
+            lock (Locker)
             {
                 if (!IsSame(LastTime, time, 2))
                 {
