@@ -9,11 +9,11 @@ namespace Sample.ConsoleApplication.Applications
 {
     public class Persons
     {
-        public bool Add(string name, out Guid id)
+        public bool Add(string firstName, string lastName, out Guid id)
         {
             var factory = new Repositories.RepositoryFactory();
             var repository = factory.CreatePerson();
-            var domain = Domain.Person.Create(name);
+            var domain = Domain.Person.Create(firstName, lastName);
             repository.Add(domain);
             try
             {
@@ -28,13 +28,13 @@ namespace Sample.ConsoleApplication.Applications
             return true;
         }
 
-        public void Edit(Guid id, string name)
+        public void Change(Guid id, string firstName, string lastName)
         {
             var factory = new Repositories.RepositoryFactory();
             var repository = factory.CreatePerson();
             var domain = repository.Get(id);
             if (domain == null) return;
-            domain.Change(name);
+            domain.Change(firstName, lastName);
             repository.Replace(domain);
             try
             {

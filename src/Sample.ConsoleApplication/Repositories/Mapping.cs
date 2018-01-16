@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Oldmansoft.ClassicDomain;
 
 namespace Sample.ConsoleApplication.Repositories
 {
@@ -10,7 +11,8 @@ namespace Sample.ConsoleApplication.Repositories
     {
         protected override void OnModelCreating()
         {
-            Add<Domain.Person, Guid>(o => o.Id).SetUnique(o => o.Name);
+            Add<Domain.Person, Guid>(o => o.Id)
+                .SetUnique(g => g.CreateGroup(o => o.LastName).Add(o => o.FirstName));
         }
     }
 }

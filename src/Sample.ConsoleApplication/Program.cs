@@ -13,11 +13,11 @@ namespace Sample.ConsoleApplication
             Guid id;
             Console.Write("开始添加");
             Console.ReadLine();
-            if (new Applications.Persons().Add("Oldman", out id))
+            if (new Applications.Persons().Add("A", "Oldman", out id))
             {
                 Console.Write("开始修改");
                 Console.ReadLine();
-                new Applications.Persons().Edit(id, "Oldmansoft");
+                new Applications.Persons().Change(id, "B", "Oldmansoft");
             }
             else
             {
@@ -30,7 +30,7 @@ namespace Sample.ConsoleApplication
             {
                 Console.Write(person.Id);
                 Console.Write(" ");
-                Console.WriteLine(person.Name);
+                Console.WriteLine(person);
             }
             Console.Write("开始移除");
             Console.ReadLine();

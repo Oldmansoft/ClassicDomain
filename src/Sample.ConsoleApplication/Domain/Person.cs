@@ -10,20 +10,24 @@ namespace Sample.ConsoleApplication.Domain
     {
         public Guid Id { get; private set; }
 
-        public string Name { get; private set; }
+        public string FirstName { get; private set; }
+
+        public string LastName { get; private set; }
 
         private Person() { }
 
-        public static Person Create(string name)
+        public static Person Create(string firstName, string lastName)
         {
             var result = new Person();
-            result.Name = name;
+            result.FirstName = firstName;
+            result.LastName = lastName;
             return result;
         }
 
-        public void Change(string name)
+        public void Change(string firstName, string lastName)
         {
-            Name = name;
+            FirstName = firstName;
+            LastName = lastName;
         }
     }
 }

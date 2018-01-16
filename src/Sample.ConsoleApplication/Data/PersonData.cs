@@ -8,8 +8,15 @@ namespace Sample.ConsoleApplication.Data
 {
     public class PersonData
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; private set; }
 
-        public string Name { get; set; }
+        public string FirstName { get; private set; }
+
+        public string LastName { get; private set; }
+
+        public override string ToString()
+        {
+            return string.Format("{0} {1}", FirstName, LastName);
+        }
     }
 }

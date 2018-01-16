@@ -10,6 +10,6 @@ namespace Sample.ConsoleApplication.Infrastructure
     {
         Oldmansoft.ClassicDomain.IPagingData<Domain.Person> PageByName();
 
-        Domain.Person GetByName(string name);
+        Domain.Person GetByName(string firstName, string lastName);
     }
 }

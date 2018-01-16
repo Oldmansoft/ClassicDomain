@@ -23,8 +23,27 @@ namespace Sample.Domain
 {
 	public class Person
 	{
-		public Guid Id { get; set; }
-		public string Name { get; set; }
+		public Guid Id { get; private set; }
+
+		public string FirstName { get; private set; }
+
+		public string LastName { get; private set; }
+
+		private Person() { }
+
+		public static Person Create(string firstName, string lastName)
+		{
+			var result = new Person();
+			result.FirstName = firstName;
+			result.LastName = lastName;
+			return result;
+		}
+
+		public void Change(string firstName, string lastName)
+		{
+			FirstName = firstName;
+			LastName = lastName;
+		}
 	}
 }
 ```
@@ -37,7 +56,8 @@ namespace Sample.Repositories
 	{
 		protected override void OnModelCreating()
 		{
-			Add<Domain.Person, Guid>(o => o.Id).SetUnique(o => o.Name);
+			Add<Domain.Person, Guid>(o => o.Id)
+				.SetUnique(g => g.CreateGroup(o => o.LastName).Add(o => o.FirstName));
 		}
 	}
 }
@@ -48,9 +68,9 @@ namespace Sample.Infrastructure
 {
     public interface IPersonRepository : Oldmansoft.ClassicDomain.IRepository<Domain.Person, Guid>
     {
-        Oldmansoft.ClassicDomain.IPagingCondition<Domain.Person> PageByName();
+        Oldmansoft.ClassicDomain.IPagingData<Domain.Person> PageByName();
 
-        Domain.Person GetByName(string name);
+        Domain.Person GetByName(string firstName, string lastName);
     }
 }
 ```
@@ -62,17 +82,16 @@ namespace Sample.Repositories
     {
         public PersonRepository(UnitOfWork uow)
             : base(uow)
+        { }
+
+        public Oldmansoft.ClassicDomain.IPagingData<Domain.Person> PageByName()
         {
+            return Query().Paging().OrderBy(o => o.LastName).ThenBy(o => o.FirstName);
         }
 
-        public IPagingCondition<Domain.Person> PageByName()
+        public Domain.Person GetByName(string firstName, string lastName)
         {
-            return Query().Paging().OrderBy(o => o.Name);
-        }
-
-        public Domain.Person GetByName(string name)
-        {
-            return Query().FirstOrDefault(o => o.Name == name);
+            return Query().FirstOrDefault(o => o.LastName == lastName && o.FirstName == firstName);
         }
     }
 }
@@ -86,7 +105,7 @@ namespace Sample.Repositories
 	{
 		private UnitOfWork Uow { get; set; }
 
-		 public RepositoryFactory()
+		public RepositoryFactory()
 		{
 			Uow = new UnitOfWork();
 		}
@@ -115,8 +134,7 @@ namespace Sample
 		{
 			var factory = new Repositories.RepositoryFactory();
 			var repository = factory.CreatePerson();
-			var domain = new Domain.Person();
-			domain.Name = "Oldman";
+			var domain = Domain.Person.Create("firstName", "lastName");
 			repository.Add(domain);
 			factory.GetUnitOfWork().Commit();
 		}
@@ -135,8 +153,8 @@ namespace Sample
 		{
 			var factory = new Repositories.RepositoryFactory();
 			var repository = factory.CreatePerson();
-			var domain = repository.GetByName("Oldman");
-			domain.Name = "Oldmansoft";
+			var domain = repository.GetByName("firstName", "lastName");
+			domain.Change("first", "last");
 			repository.Replace(domain);
 			factory.GetUnitOfWork().Commit();
 		}
@@ -155,7 +173,7 @@ namespace Sample
 		{
 			var factory = new Repositories.RepositoryFactory();
 			var repository = factory.CreatePerson();
-			var domain = repository.GetByName("Oldmansoft");
+			var domain = repository.GetByName("firstName", "lastName");
 			repository.Remove(domain);
 			factory.GetUnitOfWork().Commit();
 		}
