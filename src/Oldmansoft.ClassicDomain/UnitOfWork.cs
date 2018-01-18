@@ -20,13 +20,7 @@ namespace Oldmansoft.ClassicDomain
         /// 提交异常事件
         /// </summary>
         public event Action OnCommitException;
-
-        /// <summary>
-        /// 是否并行提交
-        /// </summary>
-        [Obsolete("不再支持")]
-        public bool IsParallelCommit { get; set; }
-
+        
         /// <summary>
         /// 工作单元集
         /// </summary>

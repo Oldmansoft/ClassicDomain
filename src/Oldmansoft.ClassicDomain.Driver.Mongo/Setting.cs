@@ -55,18 +55,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
             DbSet.SetTableName(tableName);
             return this;
         }
-
-        /// <summary>
-        /// 设置索引
-        /// </summary>
-        /// <param name="keyExpressions">索引键表达式</param>
-        /// <returns>设置</returns>
-        [Obsolete("请使用 Setting<TEntity, TMember> SetIndex(ExpressionGroup<TEntity> keyExpression) 代替多参数")]
-        public Setting<TEntity, TMember> SetIndex(params Expression<Func<TEntity, object>>[] keyExpressions)
-        {
-            return SetIndex(true, false, keyExpressions);
-        }
-
+        
         /// <summary>
         /// 设置索引
         /// </summary>
@@ -98,30 +87,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
             if (keyExpression.Expressions.Count == 0) return this;
             return SetIndex(true, false, keyExpression.Expressions.ToArray());
         }
-
-        /// <summary>
-        /// 设置索引
-        /// </summary>
-        /// <param name="isAscending">是否顺序排序</param>
-        /// <param name="keyExpressions">索引键表达式</param>
-        /// <returns>设置</returns>
-        [Obsolete("请使用 Setting<TEntity, TMember> SetIndexDescending(Expression<Func<TEntity, object>> keyExpression) 代替倒序参数")]
-        public Setting<TEntity, TMember> SetIndex(bool isAscending, params Expression<Func<TEntity, object>>[] keyExpressions)
-        {
-            return SetIndex(isAscending, false, keyExpressions);
-        }
-
-        /// <summary>
-        /// 设置倒序索引
-        /// </summary>
-        /// <param name="keyExpressions">索引键表达式</param>
-        /// <returns>设置</returns>
-        [Obsolete("请使用 Setting<TEntity, TMember> SetIndexDescending(ExpressionGroup<TEntity> keyExpression) 代替多参数")]
-        public Setting<TEntity, TMember> SetIndexDescending(params Expression<Func<TEntity, object>>[] keyExpressions)
-        {
-            return SetIndex(false, false, keyExpressions);
-        }
-
+        
         /// <summary>
         /// 设置倒序索引
         /// </summary>
@@ -153,18 +119,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
             if (keyExpression.Expressions.Count == 0) return this;
             return SetIndex(false, false, keyExpression.Expressions.ToArray());
         }
-
-        /// <summary>
-        /// 设置唯一索引
-        /// </summary>
-        /// <param name="keyExpressions">索引键表达式</param>
-        /// <returns>设置</returns>
-        [Obsolete("请使用 Setting<TEntity, TMember> SetUnique(ExpressionGroup<TEntity> keyExpression) 代替多参数")]
-        public Setting<TEntity, TMember> SetUnique(params Expression<Func<TEntity, object>>[] keyExpressions)
-        {
-            return SetIndex(true, true, keyExpressions);
-        }
-
+        
         /// <summary>
         /// 设置唯一索引
         /// </summary>
@@ -196,30 +151,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
             if (keyExpression.Expressions.Count == 0) return this;
             return SetIndex(true, true, keyExpression.Expressions.ToArray());
         }
-
-        /// <summary>
-        /// 设置唯一索引
-        /// </summary>
-        /// <param name="isAscending"></param>
-        /// <param name="keyExpressions"></param>
-        /// <returns>设置</returns>
-        [Obsolete("请使用 Setting<TEntity, TMember> SetUniqueDescending(Expression<Func<TEntity, object>> keyExpression) 代替倒序参数")]
-        public Setting<TEntity, TMember> SetUnique(bool isAscending, params Expression<Func<TEntity, object>>[] keyExpressions)
-        {
-            return SetIndex(isAscending, true, keyExpressions);
-        }
-
-        /// <summary>
-        /// 设置倒序唯一索引
-        /// </summary>
-        /// <param name="keyExpressions">索引键表达式</param>
-        /// <returns>设置</returns>
-        [Obsolete("请使用 Setting<TEntity, TMember> SetUniqueDescending(ExpressionGroup<TEntity> keyExpression) 代替多参数")]
-        public Setting<TEntity, TMember> SetUniqueDescending(params Expression<Func<TEntity, object>>[] keyExpressions)
-        {
-            return SetIndex(false, true, keyExpressions);
-        }
-
+        
         /// <summary>
         /// 设置倒序唯一索引
         /// </summary>

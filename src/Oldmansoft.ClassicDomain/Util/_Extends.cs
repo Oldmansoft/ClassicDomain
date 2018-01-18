@@ -405,23 +405,7 @@ namespace Oldmansoft.ClassicDomain.Util
             }
             throw new NotSupportedException(string.Format("不支持获取 {0} 此类型的子项类型。", source.FullName));
         }
-
-        /// <summary>
-        /// 复制到
-        /// </summary>
-        /// <typeparam name="TSource"></typeparam>
-        /// <typeparam name="TTarget"></typeparam>
-        /// <param name="source"></param>
-        /// <param name="target"></param>
-        /// <param name="isDeepCopy"></param>
-        /// <returns></returns>
-        [Obsolete("请使用 Oldmansoft.ClassicDomain 命名空间下的 MapTo 扩展方法")]
-        public static TTarget CopyTo<TSource, TTarget>(this TSource source, TTarget target, bool isDeepCopy = true)
-        {
-            if (source is DataMapper) throw new ArgumentException("请不要直接使用 DataMapper.CopyTo(target) 方法", "source");
-            return DataMapper.Map(source, target);
-        }
-
+        
         /// <summary>
         /// 转换字符串为值
         /// </summary>
