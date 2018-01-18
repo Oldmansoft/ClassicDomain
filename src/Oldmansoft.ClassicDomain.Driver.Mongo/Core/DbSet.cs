@@ -184,10 +184,11 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// 移除数据
         /// </summary>
         /// <param name="collection"></param>
-        /// <param name="id"></param>
+        /// <param name="domain"></param>
         /// <returns></returns>
-        protected virtual bool Remove(MongoCollection<TDomain> collection, TKey id)
+        protected virtual bool Remove(MongoCollection<TDomain> collection, TDomain domain)
         {
+            var id = KeyExpressionCompile(domain);
             var query = MongoDB.Driver.Builders.Query<TDomain>.EQ(KeyExpression, id);
             var writeResult = collection.Remove(query);
             if (writeResult == null) return true;

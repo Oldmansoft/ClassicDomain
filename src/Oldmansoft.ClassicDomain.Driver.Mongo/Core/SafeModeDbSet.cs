@@ -80,7 +80,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
             }
             while (List.Deleteds.TryDequeue(out domain))
             {
-                if (Remove(collection, KeyExpressionCompile(domain))) result++;
+                if (Remove(collection, domain)) result++;
             }
 
             return result + base.Commit();
@@ -110,11 +110,12 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// 移除数据
         /// </summary>
         /// <param name="collection"></param>
-        /// <param name="id"></param>
+        /// <param name="domain"></param>
         /// <returns></returns>
-        protected override bool Remove(MongoCollection<TDomain> collection, TKey id)
+        protected override bool Remove(MongoCollection<TDomain> collection, TDomain domain)
         {
-            var result = base.Remove(collection, id);
+            var result = base.Remove(collection, domain);
+            var id = KeyExpressionCompile(domain);
             if (result) IdentityMap.Remove(id);
             return result;
         }

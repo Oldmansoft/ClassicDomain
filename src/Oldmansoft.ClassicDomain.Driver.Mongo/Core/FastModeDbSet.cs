@@ -77,7 +77,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
             }
             while (List.Deleteds.TryDequeue(out domain))
             {
-                if (Remove(collection, KeyExpressionCompile(domain))) result++;
+                if (Remove(collection, domain)) result++;
             }
 
             return result + base.Commit();
