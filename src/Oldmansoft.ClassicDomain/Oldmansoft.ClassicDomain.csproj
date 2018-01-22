@@ -60,7 +60,11 @@
     <Compile Include="Driver\InProcess\DbSet.cs" />
     <Compile Include="Driver\InProcess\Repository.cs" />
     <Compile Include="ClassicDomainException.cs" />
-    <Compile Include="Driver\IStorageMapping.cs" />
+    <Compile Include="Driver\StorageMappings\IStorageMapping.cs" />
+    <Compile Include="Driver\StorageMapping.cs" />
+    <Compile Include="Driver\StorageMappings\MemoryStorageMapping.cs" />
+    <Compile Include="Driver\StorageMappings\MongoStorageMapping.cs" />
+    <Compile Include="Driver\StorageMappings\MssqlStorageMapping.cs" />
     <Compile Include="IAdd.cs" />
     <Compile Include="IGet.cs" />
     <Compile Include="Driver\InProcess\StoreManager.cs" />
