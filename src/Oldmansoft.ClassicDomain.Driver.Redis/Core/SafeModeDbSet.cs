@@ -11,9 +11,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
     internal class SafeModeDbSet<TDomain, TKey> : DbSet<TDomain, TKey>, IMergeKey<TKey> where TDomain : class, new()
     {
         private IdentityMap<TDomain> IdentityMap { get; set; }
-
-        private Library.ChangeList<TKey> ChangeList { get; set; }
-
+        
         /// <summary>
         /// 创建实体集
         /// </summary>
@@ -25,7 +23,6 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         {
             IdentityMap = new IdentityMap<TDomain>();
             IdentityMap.SetKey(KeyExpressionCompile);
-            ChangeList = new Library.ChangeList<TKey>();
         }
 
         /// <summary>
@@ -35,8 +32,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         public override void RegisterAdd(TDomain domain)
         {
             TrySetDomainKey(domain);
-            ChangeList.Addes.Enqueue(Library.ContextSetAddtHelper.GetContext(KeyExpressionCompile(domain), typeof(TDomain), domain));
-            IdentityMap.Set(domain);
+            domain = domain.MapTo<TDomain>();
+            Commands.Enqueue(new Commands.SafeModeAddCommand<TDomain, TKey>(Db, MergeKey, this, IdentityMap, KeyExpressionCompile(domain), domain));
+            
         }
 
         /// <summary>
@@ -45,14 +43,8 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <param name="domain"></param>
         public override void RegisterReplace(TDomain domain)
         {
-            var key = KeyExpressionCompile(domain);
-            var source = IdentityMap.Get(key);
-            if (source == null)
-            {
-                throw new ArgumentException("修改的实例必须经过加载", "domain");
-            }
-            ChangeList.Replaces.Enqueue(Library.ContextSetReplaceHelper.GetContext(key, typeof(TDomain), source, domain));
-            IdentityMap.Set(domain);
+            domain = domain.MapTo<TDomain>();
+            Commands.Enqueue(new Commands.SafeModeReplaceCommand<TDomain, TKey>(Db, MergeKey, this, IdentityMap, KeyExpressionCompile(domain), domain));
         }
 
         /// <summary>
@@ -61,7 +53,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <param name="domain"></param>
         public override void RegisterRemove(TDomain domain)
         {
-            ChangeList.Removes.Enqueue(Library.ContextSetRemoveHelper.GetContext(KeyExpressionCompile(domain), typeof(TDomain)));
+            Commands.Enqueue(new Commands.SafeModeRemoveCommand<TDomain, TKey>(Db, MergeKey, this, IdentityMap, KeyExpressionCompile(domain)));
         }
 
         /// <summary>
@@ -102,46 +94,6 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
             var result = Library.ContextSetGetHelper.GetContext<TDomain>(FromRedis(Db, id));
             IdentityMap.Set(result);
             return result;
-        }
-
-        public override int Commit()
-        {
-            var result = 0;
-            Library.UpdatedCommand<TKey> command;
-            while (ChangeList.Addes.TryDequeue(out command))
-            {
-                try
-                {
-                    if (!Db.HashSet(MergeKey(command.Key), "this", typeof(TDomain).FullName)) continue;
-                }
-                catch (RedisServerException ex)
-                {
-                    if (ex.Message == "ERR Operation against a key holding the wrong kind of value")
-                    {
-                        throw new ClassicDomainException("数据冲突：存在着相同记录的不同类型数据，可能是之前使用过快速模式保存过。");
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                command.Execute(Db, this);
-                result++;
-            }
-            while (ChangeList.Replaces.TryDequeue(out command))
-            {
-                if (string.IsNullOrEmpty(Db.HashGet(MergeKey(command.Key), "this"))) continue;
-                command.Execute(Db, this);
-                result++;
-            }
-            while (ChangeList.Removes.TryDequeue(out command))
-            {
-                command.Execute(Db, this);
-                if (!Db.KeyDelete(MergeKey(command.Key))) continue;
-                IdentityMap.Remove(command.Key);
-                result++;
-            }
-            return result + base.Commit();
         }
     }
 }

@@ -22,10 +22,8 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// </summary>
         protected string DomainName { get; private set; }
 
+        protected ConcurrentQueue<ICommand> Commands { get; private set; }
         
-
-        private ConcurrentQueue<Func<IDatabase, bool>> ExecuteList { get; set; }
-
         private Expression<Func<TDomain, TKey>> KeyExpression { get; set; }
 
         /// <summary>
@@ -57,7 +55,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         public DbSet(ConfigItem config, IDatabase db, Expression<Func<TDomain, TKey>> keyExpression)
         {
             DomainName = typeof(TDomain).FullName;
-            ExecuteList = new ConcurrentQueue<Func<IDatabase, bool>>();
+            Commands = new ConcurrentQueue<ICommand>();
             Config = config;
             Db = db;
             KeyExpression = keyExpression;
@@ -124,10 +122,10 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         public virtual int Commit()
         {
             int result = 0;
-            Func<IDatabase, bool> execute;
-            while (ExecuteList.TryDequeue(out execute))
+            ICommand command;
+            while(Commands.TryDequeue(out command))
             {
-                if (execute(Db)) result++;
+                if (command.Execute()) result++;
             }
             return result;
         }
@@ -138,7 +136,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <param name="execute"></param>
         public void RegisterExecute(Func<IDatabase, bool> execute)
         {
-            ExecuteList.Enqueue(execute);
+            Commands.Enqueue(new Commands.ActionCommand<TDomain>(Db, execute));
         }
 
         /// <summary>

@@ -10,11 +10,6 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
     internal class FastModeDbSet<TDomain, TKey> : DbSet<TDomain, TKey>
     {
         /// <summary>
-        /// 更改列表
-        /// </summary>
-        private ChangeList<TDomain> ChangeList { get; set; }
-
-        /// <summary>
         /// 创建实体集
         /// </summary>
         /// <param name="config"></param>
@@ -23,7 +18,6 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         public FastModeDbSet(ConfigItem config, IDatabase db, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
             : base(config, db, keyExpression)
         {
-            ChangeList = new ChangeList<TDomain>();
         }
 
         /// <summary>
@@ -33,7 +27,8 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         public override void RegisterAdd(TDomain domain)
         {
             TrySetDomainKey(domain);
-            ChangeList.Addeds.Enqueue(domain);
+            domain = domain.MapTo<TDomain>();
+            Commands.Enqueue(new Commands.FastModeAddCommand<TDomain>(Db, GetKey, domain));
         }
 
         /// <summary>
@@ -42,7 +37,8 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <param name="domain"></param>
         public override void RegisterReplace(TDomain domain)
         {
-            ChangeList.Updateds.Enqueue(domain);
+            domain = domain.MapTo<TDomain>();
+            Commands.Enqueue(new Commands.FastModeReplaceCommand<TDomain>(Db, GetKey, Config, domain));
         }
 
         /// <summary>
@@ -51,47 +47,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <param name="domain"></param>
         public override void RegisterRemove(TDomain domain)
         {
-            ChangeList.Deleteds.Enqueue(domain);
+            Commands.Enqueue(new Commands.FastModeRemoveCommand<TDomain>(Db, GetKey(domain)));
         }
-
-        public override int Commit()
-        {
-            var result = 0;
-
-            TDomain domain;
-            while (ChangeList.Addeds.TryDequeue(out domain))
-            {
-                if (Db.StringSet(GetKey(domain), Library.Serializer.Serialize(domain), null, When.NotExists)) result++;
-            }
-            while (ChangeList.Updateds.TryDequeue(out domain))
-            {
-                if (Config.IsLowServerVersion)
-                {
-                    if (Db.KeyExists(GetKey(domain)) && Db.StringSet(GetKey(domain), Library.Serializer.Serialize(domain))) result++;
-                }
-                else
-                {
-                    try
-                    {
-                        if (Db.StringSet(GetKey(domain), Library.Serializer.Serialize(domain), null, When.Exists)) result++;
-                    }
-                    catch (RedisServerException ex)
-                    {
-                        if (ex.Message == "ERR wrong number of arguments for 'set' command")
-                        {
-                            throw new ClassicDomainException(Core.Config.AlertLowServerVersion);
-                        }
-                        throw;
-                    }
-                }
-            }
-            while (ChangeList.Deleteds.TryDequeue(out domain))
-            {
-                if (Db.KeyDelete(GetKey(domain))) result++;
-            }
-            return result + base.Commit();
-        }
-
+        
         public override TDomain Get(TKey id)
         {
             var content = Db.StringGet(MergeKey(id));

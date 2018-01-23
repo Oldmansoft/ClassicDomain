@@ -56,6 +56,13 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Context.cs" />
+    <Compile Include="Core\Commands\ActionCommand.cs" />
+    <Compile Include="Core\Commands\SafeModeRemoveCommand.cs" />
+    <Compile Include="Core\Commands\SafeModeReplaceCommand.cs" />
+    <Compile Include="Core\Commands\SafeModeAddCommand.cs" />
+    <Compile Include="Core\Commands\FastModeRemoveCommand.cs" />
+    <Compile Include="Core\Commands\FastModeAddCommand.cs" />
+    <Compile Include="Core\Commands\FastModeReplaceCommand.cs" />
     <Compile Include="Core\Config.cs" />
     <Compile Include="Core\ConfigItem.cs" />
     <Compile Include="Core\Context.cs" />

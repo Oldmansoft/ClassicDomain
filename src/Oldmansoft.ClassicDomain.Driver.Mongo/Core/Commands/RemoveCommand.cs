@@ -10,19 +10,16 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core.Commands
     class RemoveCommand<TDomain, TKey> : ICommand
     {
         private System.Linq.Expressions.Expression<Func<TDomain, TKey>> KeyExpression;
-
-        protected Func<TDomain, TKey> KeyExpressionCompile;
-
+        
         private MongoCollection<TDomain> Collection;
 
-        protected TDomain Domain;
+        protected TKey Id;
 
-        public RemoveCommand(System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression, Func<TDomain, TKey> keyExpressionCompile, MongoCollection<TDomain> collection, TDomain domain)
+        public RemoveCommand(System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression, MongoCollection<TDomain> collection, TKey id)
         {
             KeyExpression = keyExpression;
-            KeyExpressionCompile = keyExpressionCompile;
             Collection = collection;
-            Domain = domain;
+            Id = id;
         }
 
         public Type Type
@@ -35,8 +32,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core.Commands
 
         public virtual bool Execute()
         {
-            var id = KeyExpressionCompile(Domain);
-            var query = MongoDB.Driver.Builders.Query<TDomain>.EQ(KeyExpression, id);
+            var query = MongoDB.Driver.Builders.Query<TDomain>.EQ(KeyExpression, Id);
             var result = Collection.Remove(query);
             if (result == null) return true;
             return result.DocumentsAffected > 0;

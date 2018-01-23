@@ -53,8 +53,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// <param name="domain"></param>
         public override void RegisterRemove(TDomain domain)
         {
-            domain = domain.MapTo<TDomain>();
-            Commands.Enqueue(new Commands.RemoveCommand<TDomain, TKey>(KeyExpression, KeyExpressionCompile, GetCollection(), domain));
+            Commands.Enqueue(new Commands.RemoveCommand<TDomain, TKey>(KeyExpression, GetCollection(), KeyExpressionCompile(domain)));
         }
     }
 }

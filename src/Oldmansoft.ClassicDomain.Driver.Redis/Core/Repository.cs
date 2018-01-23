@@ -63,7 +63,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// 执行
         /// </summary>
         /// <param name="func"></param>
-        protected void Execute(Func<StackExchange.Redis.IDatabase, bool> func)
+        public void Execute(Func<StackExchange.Redis.IDatabase, bool> func)
         {
             Context.Set<TDomain, TKey>().RegisterExecute(func);
         }
@@ -74,7 +74,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <typeparam name="TResult"></typeparam>
         /// <param name="func"></param>
         /// <returns></returns>
-        protected TResult Execute<TResult>(Func<StackExchange.Redis.IDatabase, TResult> func)
+        public TResult Execute<TResult>(Func<StackExchange.Redis.IDatabase, TResult> func)
         {
             return func(Context.Set<TDomain, TKey>().GetDatabase());
         }

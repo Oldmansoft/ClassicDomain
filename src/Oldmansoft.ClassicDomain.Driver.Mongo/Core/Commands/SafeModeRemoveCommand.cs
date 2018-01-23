@@ -12,11 +12,10 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core.Commands
         private IdentityMap<TDomain> IdentityMap;
 
         public SafeModeRemoveCommand(System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression,
-            Func<TDomain, TKey> keyExpressionCompile,
             MongoCollection<TDomain> collection,
-            TDomain domain,
+            TKey id,
             IdentityMap<TDomain> identityMap)
-            : base(keyExpression, keyExpressionCompile, collection, domain)
+            : base(keyExpression, collection, id)
         {
             IdentityMap = identityMap;
         }
@@ -24,7 +23,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core.Commands
         public override bool Execute()
         {
             var result = base.Execute();
-            if (result) IdentityMap.Remove(KeyExpressionCompile(Domain));
+            if (result) IdentityMap.Remove(Id);
             return result;
         }
     }

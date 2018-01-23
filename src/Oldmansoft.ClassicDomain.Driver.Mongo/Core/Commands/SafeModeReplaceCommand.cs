@@ -50,8 +50,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core.Commands
             }
             var context = Library.UpdateContext.GetContext(id, Type, source, Domain);
             if (!context.HasValue()) return false;
-            IdentityMap.Set(Domain);
-            return context.Execute(Collection);
+            var result = context.Execute(Collection);
+            if (result) IdentityMap.Set(Domain);
+            return result;
         }
     }
 }

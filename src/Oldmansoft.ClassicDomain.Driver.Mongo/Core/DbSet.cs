@@ -153,7 +153,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// 提交
         /// </summary>
         /// <returns></returns>
-        public virtual int Commit()
+        public int Commit()
         {
             int result = 0;
             ICommand command;
