@@ -61,6 +61,13 @@
     <Compile Include="..\Oldmansoft.ClassicDomain.Shared\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Core\Commands\ActionCommand.cs" />
+    <Compile Include="Core\Commands\AddCommand.cs" />
+    <Compile Include="Core\Commands\FastModeReplaceCommand.cs" />
+    <Compile Include="Core\Commands\RemoveCommand.cs" />
+    <Compile Include="Core\Commands\SafeModeAddCommand.cs" />
+    <Compile Include="Core\Commands\SafeModeReplaceCommand.cs" />
+    <Compile Include="Core\Commands\SafeModeRemoveCommand.cs" />
     <Compile Include="Core\DbSet.cs" />
     <Compile Include="Core\RepositoryDefinedSuperClass.cs" />
     <Compile Include="Core\SafeModeConfig.cs" />

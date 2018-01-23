@@ -14,8 +14,6 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
     /// <typeparam name="TKey"></typeparam>
     internal class SafeModeDbSet<TDomain, TKey> : DbSet<TDomain, TKey>
     {
-        private ChangeList<TDomain> List { get; set; }
-
         public IdentityMap<TDomain> IdentityMap { get; private set; }
 
         /// <summary>
@@ -28,7 +26,6 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         {
             IdentityMap = new IdentityMap<TDomain>();
             IdentityMap.SetKey(keyExpression.Compile());
-            List = new ChangeList<TDomain>();
         }
 
         /// <summary>
@@ -38,8 +35,8 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         public override void RegisterAdd(TDomain domain)
         {
             TrySetDomainKey(domain);
-            List.Addeds.Enqueue(domain);
-            IdentityMap.Set(domain);
+            domain = domain.MapTo<TDomain>();
+            Commands.Enqueue(new Commands.SafeModeAddCommand<TDomain>(GetCollection(), domain, IdentityMap));
         }
 
         /// <summary>
@@ -48,7 +45,8 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// <param name="domain"></param>
         public override void RegisterReplace(TDomain domain)
         {
-            List.Updateds.Enqueue(domain);
+            domain = domain.MapTo<TDomain>();
+            Commands.Enqueue(new Commands.SafeModeReplaceCommand<TDomain, TKey>(KeyExpression, KeyExpressionCompile, GetCollection(), domain, IdentityMap));
         }
 
         /// <summary>
@@ -57,67 +55,8 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// <param name="domain"></param>
         public override void RegisterRemove(TDomain domain)
         {
-            List.Deleteds.Enqueue(domain);
-        }
-
-        /// <summary>
-        /// 提交
-        /// </summary>
-        /// <returns></returns>
-        public override int Commit()
-        {
-            var collection = GetCollection();
-
-            int result = 0;
-            TDomain domain;
-            while (List.Addeds.TryDequeue(out domain))
-            {
-                if (Add(collection, domain)) result++;
-            }
-            while (List.Updateds.TryDequeue(out domain))
-            {
-                if (Replace(collection, domain)) result++;
-            }
-            while (List.Deleteds.TryDequeue(out domain))
-            {
-                if (Remove(collection, domain)) result++;
-            }
-
-            return result + base.Commit();
-        }
-
-        /// <summary>
-        /// 替换数据
-        /// </summary>
-        /// <param name="collection"></param>
-        /// <param name="domain"></param>
-        /// <returns></returns>
-        protected override bool Replace(MongoCollection<TDomain> collection, TDomain domain)
-        {
-            var key = KeyExpressionCompile(domain);
-            var source = IdentityMap.Get(key);
-            if (source == null)
-            {
-                throw new ArgumentException("修改的实例必须经过加载。", "domain");
-            }
-            var context = Library.UpdateContext.GetContext(key, typeof(TDomain), source, domain);
-            IdentityMap.Set(domain);
-            if (!context.HasValue()) return false;
-            return context.Execute(collection);
-        }
-
-        /// <summary>
-        /// 移除数据
-        /// </summary>
-        /// <param name="collection"></param>
-        /// <param name="domain"></param>
-        /// <returns></returns>
-        protected override bool Remove(MongoCollection<TDomain> collection, TDomain domain)
-        {
-            var result = base.Remove(collection, domain);
-            var id = KeyExpressionCompile(domain);
-            if (result) IdentityMap.Remove(id);
-            return result;
+            domain = domain.MapTo<TDomain>();
+            Commands.Enqueue(new Commands.SafeModeRemoveCommand<TDomain, TKey>(KeyExpression, KeyExpressionCompile, GetCollection(), domain, IdentityMap));
         }
     }
 }

@@ -12,14 +12,16 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
 {
     internal abstract class DbSet<TDomain, TKey> : IDbSet<TDomain, TKey>
     {
-        private MongoDatabase Database { get; set; }
+        private MongoDatabase Database;
+
+        private MongoCollection<TDomain> Collection;
 
         /// <summary>
         /// 表名
         /// </summary>
         protected string TableName { get; private set; }
         
-        private ConcurrentQueue<Func<MongoCollection<TDomain>, bool>> ExecuteList { get; set; }
+        protected ConcurrentQueue<ICommand> Commands { get; private set; }
 
         /// <summary>
         /// 主键表达式
@@ -46,7 +48,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
             Database = database;
             TableName = typeof(TDomain).Name;
             
-            ExecuteList = new ConcurrentQueue<Func<MongoCollection<TDomain>, bool>>();
+            Commands = new ConcurrentQueue<ICommand>();
             KeyExpression = keyExpression;
             KeyExpressionCompile = keyExpression.Compile();
             if (typeof(TKey) == typeof(Guid))
@@ -94,7 +96,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// <param name="execute"></param>
         void IDbSet<TDomain, TKey>.RegisterExecute(Func<MongoCollection<TDomain>, bool> execute)
         {
-            ExecuteList.Enqueue(execute);
+            Commands.Enqueue(new Commands.ActionCommand<TDomain>(GetCollection(), execute));
         }
 
         /// <summary>
@@ -103,7 +105,11 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// <returns></returns>
         public MongoCollection<TDomain> GetCollection()
         {
-            return Database.GetCollection<TDomain>(TableName);
+            if (Collection == null)
+            {
+                Collection = Database.GetCollection<TDomain>(TableName);
+            }
+            return Collection;
         }
 
         /// <summary>
@@ -149,50 +155,13 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// <returns></returns>
         public virtual int Commit()
         {
-            var collection = GetCollection();
             int result = 0;
-            Func<MongoCollection<TDomain>, bool> execute;
-            while (ExecuteList.TryDequeue(out execute))
+            ICommand command;
+            while(Commands.TryDequeue(out command))
             {
-                if (execute(collection)) result++;
+                if (command.Execute()) result++;
             }
             return result;
-        }
-
-        /// <summary>
-        /// 添加数据
-        /// </summary>
-        /// <param name="collection"></param>
-        /// <param name="domain"></param>
-        /// <returns></returns>
-        protected virtual bool Add(MongoCollection<TDomain> collection, TDomain domain)
-        {
-            var writeResult = collection.Insert(domain);
-            if (writeResult == null) return true;
-            return !writeResult.HasLastErrorMessage;
-        }
-        
-        /// <summary>
-        /// 替换数据
-        /// </summary>
-        /// <param name="collection"></param>
-        /// <param name="domain"></param>
-        /// <returns></returns>
-        protected abstract bool Replace(MongoCollection<TDomain> collection, TDomain domain);
-
-        /// <summary>
-        /// 移除数据
-        /// </summary>
-        /// <param name="collection"></param>
-        /// <param name="domain"></param>
-        /// <returns></returns>
-        protected virtual bool Remove(MongoCollection<TDomain> collection, TDomain domain)
-        {
-            var id = KeyExpressionCompile(domain);
-            var query = MongoDB.Driver.Builders.Query<TDomain>.EQ(KeyExpression, id);
-            var writeResult = collection.Remove(query);
-            if (writeResult == null) return true;
-            return writeResult.DocumentsAffected > 0;
         }
     }
 }

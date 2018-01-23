@@ -54,6 +54,7 @@
     <Compile Include="Configuration\DataSourceSet.cs" />
     <Compile Include="Driver\ChangeList.cs" />
     <Compile Include="Driver\GuidGenerator.cs" />
+    <Compile Include="Driver\ICommand.cs" />
     <Compile Include="Driver\IDbSet.cs" />
     <Compile Include="Driver\IdentityMap.cs" />
     <Compile Include="Driver\InProcess\Context.cs" />

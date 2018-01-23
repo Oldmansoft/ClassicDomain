@@ -69,10 +69,10 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         }
 
         /// <summary>
-        /// 执行
+        /// 提交时执行
         /// </summary>
         /// <param name="func"></param>
-        protected void Execute(Func<MongoDB.Driver.MongoCollection<TDomain>, bool> func)
+        public void Execute(Func<MongoDB.Driver.MongoCollection<TDomain>, bool> func)
         {
             Context.Set<TDomain, TKey>().RegisterExecute(func);
         }
@@ -83,7 +83,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// <typeparam name="TResult"></typeparam>
         /// <param name="func"></param>
         /// <returns></returns>
-        protected TResult Execute<TResult>(Func<MongoDB.Driver.MongoCollection<TDomain>, TResult> func)
+        public TResult Execute<TResult>(Func<MongoDB.Driver.MongoCollection<TDomain>, TResult> func)
         {
             return func(Context.Set<TDomain, TKey>().GetCollection());
         }
