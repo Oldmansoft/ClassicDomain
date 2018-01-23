@@ -16,8 +16,8 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
             Store = new StoreManager<TDomain, TKey>();
         }
 
-        private ChangeList<TDomain> List { get; set; }
-
+        private System.Collections.Concurrent.ConcurrentQueue<ICommand> Commands { get; set; }
+        
         /// <summary>
         /// 主键表达式
         /// </summary>
@@ -43,7 +43,7 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
         /// <param name="keyExpression"></param>
         public DbSet(System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
         {
-            List = new ChangeList<TDomain>();
+            Commands = new System.Collections.Concurrent.ConcurrentQueue<ICommand>();
             KeyExpression = keyExpression;
             KeyExpressionCompile = KeyExpression.Compile();
             if (typeof(TKey) == typeof(Guid))
@@ -71,28 +71,31 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
         /// 将添加
         /// </summary>
         /// <param name="domain"></param>
-        public void WillAdd(TDomain domain)
+        public void RegisterAdd(TDomain domain)
         {
             TrySetDomainKey(domain);
-            List.Addeds.Enqueue(domain);
+            domain = domain.MapTo<TDomain>();
+            Commands.Enqueue(new Commands.AddCommand<TDomain, TKey>(Store, domain));
         }
 
         /// <summary>
         /// 将替换
         /// </summary>
         /// <param name="domain"></param>
-        public void WillReplace(TDomain domain)
+        public void RegisterReplace(TDomain domain)
         {
-            List.Updateds.Enqueue(domain);
+            domain = domain.MapTo<TDomain>();
+            Commands.Enqueue(new Commands.ReplaceCommand<TDomain, TKey>(Store, domain));
         }
 
         /// <summary>
         /// 将移除
         /// </summary>
         /// <param name="domain"></param>
-        public void WillRemove(TDomain domain)
+        public void RegisterRemove(TDomain domain)
         {
-            List.Deleteds.Enqueue(domain);
+            domain = domain.MapTo<TDomain>();
+            Commands.Enqueue(new Commands.RemoveCommand<TDomain, TKey>(Store, domain));
         }
 
         /// <summary>
@@ -121,18 +124,10 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
         public int Commit()
         {
             int result = 0;
-            TDomain domain;
-            while (List.Addeds.TryDequeue(out domain))
+            ICommand command;
+            while (Commands.TryDequeue(out command))
             {
-                if (Store.Add(domain)) result++;
-            }
-            while (List.Updateds.TryDequeue(out domain))
-            {
-                if (Store.Replace(domain)) result++;
-            }
-            while (List.Deleteds.TryDequeue(out domain))
-            {
-                if (Store.Remove(domain)) result++;
+                if (command.Execute()) result++;
             }
             return result;
         }

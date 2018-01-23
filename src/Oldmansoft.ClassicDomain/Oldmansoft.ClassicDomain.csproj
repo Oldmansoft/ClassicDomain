@@ -52,11 +52,13 @@
     <Compile Include="Configuration\ConnectionString.cs" />
     <Compile Include="Configuration\DataSource.cs" />
     <Compile Include="Configuration\DataSourceSet.cs" />
-    <Compile Include="Driver\ChangeList.cs" />
     <Compile Include="Driver\GuidGenerator.cs" />
     <Compile Include="Driver\ICommand.cs" />
     <Compile Include="Driver\IDbSet.cs" />
     <Compile Include="Driver\IdentityMap.cs" />
+    <Compile Include="Driver\InProcess\Commands\RemoveCommand.cs" />
+    <Compile Include="Driver\InProcess\Commands\ReplaceCommand.cs" />
+    <Compile Include="Driver\InProcess\Commands\AddCommand.cs" />
     <Compile Include="Driver\InProcess\Context.cs" />
     <Compile Include="Driver\InProcess\DbSet.cs" />
     <Compile Include="Driver\InProcess\Repository.cs" />

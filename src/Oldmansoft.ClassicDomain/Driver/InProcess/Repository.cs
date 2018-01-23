@@ -52,7 +52,7 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
         public void Add(TDomain domain)
         {
             if (domain == null) return;
-            Context.Set<TDomain, TKey>().WillAdd(domain);
+            Context.Set<TDomain, TKey>().RegisterAdd(domain);
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
         public void Replace(TDomain domain)
         {
             if (domain == null) return;
-            Context.Set<TDomain, TKey>().WillReplace(domain);
+            Context.Set<TDomain, TKey>().RegisterReplace(domain);
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
         public void Remove(TDomain domain)
         {
             if (domain == null) return;
-            Context.Set<TDomain, TKey>().WillRemove(domain);
+            Context.Set<TDomain, TKey>().RegisterRemove(domain);
         }
     }
 }

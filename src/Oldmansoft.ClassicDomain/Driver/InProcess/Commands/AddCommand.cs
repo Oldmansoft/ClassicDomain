@@ -1,0 +1,34 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Oldmansoft.ClassicDomain.Driver.InProcess.Commands
+{
+    class AddCommand<TDomain, TKey> : ICommand
+    {
+        private StoreManager<TDomain, TKey> Store;
+
+        private TDomain Domain;
+
+        public AddCommand(StoreManager<TDomain, TKey> store, TDomain domain)
+        {
+            Store = store;
+            Domain = domain;
+        }
+
+        public Type Type
+        {
+            get
+            {
+                return typeof(TDomain);
+            }
+        }
+
+        public bool Execute()
+        {
+            return Store.Add(Domain);
+        }
+    }
+}
