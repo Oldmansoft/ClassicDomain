@@ -1,4 +1,5 @@
 ﻿using Oldmansoft.ClassicDomain.Driver.Redis.Library;
+using Oldmansoft.ClassicDomain.Util;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
@@ -42,7 +43,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core.Commands
 
         public bool Execute()
         {
-            var command = ContextSetAddtHelper.GetContext(Key, typeof(TDomain), Domain);
+            var command = GetContext(Key, typeof(TDomain), Domain);
             try
             {
                 if (!Db.HashSet(MergeKey(command.Key), "this", typeof(TDomain).FullName)) return false;
@@ -61,6 +62,56 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core.Commands
             command.Execute(Db, Merge);
             IdentityMap.Set(Domain);
             return true;
+        }
+
+        /// <summary>
+        /// 获取添加项
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="domainType"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        private UpdatedCommand<TKey> GetContext(TKey key, Type domainType, object context)
+        {
+            var result = new UpdatedCommand<TKey>(key, domainType);
+            SetContext(domainType, context, result, new string[0]);
+            return result;
+        }
+
+        private void SetContext(Type type, object context, UpdatedCommand result, string[] prefixNames)
+        {
+            foreach (var property in TypePublicInstancePropertyInfoStore.GetValues(type))
+            {
+                var value = property.Get(context);
+                if (value == null) continue;
+
+                var propertyType = property.Type;
+                var currentNames = prefixNames.AddToNew(property.Name);
+                var name = currentNames.JoinDot();
+
+                if (propertyType.IsArrayOrGenericList())
+                {
+                    result.HashSet.Add(name, propertyType.FullName);
+                    result.ListRightPush.Add(name, propertyType.ConvertToList(value));
+                    continue;
+                }
+
+                if (propertyType.IsGenericDictionary())
+                {
+                    result.HashSet.Add(name, propertyType.FullName);
+                    result.HashSetList.Add(name, propertyType.ConvertToDictionary(value));
+                    continue;
+                }
+
+                if (propertyType.IsNormalClass())
+                {
+                    result.HashSet.Add(name, propertyType.FullName);
+                    SetContext(propertyType, value, result, currentNames);
+                    continue;
+                }
+
+                result.HashSet.Add(name, value.ToString());
+            }
         }
     }
 }

@@ -8,7 +8,7 @@ using Oldmansoft.ClassicDomain.Util;
 
 namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
 {
-    class ContextSetGetHelper
+    class ContextGetHelper
     {
         public static ReflectionItem GetReflection(Type type)
         {

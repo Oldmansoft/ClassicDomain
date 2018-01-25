@@ -73,7 +73,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
 
         private Library.DataGetMapping FromRedis(IDatabase db, TKey key)
         {
-            var reflection = Library.ContextSetGetHelper.GetReflection(typeof(TDomain));
+            var reflection = Library.ContextGetHelper.GetReflection(typeof(TDomain));
             var result = new Library.DataGetMapping(db.HashGetAll(MergeKey(key)).ToStringDictionary());
             for (var i = 0; i < reflection.ListNames.Count; i++)
             {
@@ -91,7 +91,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
 
         public override TDomain Get(TKey id)
         {
-            var result = Library.ContextSetGetHelper.GetContext<TDomain>(FromRedis(Db, id));
+            var result = Library.ContextGetHelper.GetContext<TDomain>(FromRedis(Db, id));
             IdentityMap.Set(result);
             return result;
         }

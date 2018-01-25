@@ -7,7 +7,7 @@ using Oldmansoft.ClassicDomain.Util;
 
 namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
 {
-    class ContextSetReplaceHelper
+    class ContextReplaceHelper
     {
         public static UpdatedCommand<TKey> GetContext<TKey>(TKey key, Type domainType, object compareSource, object compareTarget)
         {

@@ -73,8 +73,8 @@
     <Compile Include="Core\IMergeKey.cs" />
     <Compile Include="Core\RepositoryDefinedSuperClass.cs" />
     <Compile Include="Core\SafeModeDbSet.cs" />
-    <Compile Include="Library\ContextSetGetHelper.cs" />
-    <Compile Include="Library\ContextSetReplaceHelper.cs" />
+    <Compile Include="Library\ContextGetHelper.cs" />
+    <Compile Include="Library\ContextReplaceHelper.cs" />
     <Compile Include="Library\DataGetMapping.cs" />
     <Compile Include="Library\ReflectionItem.cs" />
     <Compile Include="Library\RemoveObject.cs" />
@@ -82,8 +82,6 @@
     <Compile Include="FastModeContext.cs" />
     <Compile Include="IContext.cs" />
     <Compile Include="Core\IDbSet.cs" />
-    <Compile Include="Library\ContextSetAddtHelper.cs" />
-    <Compile Include="Library\ContextSetRemoveHelper.cs" />
     <Compile Include="Library\UpdatedCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\Repository.cs" />
