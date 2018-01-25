@@ -100,20 +100,5 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
         {
             Commands.Enqueue(new Commands.ActionCommand<TDomain>(this, execute));
         }
-
-        /// <summary>
-        /// 提交
-        /// </summary>
-        /// <returns></returns>
-        public int Commit()
-        {
-            var result = 0;
-            ICommand command;
-            while (Commands.TryDequeue(out command))
-            {
-                if (command.Execute()) result++;
-            }
-            return result;
-        }
     }
 }

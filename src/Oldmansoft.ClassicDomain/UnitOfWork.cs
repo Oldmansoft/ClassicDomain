@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 namespace Oldmansoft.ClassicDomain
 {
     /// <summary>
-    /// 工作单元管理
+    /// 工作单元
     /// </summary>
     public class UnitOfWork : IUnitOfWork
     {
         /// <summary>
-        /// 工作单元集
+        /// 管理项集
         /// </summary>
-        private Dictionary<Type, IUnitOfWorkManagedItem> UnitOfWorks { get; set; }
+        private Dictionary<Type, IUnitOfWorkManagedItem> ManagedItems { get; set; }
 
         /// <summary>
         /// 数据命令集
@@ -23,70 +23,69 @@ namespace Oldmansoft.ClassicDomain
         private ConcurrentQueue<Driver.ICommand> Commands { get; set; }
 
         /// <summary>
-        /// 创建工作单元管理
+        /// 创建工作单元
         /// </summary>
         public UnitOfWork()
         {
-            UnitOfWorks = new Dictionary<Type, IUnitOfWorkManagedItem>();
+            ManagedItems = new Dictionary<Type, IUnitOfWorkManagedItem>();
             Commands = new ConcurrentQueue<Driver.ICommand>();
         }
-        
+
         /// <summary>
-        /// 获取被管理的子工作单元
+        /// 获取被管理的项
         /// </summary>
-        /// <typeparam name="TUnitOfWork">工作单元类型</typeparam>
-        /// <returns>工作单元</returns>
-        public TUnitOfWork GetManaged<TUnitOfWork>() where TUnitOfWork : class, IUnitOfWorkManagedItem, new()
+        /// <typeparam name="TManagedItem">工作单元管理项</typeparam>
+        /// <returns>管理项</returns>
+        public TManagedItem GetManaged<TManagedItem>() where TManagedItem : class, IUnitOfWorkManagedItem, new()
         {
-            Type type = typeof(TUnitOfWork);
-            if (!UnitOfWorks.ContainsKey(type))
+            Type type = typeof(TManagedItem);
+            if (!ManagedItems.ContainsKey(type))
             {
-                var context = new TUnitOfWork();
+                var context = new TManagedItem();
                 context.Init(Commands);
                 context.ModelCreating();
-                lock (UnitOfWorks)
+                lock (ManagedItems)
                 {
-                    if (!UnitOfWorks.ContainsKey(type))
+                    if (!ManagedItems.ContainsKey(type))
                     {
-                        UnitOfWorks.Add(type, context);
+                        ManagedItems.Add(type, context);
                     }
                 }
             }
-            return UnitOfWorks[type] as TUnitOfWork;
+            return ManagedItems[type] as TManagedItem;
         }
 
         /// <summary>
-        /// 获取被管理的子工作单元
+        /// 获取被管理的项
         /// </summary>
-        /// <typeparam name="TUnitOfWork">工作单元类型</typeparam>
+        /// <typeparam name="TManagedItem">工作单元管理项</typeparam>
         /// <typeparam name="TInit"></typeparam>
-        /// <returns>工作单元</returns>
-        public TUnitOfWork GetManaged<TUnitOfWork, TInit>(TInit parameter) where TUnitOfWork : class, IUnitOfWorkManagedItem<TInit>, new()
+        /// <returns>管理项</returns>
+        public TManagedItem GetManaged<TManagedItem, TInit>(TInit parameter) where TManagedItem : class, IUnitOfWorkManagedItem<TInit>, new()
         {
-            Type type = typeof(TUnitOfWork);
-            if (!UnitOfWorks.ContainsKey(type))
+            Type type = typeof(TManagedItem);
+            if (!ManagedItems.ContainsKey(type))
             {
-                var context = new TUnitOfWork();
+                var context = new TManagedItem();
                 context.Init(Commands);
                 context.ModelCreating(parameter);
-                lock (UnitOfWorks)
+                lock (ManagedItems)
                 {
-                    if (!UnitOfWorks.ContainsKey(type))
+                    if (!ManagedItems.ContainsKey(type))
                     {
-                        UnitOfWorks.Add(type, context);
+                        ManagedItems.Add(type, context);
                     }
                 }
             }
-            return UnitOfWorks[type] as TUnitOfWork;
+            return ManagedItems[type] as TManagedItem;
         }
 
         /// <summary>
-        /// 将所有子工作单元提交
+        /// 提交
         /// </summary>
         /// <returns>受影响的数量</returns>
         public virtual int Commit()
         {
-            if (UnitOfWorks.Count == 0) return 0;
             int result = 0;
             Driver.ICommand command;
             while (Commands.TryDequeue(out command))

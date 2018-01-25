@@ -118,20 +118,5 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
         {
             return Store.Query();
         }
-
-        /// <summary>
-        /// 提交
-        /// </summary>
-        /// <returns></returns>
-        public int Commit()
-        {
-            int result = 0;
-            ICommand command;
-            while (Commands.TryDequeue(out command))
-            {
-                if (command.Execute()) result++;
-            }
-            return result;
-        }
     }
 }

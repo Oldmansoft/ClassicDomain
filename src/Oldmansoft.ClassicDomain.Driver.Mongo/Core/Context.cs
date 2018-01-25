@@ -75,20 +75,5 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
             }
             return result;
         }
-
-        /// <summary>
-        /// 提交
-        /// </summary>
-        /// <returns></returns>
-        public override int Commit()
-        {
-            int result = 0;
-            ICommand command;
-            while (Commands.TryDequeue(out command))
-            {
-                if (command.Execute()) result++;
-            }
-            return result;
-        }
     }
 }

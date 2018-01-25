@@ -9,7 +9,7 @@ namespace Oldmansoft.ClassicDomain
     /// <summary>
     /// 工作单元管理项
     /// </summary>
-    public interface IUnitOfWorkManagedItem : IUnitOfWork
+    public interface IUnitOfWorkManagedItem
     {
         /// <summary>
         /// 初始化

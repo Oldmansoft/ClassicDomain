@@ -115,22 +115,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// </summary>
         /// <param name="domain"></param>
         public abstract void RegisterRemove(TDomain domain);
-
-        /// <summary>
-        /// 提交
-        /// </summary>
-        /// <returns></returns>
-        public virtual int Commit()
-        {
-            int result = 0;
-            ICommand command;
-            while(Commands.TryDequeue(out command))
-            {
-                if (command.Execute()) result++;
-            }
-            return result;
-        }
-
+        
         /// <summary>
         /// 注册执行
         /// </summary>

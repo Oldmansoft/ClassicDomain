@@ -51,20 +51,5 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
             }
             return result as DbSet<TDomain, TKey>;
         }
-
-        /// <summary>
-        /// 提交
-        /// </summary>
-        /// <returns></returns>
-        public override int Commit()
-        {
-            int result = 0;
-            ICommand command;
-            while (Commands.TryDequeue(out command))
-            {
-                if (command.Execute()) result++;
-            }
-            return result;
-        }
     }
 }

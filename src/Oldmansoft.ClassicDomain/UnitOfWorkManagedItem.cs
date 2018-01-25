@@ -48,11 +48,5 @@ namespace Oldmansoft.ClassicDomain
         /// 在创建实体时
         /// </summary>
         protected abstract void OnModelCreating();
-
-        /// <summary>
-        /// 提交
-        /// </summary>
-        /// <returns></returns>
-        public abstract int Commit();
     }
 }
