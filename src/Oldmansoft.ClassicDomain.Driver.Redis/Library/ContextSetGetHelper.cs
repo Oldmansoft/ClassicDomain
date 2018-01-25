@@ -53,7 +53,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
 
         private static void SetContext<T>(DataGetMapping mapping, Type type, T instance, string prefixName, string[] prefixNames)
         {
-            foreach (var property in TypePublicInstancePropertyValueStore.GetPropertys(type))
+            foreach (var property in TypePublicInstancePropertyInfoStore.GetValues(type))
             {
                 var currentNames = prefixNames.AddToNew(property.Name);
                 var name = currentNames.JoinDot();

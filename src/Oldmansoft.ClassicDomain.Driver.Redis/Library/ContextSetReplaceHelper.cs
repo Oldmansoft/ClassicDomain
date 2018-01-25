@@ -18,7 +18,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
 
         private static void SetContext(Type type, UpdatedCommand result, string[] prefixNames, object compareSource, object compareTarget)
         {
-            foreach (var property in TypePublicInstancePropertyValueStore.GetPropertys(type))
+            foreach (var property in TypePublicInstancePropertyInfoStore.GetValues(type))
             {
                 var currentNames = prefixNames.AddToNew(property.Name);
                 var sourceValue = compareSource == null ? null : property.Get(compareSource);
