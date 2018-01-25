@@ -56,8 +56,9 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
         public void Add(TDomain domain)
         {
             if (domain == null) return;
-            PrimaryKeyManager.Instance.TrySetDomainGuidEmptyKey(domain, Context);
-            Context.Set<TDomain>().Add(domain);
+            if (typeof(TKey) == typeof(Guid)) PrimaryKeyManager.Instance.TrySetDomainGuidEmptyKey(domain, Context);
+            domain = domain.MapTo<TDomain>();
+            Context.RegisterAdd(domain);
         }
         
         /// <summary>
@@ -67,9 +68,8 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
         public void Replace(TDomain domain)
         {
             if (domain == null) return;
-            if (Context.Entry(domain).State != System.Data.Entity.EntityState.Detached) return;
-            Context.Set<TDomain>().Attach(domain);
-            Context.Entry(domain).State = System.Data.Entity.EntityState.Modified;
+            domain = domain.MapTo<TDomain>();
+            Context.RegisterReplace(domain);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
         public void Remove(TDomain domain)
         {
             if (domain == null) return;
-            Context.Set<TDomain>().Remove(domain);
+            Context.RegisterRemove(domain);
         }
         
         /// <summary>
@@ -88,7 +88,7 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
         /// <typeparam name="TResult"></typeparam>
         /// <param name="func"></param>
         /// <returns></returns>
-        protected TResult Execute<TResult>(Func<System.Data.Entity.DbSet<TDomain>, TResult> func)
+        public TResult Execute<TResult>(Func<System.Data.Entity.DbSet<TDomain>, TResult> func)
         {
             return func(Context.Set<TDomain>());
         }

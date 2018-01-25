@@ -54,6 +54,9 @@
     <Compile Include="..\Oldmansoft.ClassicDomain.Shared\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Commands\ReplaceCommand.cs" />
+    <Compile Include="Commands\RemoveCommand.cs" />
+    <Compile Include="Commands\AddCommand.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="PrimaryKeyManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,16 +12,19 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
     /// </summary>
     public abstract class Context : System.Data.Entity.DbContext, IUnitOfWorkManagedItem
     {
+        private ConcurrentQueue<ICommand> Commands { get; set; }
+
         /// <summary>
         /// 配置读取的连接串名称
         /// </summary>
-        protected string ConnectionName { get; set; }
+        private string ConnectionName { get; set; }
 
         /// <summary>
         /// 创建 Entity Framework 的实体上下文
         /// </summary>
         public Context()
         {
+            Commands = new ConcurrentQueue<ICommand>();
             ConnectionName = GetType().FullName;
         }
 
@@ -34,14 +38,14 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
         }
 
         /// <summary>
-        /// 提交
+        /// 保存改变
         /// </summary>
         /// <returns></returns>
-        public int Commit()
+        public override int SaveChanges()
         {
             try
             {
-                return SaveChanges();
+                return base.SaveChanges();
             }
             catch (System.Data.Entity.Infrastructure.DbUpdateException ex)
             {
@@ -72,6 +76,51 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
         
         void IUnitOfWorkManagedItem.ModelCreating()
         {
+        }
+
+        /// <summary>
+        /// 注册添加
+        /// </summary>
+        /// <param name="domain"></param>
+        public void RegisterAdd<TDomain>(TDomain domain)
+            where TDomain : class
+        {
+            Commands.Enqueue(new Commands.AddCommand<TDomain>(this, domain));
+        }
+
+        /// <summary>
+        /// 注册替换
+        /// </summary>
+        /// <param name="domain"></param>
+        public void RegisterReplace<TDomain>(TDomain domain)
+            where TDomain : class
+        {
+            Commands.Enqueue(new Commands.ReplaceCommand<TDomain>(this, domain));
+        }
+
+        /// <summary>
+        /// 注册移除
+        /// </summary>
+        /// <param name="domain"></param>
+        public void RegisterRemove<TDomain>(TDomain domain)
+            where TDomain : class
+        {
+            Commands.Enqueue(new Commands.RemoveCommand<TDomain>(this, domain));
+        }
+
+        /// <summary>
+        /// 提交
+        /// </summary>
+        /// <returns></returns>
+        public int Commit()
+        {
+            var result = 0;
+            ICommand command;
+            while (Commands.TryDequeue(out command))
+            {
+                if (command.Execute()) result++;
+            }
+            return result;
         }
     }
 }
