@@ -28,14 +28,15 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <summary>
         /// 获取配置项
         /// </summary>
+        /// <param name="callerType"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public ConfigItem Get(string name)
+        public ConfigItem Get(Type callerType, string name)
         {
             ConfigItem result;
             if (Connections.TryGetValue(name, out result)) return result;
 
-            var setting = Configuration.Config.GetConnectionStringSettings(name);
+            var setting = Configuration.Config.GetConnectionStringSettings(callerType, name);
 
             var connection = ConnectionMultiplexer.Connect(setting.ConnectionString);
             result = new ConfigItem(connection, setting.ProviderName);

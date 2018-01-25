@@ -53,7 +53,7 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
             {
                 return true;
             }
-            throw new UniqueException(string.Format("已经存在键 {0}", key));
+            throw new UniqueException(typeof(TDomain), string.Format("已经存在键 {0}", key));
         }
 
         /// <summary>

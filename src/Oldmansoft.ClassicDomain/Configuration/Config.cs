@@ -15,28 +15,30 @@ namespace Oldmansoft.ClassicDomain.Configuration
         /// <summary>
         /// 获取连接字符串
         /// </summary>
+        /// <param name="callerType"></param>
         /// <param name="name">名称</param>
         /// <returns></returns>
-        public static string GetConnectionString(string name)
+        public static string GetConnectionString(Type callerType, string name)
         {
-            return GetConnectionStringSettings(name).ConnectionString;
+            return GetConnectionStringSettings(callerType, name).ConnectionString;
         }
 
         /// <summary>
         /// 获取迦接字符串配置
         /// </summary>
+        /// <param name="callerType"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static ConnectionStringSettings GetConnectionStringSettings(string name)
+        public static ConnectionStringSettings GetConnectionStringSettings(Type callerType, string name)
         {
             var settings = ConfigurationManager.ConnectionStrings[name];
             if (settings == null)
             {
-                throw new ConfigItemNotFoundException(string.Format("config 文件找不到配置项 {0}", name));
+                throw new ConfigItemNotFoundException(callerType, string.Format("config 文件找不到配置项 {0}", name));
             }
             if (string.IsNullOrWhiteSpace(settings.ConnectionString))
             {
-                throw new ConfigItemException(string.Format("config 文件的配置项 {0} ConnectionString 为空", name));
+                throw new ConfigItemException(callerType, string.Format("config 文件的配置项 {0} ConnectionString 为空", name));
             }
             return settings;
         }
@@ -63,11 +65,11 @@ namespace Oldmansoft.ClassicDomain.Configuration
 
             if (settings == null)
             {
-                throw new ConfigItemNotFoundException(string.Format("config 文件找不到的配置项 {0}", type.FullName));
+                throw new ConfigItemNotFoundException(type, string.Format("config 文件找不到的配置项 {0}", type.FullName));
             }
             if (string.IsNullOrWhiteSpace(settings.ConnectionString))
             {
-                throw new ConfigItemException(string.Format("config 文件的配置项 {0} ConnectionString 为空", type.FullName));
+                throw new ConfigItemException(type, string.Format("config 文件的配置项 {0} ConnectionString 为空", type.FullName));
             }
             return settings.ConnectionString;
         }

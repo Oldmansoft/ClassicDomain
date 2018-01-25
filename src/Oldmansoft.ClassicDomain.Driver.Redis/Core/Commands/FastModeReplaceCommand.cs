@@ -50,7 +50,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core.Commands
                 {
                     if (ex.Message == "ERR wrong number of arguments for 'set' command")
                     {
-                        throw new ClassicDomainException(Core.Config.AlertLowServerVersion);
+                        throw new ClassicDomainException(Type, Core.Config.AlertLowServerVersion);
                     }
                     throw;
                 }

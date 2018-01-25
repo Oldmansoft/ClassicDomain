@@ -32,7 +32,7 @@ namespace Oldmansoft.ClassicDomain.Driver.EF.Commands
             if (Context.Entry(Domain).State != System.Data.Entity.EntityState.Detached) return true;
             var domainToReplace = Context.Set<TDomain>().Find(PrimaryKeyManager.Instance.GetPrimaryKey<TDomain>(Context).Get(Domain));
             Domain.MapTo(domainToReplace);
-            return Context.SaveChanges() > 0;
+            return Context.SaveChanges(Type) > 0;
         }
     }
 }

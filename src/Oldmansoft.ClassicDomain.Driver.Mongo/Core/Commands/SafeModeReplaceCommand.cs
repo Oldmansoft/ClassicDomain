@@ -46,13 +46,21 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core.Commands
             var source = IdentityMap.Get(id);
             if (source == null)
             {
-                throw new ClassicDomainException("修改的实例必须经过加载。");
+                throw new ClassicDomainException(Type, "修改的实例必须经过加载。");
             }
             var context = Library.UpdateContext.GetContext(id, Type, source, Domain);
             if (!context.HasValue()) return false;
-            var result = context.Execute(Collection);
-            if (result) IdentityMap.Set(Domain);
-            return result;
+
+            try
+            {
+                var result = context.Execute(Collection);
+                if (result) IdentityMap.Set(Domain);
+                return result;
+            }
+            catch (MongoDuplicateKeyException ex)
+            {
+                throw new UniqueException(Type, ex);
+            }
         }
     }
 }

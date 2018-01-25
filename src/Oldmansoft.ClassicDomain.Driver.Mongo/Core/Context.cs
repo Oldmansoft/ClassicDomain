@@ -13,8 +13,6 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
     /// </summary>
     public abstract class Context : UnitOfWorkManagedItem, IContext
     {
-        private ConcurrentQueue<ICommand> Commands { get; set; }
-
         private Dictionary<Type, IDbSet> DbSet { get; set; }
         
         /// <summary>
@@ -23,7 +21,6 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         public Context()
         {
             DbSet = new Dictionary<Type, IDbSet>();
-            Commands = new ConcurrentQueue<ICommand>();
         }
 
         /// <summary>
@@ -69,36 +66,29 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
             Type type = typeof(TDomain);
             if (!DbSet.ContainsKey(type))
             {
-                throw new ClassicDomainException(string.Format("{0} 类型没有添加到 {1} 上下文中。", type.FullName, this.GetType().FullName));
+                throw new ClassicDomainException(type, string.Format("{0} 类型没有添加到 {1} 上下文中。", type.FullName, GetType().FullName));
             }
             var result = DbSet[type] as IDbSet<TDomain, TKey>;
             if (result == null)
             {
-                throw new ClassicDomainException("Set 获取的主键类型与 Add 添加的主键类型不一致。");
+                throw new ClassicDomainException(type, "Set 获取的主键类型与 Add 添加的主键类型不一致。");
             }
             return result;
         }
-        
+
         /// <summary>
         /// 提交
         /// </summary>
         /// <returns></returns>
         public override int Commit()
         {
-            try
+            int result = 0;
+            ICommand command;
+            while (Commands.TryDequeue(out command))
             {
-                int result = 0;
-                ICommand command;
-                while (Commands.TryDequeue(out command))
-                {
-                    if (command.Execute()) result++;
-                }
-                return result;
+                if (command.Execute()) result++;
             }
-            catch (MongoDB.Driver.MongoDuplicateKeyException ex)
-            {
-                throw new UniqueException(ex);
-            }
+            return result;
         }
     }
 }

@@ -15,33 +15,11 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
         private ConcurrentQueue<ICommand> Commands { get; set; }
 
         /// <summary>
-        /// 配置读取的连接串名称
-        /// </summary>
-        private string ConnectionName { get; set; }
-
-        /// <summary>
-        /// 创建 Entity Framework 的实体上下文
-        /// </summary>
-        public Context()
-        {
-            Commands = new ConcurrentQueue<ICommand>();
-            ConnectionName = GetType().FullName;
-        }
-
-        /// <summary>
-        /// 获取连接串名称
-        /// </summary>
-        /// <returns></returns>
-        public string GetConnectionName()
-        {
-            return ConnectionName;
-        }
-
-        /// <summary>
         /// 保存改变
         /// </summary>
+        /// <param name="domainType">领域实体类型</param>
         /// <returns></returns>
-        public override int SaveChanges()
+        public int SaveChanges(Type domainType)
         {
             try
             {
@@ -54,7 +32,7 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
                     int errorNumber = (ex.InnerException.InnerException as System.Data.SqlClient.SqlException).Number;
                     if (errorNumber == 2601 || errorNumber == 2627)
                     {
-                        throw new UniqueException(ex.InnerException.InnerException);
+                        throw new UniqueException(domainType, ex.InnerException.InnerException);
                     }
                 }
                 throw;
@@ -67,13 +45,18 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
                     var validationError = entityError.ValidationErrors.FirstOrDefault();
                     if (validationError != null)
                     {
-                        throw new ClassicDomainException(validationError.ErrorMessage);
+                        throw new ClassicDomainException(domainType, validationError.ErrorMessage);
                     }
                 }
                 throw;
             }
         }
-        
+
+        void IUnitOfWorkManagedItem.Init(ConcurrentQueue<ICommand> commands)
+        {
+            Commands = commands;
+        }
+
         void IUnitOfWorkManagedItem.ModelCreating()
         {
         }

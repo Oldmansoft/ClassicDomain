@@ -30,7 +30,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
 
         private ConfigItem GetConfig()
         {
-            if (Config == null) Config = Server.Get(ConnectionName);
+            if (Config == null) Config = Server.Get(GetType(), ConnectionName);
             return Config;
         }
         

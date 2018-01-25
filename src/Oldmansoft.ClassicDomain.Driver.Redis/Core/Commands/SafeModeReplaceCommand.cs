@@ -45,7 +45,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core.Commands
             var source = IdentityMap.Get(Key);
             if (source == null)
             {
-                throw new ClassicDomainException("修改的实例必须经过加载");
+                throw new ClassicDomainException(Type, "修改的实例必须经过加载");
             }
             var command = ContextSetReplaceHelper.GetContext(Key, typeof(TDomain), source, Domain);
             if (string.IsNullOrEmpty(Db.HashGet(MergeKey(command.Key), "this"))) return false;

@@ -29,9 +29,16 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core.Commands
 
         public virtual bool Execute()
         {
-            var result = Collection.Insert(Domain);
-            if (result == null) return true;
-            return !result.HasLastErrorMessage;
+            try
+            {
+                var result = Collection.Insert(Domain);
+                if (result == null) return true;
+                return !result.HasLastErrorMessage;
+            }
+            catch (MongoDuplicateKeyException ex)
+            {
+                throw new UniqueException(Type, ex);
+            }
         }
     }
 }

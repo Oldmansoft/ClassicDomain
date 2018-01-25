@@ -12,11 +12,11 @@ namespace Oldmansoft.ClassicDomain
     public interface IUnitOfWorkManagedItem : IUnitOfWork
     {
         /// <summary>
-        /// 获取配置读取的连接串名称
+        /// 初始化
         /// </summary>
-        /// <returns></returns>
-        string GetConnectionName();
-
+        /// <param name="commands"></param>
+        void Init(System.Collections.Concurrent.ConcurrentQueue<Driver.ICommand> commands);
+        
         /// <summary>
         /// 创建实体中
         /// </summary>

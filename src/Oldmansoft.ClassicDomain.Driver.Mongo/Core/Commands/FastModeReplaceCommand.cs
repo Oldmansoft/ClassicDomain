@@ -37,9 +37,17 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core.Commands
         {
             var query = MongoDB.Driver.Builders.Query<TDomain>.EQ(KeyExpression, KeyExpressionCompile(Domain));
             var update = MongoDB.Driver.Builders.Update<TDomain>.Replace(Domain);
-            var result = Collection.Update(query, update);
-            if (result == null) return true;
-            return result.DocumentsAffected > 0;
+
+            try
+            {
+                var result = Collection.Update(query, update);
+                if (result == null) return true;
+                return result.DocumentsAffected > 0;
+            }
+            catch (MongoDuplicateKeyException ex)
+            {
+                throw new UniqueException(Type, ex);
+            }
         }
     }
 }

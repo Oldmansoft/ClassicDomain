@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Oldmansoft.ClassicDomain.Driver;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,20 +19,21 @@ namespace Oldmansoft.ClassicDomain
         protected string ConnectionName { get; set; }
 
         /// <summary>
+        /// 更新命令集
+        /// </summary>
+        protected ConcurrentQueue<ICommand> Commands { get; private set; }
+
+        /// <summary>
         /// 创建工作单元管理项
         /// </summary>
         public UnitOfWorkManagedItem()
         {
             ConnectionName = GetType().FullName;
         }
-
-        /// <summary>
-        /// 获取配置读取的连接串名称
-        /// </summary>
-        /// <returns></returns>
-        public string GetConnectionName()
+        
+        void IUnitOfWorkManagedItem.Init(ConcurrentQueue<ICommand> commands)
         {
-            return ConnectionName;
+            Commands = commands;
         }
 
         /// <summary>

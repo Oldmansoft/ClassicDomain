@@ -13,16 +13,13 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
     public abstract class Context : UnitOfWorkManagedItem
     {
         private ConcurrentDictionary<Type, IDbSet> DbSet { get; set; }
-
-        private ConcurrentQueue<ICommand> Commands { get; set; }
-
+        
         /// <summary>
         /// 创建进程上下文
         /// </summary>
         public Context()
         {
             DbSet = new ConcurrentDictionary<Type, IDbSet>();
-            Commands = new ConcurrentQueue<ICommand>();
         }
 
         /// <summary>

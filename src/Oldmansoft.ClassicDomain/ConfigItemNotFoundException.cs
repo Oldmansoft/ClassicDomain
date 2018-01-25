@@ -14,9 +14,10 @@ namespace Oldmansoft.ClassicDomain
         /// <summary>
         /// 创建配置项查找不到异常
         /// </summary>
-        /// <param name="message"></param>
-        public ConfigItemNotFoundException(string message)
-            : base(message)
+        /// <param name="type">触发异常的类型</param>
+        /// <param name="message">描述错误的消息</param>
+        public ConfigItemNotFoundException(Type type, string message)
+            : base(type, message)
         { }
     }
 }

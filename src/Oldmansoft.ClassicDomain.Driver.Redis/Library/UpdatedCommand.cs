@@ -74,6 +74,8 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
     /// <typeparam name="TKey"></typeparam>
     internal class UpdatedCommand<TKey> : UpdatedCommand
     {
+        private Type DomainType { get; set; }
+
         /// <summary>
         /// 主键
         /// </summary>
@@ -83,9 +85,11 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
         /// 创建更新命令集
         /// </summary>
         /// <param name="key"></param>
-        public UpdatedCommand(TKey key)
+        /// <param name="domainType"></param>
+        public UpdatedCommand(TKey key, Type domainType)
         {
             Key = key;
+            DomainType = domainType;
         }
 
         /// <summary>
@@ -127,7 +131,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
                     {
                         if (ex.Message == "ERR wrong number of arguments for 'rpush' command")
                         {
-                            throw new ClassicDomainException(Core.Config.AlertLowServerVersion);
+                            throw new ClassicDomainException(DomainType, Core.Config.AlertLowServerVersion);
                         }
                         throw;
                     }

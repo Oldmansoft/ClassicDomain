@@ -30,7 +30,7 @@ namespace Oldmansoft.ClassicDomain.Driver.EF.Commands
         public bool Execute()
         {
             Context.Set<TDomain>().Remove(Domain);
-            return Context.SaveChanges() > 0;
+            return Context.SaveChanges(Type) > 0;
         }
     }
 }

@@ -19,9 +19,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
             Items = new Dictionary<string, ConfigItem>();
         }
 
-        private ConfigItem InitItem(string name)
+        private ConfigItem InitItem(Type callerType, string name)
         {
-            var connectionString = Configuration.Config.GetConnectionString(name);
+            var connectionString = Configuration.Config.GetConnectionString(callerType, name);
             string database;
             MongoServerSettings setting;
             if (connectionString.IndexOf("mongodb://") > -1)
@@ -51,7 +51,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
             }
             if (string.IsNullOrEmpty(database))
             {
-                throw new ConfigItemException(string.Format("config 文件的配置项 {0} ConnectionString 需要指定数据库名称", name));
+                throw new ConfigItemException(callerType, string.Format("config 文件的配置项 {0} ConnectionString 需要指定数据库名称", name));
             }
             return new ConfigItem(CreateMongoServer(setting), database);
         }
@@ -59,16 +59,17 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// <summary>
         /// 获取配置项
         /// </summary>
+        /// <param name="callerType"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public ConfigItem Get(string name)
+        public ConfigItem Get(Type callerType, string name)
         {
             if (Items.ContainsKey(name))
             {
                 return Items[name];
             }
 
-            ConfigItem item = InitItem(name);
+            ConfigItem item = InitItem(callerType, name);
             lock (Items)
             {
                 if (Items.ContainsKey(name))

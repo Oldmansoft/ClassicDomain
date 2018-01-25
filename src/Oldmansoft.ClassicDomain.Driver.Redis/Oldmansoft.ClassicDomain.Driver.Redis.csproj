@@ -83,7 +83,6 @@
     <Compile Include="IContext.cs" />
     <Compile Include="Core\IDbSet.cs" />
     <Compile Include="Library\ContextSetAddtHelper.cs" />
-    <Compile Include="Library\ChangeList.cs" />
     <Compile Include="Library\ContextSetRemoveHelper.cs" />
     <Compile Include="Library\UpdatedCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

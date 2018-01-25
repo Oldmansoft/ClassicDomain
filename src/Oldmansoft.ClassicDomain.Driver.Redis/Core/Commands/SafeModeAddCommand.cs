@@ -51,7 +51,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core.Commands
             {
                 if (ex.Message == "ERR Operation against a key holding the wrong kind of value")
                 {
-                    throw new ClassicDomainException("数据冲突：存在着相同记录的不同类型数据，可能是之前使用过快速模式保存过。");
+                    throw new ClassicDomainException(Type, "数据冲突：存在着相同记录的不同类型数据，可能是之前使用过快速模式保存过。");
                 }
                 else
                 {

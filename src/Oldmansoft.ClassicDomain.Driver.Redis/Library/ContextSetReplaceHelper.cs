@@ -11,7 +11,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
     {
         public static UpdatedCommand<TKey> GetContext<TKey>(TKey key, Type domainType, object compareSource, object compareTarget)
         {
-            var result = new UpdatedCommand<TKey>(key);
+            var result = new UpdatedCommand<TKey>(key, domainType);
             SetContext(domainType, result, new string[0], compareSource, compareTarget);
             return result;
         }

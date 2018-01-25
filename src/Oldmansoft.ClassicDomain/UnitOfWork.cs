@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,19 +13,14 @@ namespace Oldmansoft.ClassicDomain
     public class UnitOfWork : IUnitOfWork
     {
         /// <summary>
-        /// 提交完成事件
-        /// </summary>
-        public event Action OnCommitCompleted;
-
-        /// <summary>
-        /// 提交异常事件
-        /// </summary>
-        public event Action OnCommitException;
-        
-        /// <summary>
         /// 工作单元集
         /// </summary>
         private Dictionary<Type, IUnitOfWorkManagedItem> UnitOfWorks { get; set; }
+
+        /// <summary>
+        /// 数据命令集
+        /// </summary>
+        private ConcurrentQueue<Driver.ICommand> Commands { get; set; }
 
         /// <summary>
         /// 创建工作单元管理
@@ -32,6 +28,7 @@ namespace Oldmansoft.ClassicDomain
         public UnitOfWork()
         {
             UnitOfWorks = new Dictionary<Type, IUnitOfWorkManagedItem>();
+            Commands = new ConcurrentQueue<Driver.ICommand>();
         }
         
         /// <summary>
@@ -45,6 +42,7 @@ namespace Oldmansoft.ClassicDomain
             if (!UnitOfWorks.ContainsKey(type))
             {
                 var context = new TUnitOfWork();
+                context.Init(Commands);
                 context.ModelCreating();
                 lock (UnitOfWorks)
                 {
@@ -69,6 +67,7 @@ namespace Oldmansoft.ClassicDomain
             if (!UnitOfWorks.ContainsKey(type))
             {
                 var context = new TUnitOfWork();
+                context.Init(Commands);
                 context.ModelCreating(parameter);
                 lock (UnitOfWorks)
                 {
@@ -87,27 +86,12 @@ namespace Oldmansoft.ClassicDomain
         /// <returns>受影响的数量</returns>
         public virtual int Commit()
         {
-            int result = 0;
             if (UnitOfWorks.Count == 0) return 0;
-            try
+            int result = 0;
+            Driver.ICommand command;
+            while (Commands.TryDequeue(out command))
             {
-                foreach (var o in UnitOfWorks.Values)
-                {
-                    result += o.Commit();
-                }
-            }
-            catch
-            {
-                if (OnCommitException != null)
-                {
-                    OnCommitException();
-                }
-                throw;
-            }
-
-            if (OnCommitCompleted != null)
-            {
-                OnCommitCompleted();
+                if (command.Execute()) result++;
             }
             return result;
         }
