@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Oldmansoft.ClassicDomain.Util;
+using System.Collections.Concurrent;
 
 namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
 {
@@ -38,11 +39,12 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// </summary>
         /// <typeparam name="TDomain"></typeparam>
         /// <typeparam name="TKey"></typeparam>
+        /// <param name="commands"></param>
         /// <param name="keyExpression"></param>
         /// <returns></returns>
-        internal override IDbSet<TDomain, TKey> CreateDbSet<TDomain, TKey>(System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
+        internal override IDbSet<TDomain, TKey> CreateDbSet<TDomain, TKey>(ConcurrentQueue<ICommand> commands, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
         {
-            return new FastModeDbSet<TDomain, TKey>(GetConfig().GetDatabase(), keyExpression);
+            return new FastModeDbSet<TDomain, TKey>(GetConfig().GetDatabase(), commands, keyExpression);
         }
     }
 }

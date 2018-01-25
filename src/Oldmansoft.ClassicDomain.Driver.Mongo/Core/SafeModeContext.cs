@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MongoDB.Driver;
+using System.Collections.Concurrent;
 
 namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
 {
@@ -38,12 +39,13 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// </summary>
         /// <typeparam name="TDomain"></typeparam>
         /// <typeparam name="TKey"></typeparam>
+        /// <param name="commands"></param>
         /// <param name="keyExpression"></param>
         /// <returns></returns>
-        internal override IDbSet<TDomain, TKey> CreateDbSet<TDomain, TKey>(System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
+        internal override IDbSet<TDomain, TKey> CreateDbSet<TDomain, TKey>(ConcurrentQueue<ICommand> commands, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
         {
             var database = GetConfig().GetDatabase() as Library.MongoDatabase;
-            var result = new SafeModeDbSet<TDomain, TKey>(database, keyExpression);
+            var result = new SafeModeDbSet<TDomain, TKey>(database, commands, keyExpression);
             database.SetIdentityMap(result.IdentityMap);
             return result;
         }

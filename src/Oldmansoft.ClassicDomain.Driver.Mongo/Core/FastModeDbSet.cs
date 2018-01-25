@@ -20,9 +20,10 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// 创建实体集
         /// </summary>
         /// <param name="database"></param>
+        /// <param name="commands"></param>
         /// <param name="keyExpression"></param>
-        public FastModeDbSet(MongoDatabase database, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
-            : base(database, keyExpression)
+        public FastModeDbSet(MongoDatabase database, ConcurrentQueue<ICommand> commands, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
+            : base(database, commands, keyExpression)
         {
         }
 

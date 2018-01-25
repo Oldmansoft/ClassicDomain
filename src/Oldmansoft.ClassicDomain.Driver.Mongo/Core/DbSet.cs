@@ -42,13 +42,13 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// 创建实体集
         /// </summary>
         /// <param name="database"></param>
+        /// <param name="commands"></param>
         /// <param name="keyExpression"></param>
-        public DbSet(MongoDatabase database, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
+        public DbSet(MongoDatabase database, ConcurrentQueue<ICommand> commands, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
         {
             Database = database;
             TableName = typeof(TDomain).Name;
-            
-            Commands = new ConcurrentQueue<ICommand>();
+            Commands = commands;
             KeyExpression = keyExpression;
             KeyExpressionCompile = keyExpression.Compile();
             if (typeof(TKey) == typeof(Guid))

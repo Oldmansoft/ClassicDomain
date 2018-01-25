@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Oldmansoft.ClassicDomain.Util;
+using System.Collections.Concurrent;
 
 namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
 {
@@ -12,6 +13,8 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
     /// </summary>
     public abstract class Context : UnitOfWorkManagedItem, IContext
     {
+        private ConcurrentQueue<ICommand> Commands { get; set; }
+
         private Dictionary<Type, IDbSet> DbSet { get; set; }
         
         /// <summary>
@@ -20,6 +23,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         public Context()
         {
             DbSet = new Dictionary<Type, IDbSet>();
+            Commands = new ConcurrentQueue<ICommand>();
         }
 
         /// <summary>
@@ -27,9 +31,10 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// </summary>
         /// <typeparam name="TDomain"></typeparam>
         /// <typeparam name="TKey"></typeparam>
+        /// <param name="commands"></param>
         /// <param name="keyExpression"></param>
         /// <returns></returns>
-        internal abstract IDbSet<TDomain, TKey> CreateDbSet<TDomain, TKey>(System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression);
+        internal abstract IDbSet<TDomain, TKey> CreateDbSet<TDomain, TKey>(ConcurrentQueue<ICommand> commands, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression);
 
         /// <summary>
         /// 添加领域上下文
@@ -54,7 +59,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
             {
                 throw new ArgumentException("主键表达式必须为 Id");
             }
-            var dbSet = CreateDbSet(keyExpression);
+            var dbSet = CreateDbSet(Commands, keyExpression);
             DbSet.Add(type, dbSet);
             return new Setting<TDomain, TKey>(dbSet);
         }
@@ -83,9 +88,10 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
             try
             {
                 int result = 0;
-                foreach (IDbSet item in DbSet.Values)
+                ICommand command;
+                while (Commands.TryDequeue(out command))
                 {
-                    result += item.Commit();
+                    if (command.Execute()) result++;
                 }
                 return result;
             }
