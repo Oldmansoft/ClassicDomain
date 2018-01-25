@@ -14,12 +14,15 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
     {
         private ConcurrentDictionary<Type, IDbSet> DbSet { get; set; }
 
+        private ConcurrentQueue<ICommand> Commands { get; set; }
+
         /// <summary>
         /// 创建进程上下文
         /// </summary>
         public Context()
         {
             DbSet = new ConcurrentDictionary<Type, IDbSet>();
+            Commands = new ConcurrentQueue<ICommand>();
         }
 
         /// <summary>
@@ -30,7 +33,7 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
         /// <param name="keyExpression">主键表达式</param>
         public void Add<TDomain, TKey>(System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
         {
-            if (!DbSet.TryAdd(typeof(TDomain), new DbSet<TDomain, TKey>(keyExpression)))
+            if (!DbSet.TryAdd(typeof(TDomain), new DbSet<TDomain, TKey>(Commands, keyExpression)))
             {
                 throw new ArgumentException("已添加了具有相同键的项。");
             }
@@ -59,9 +62,10 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
         public override int Commit()
         {
             int result = 0;
-            foreach (IDbSet item in DbSet.Values)
+            ICommand command;
+            while (Commands.TryDequeue(out command))
             {
-                result += item.Commit();
+                if (command.Execute()) result++;
             }
             return result;
         }

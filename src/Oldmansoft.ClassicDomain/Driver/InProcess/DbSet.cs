@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Oldmansoft.ClassicDomain.Util;
+using System.Collections.Concurrent;
 
 namespace Oldmansoft.ClassicDomain.Driver.InProcess
 {
@@ -16,7 +17,7 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
             Store = new StoreManager<TDomain, TKey>();
         }
 
-        private System.Collections.Concurrent.ConcurrentQueue<ICommand> Commands { get; set; }
+        private ConcurrentQueue<ICommand> Commands { get; set; }
         
         /// <summary>
         /// 主键表达式
@@ -40,10 +41,11 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
         /// <summary>
         /// 创建 In Process 实体集
         /// </summary>
+        /// <param name="commands"></param>
         /// <param name="keyExpression"></param>
-        public DbSet(System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
+        public DbSet(ConcurrentQueue<ICommand> commands, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
         {
-            Commands = new System.Collections.Concurrent.ConcurrentQueue<ICommand>();
+            Commands = commands;
             KeyExpression = keyExpression;
             KeyExpressionCompile = KeyExpression.Compile();
             if (typeof(TKey) == typeof(Guid))

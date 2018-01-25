@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using StackExchange.Redis;
+using System.Collections.Concurrent;
 
 namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
 {
@@ -28,12 +29,15 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
 
         private IDatabase Db { get; set; }
 
+        private ConcurrentQueue<ICommand> Commands { get; set; }
+
         /// <summary>
         /// 创建实体上下文
         /// </summary>
         public Context()
         {
             DbSet = new Dictionary<Type, IDbSet>();
+            Commands = new ConcurrentQueue<ICommand>();
         }
 
         private ConfigItem GetConfig()
@@ -62,7 +66,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
                 throw new ArgumentException("已添加了具有相同键的项。");
             }
 
-            var dbSet = CreateDbSet(GetConfig(), GetDatabase(), keyExpression);
+            var dbSet = CreateDbSet(GetConfig(), GetDatabase(), Commands, keyExpression);
             DbSet.Add(type, dbSet);
         }
 
@@ -94,9 +98,10 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         public override int Commit()
         {
             int result = 0;
-            foreach (IDbSet item in DbSet.Values)
+            ICommand command;
+            while (Commands.TryDequeue(out command))
             {
-                result += item.Commit();
+                if (command.Execute()) result++;
             }
             return result;
         }
@@ -108,8 +113,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <typeparam name="TKey"></typeparam>
         /// <param name="config"></param>
         /// <param name="db"></param>
+        /// <param name="commands"></param>
         /// <param name="keyExpression"></param>
         /// <returns></returns>
-        internal abstract IDbSet CreateDbSet<TDomain, TKey>(ConfigItem config, IDatabase db, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression) where TDomain : class, new();
+        internal abstract IDbSet CreateDbSet<TDomain, TKey>(ConfigItem config, IDatabase db, ConcurrentQueue<ICommand> commands, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression) where TDomain : class, new();
     }
 }

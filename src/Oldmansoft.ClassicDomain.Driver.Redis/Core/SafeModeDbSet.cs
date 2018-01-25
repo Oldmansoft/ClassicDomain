@@ -17,9 +17,10 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// </summary>
         /// <param name="config"></param>
         /// <param name="db"></param>
+        /// <param name="commands"></param>
         /// <param name="keyExpression"></param>
-        public SafeModeDbSet(ConfigItem config, IDatabase db, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
-            : base(config, db, keyExpression)
+        public SafeModeDbSet(ConfigItem config, IDatabase db, ConcurrentQueue<ICommand> commands, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
+            : base(config, db, commands, keyExpression)
         {
             IdentityMap = new IdentityMap<TDomain>();
             IdentityMap.SetKey(KeyExpressionCompile);
@@ -34,7 +35,6 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
             TrySetDomainKey(domain);
             domain = domain.MapTo<TDomain>();
             Commands.Enqueue(new Commands.SafeModeAddCommand<TDomain, TKey>(Db, MergeKey, this, IdentityMap, KeyExpressionCompile(domain), domain));
-            
         }
 
         /// <summary>

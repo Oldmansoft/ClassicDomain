@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using StackExchange.Redis;
+using System.Collections.Concurrent;
 
 namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
 {
@@ -14,9 +15,10 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// </summary>
         /// <param name="config"></param>
         /// <param name="db"></param>
+        /// <param name="commands"></param>
         /// <param name="keyExpression"></param>
-        public FastModeDbSet(ConfigItem config, IDatabase db, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
-            : base(config, db, keyExpression)
+        public FastModeDbSet(ConfigItem config, IDatabase db, ConcurrentQueue<ICommand> commands, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
+            : base(config, db, commands, keyExpression)
         {
         }
 

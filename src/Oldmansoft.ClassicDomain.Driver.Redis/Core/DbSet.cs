@@ -51,13 +51,14 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// </summary>
         /// <param name="config"></param>
         /// <param name="db"></param>
+        /// <param name="commands"></param>
         /// <param name="keyExpression"></param>
-        public DbSet(ConfigItem config, IDatabase db, Expression<Func<TDomain, TKey>> keyExpression)
+        public DbSet(ConfigItem config, IDatabase db, ConcurrentQueue<ICommand> commands, Expression<Func<TDomain, TKey>> keyExpression)
         {
             DomainName = typeof(TDomain).FullName;
-            Commands = new ConcurrentQueue<ICommand>();
             Config = config;
             Db = db;
+            Commands = commands;
             KeyExpression = keyExpression;
             KeyExpressionCompile = keyExpression.Compile();
             if (typeof(TKey) == typeof(Guid))
