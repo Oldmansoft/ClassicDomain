@@ -109,6 +109,16 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
         }
 
         /// <summary>
+        /// 注册执行
+        /// </summary>
+        /// <param name="execute"></param>
+        public void RegisterExecute<TDomain>(Func<Context, bool> execute)
+            where TDomain : class
+        {
+            Commands.Enqueue(new Commands.ActionCommand<TDomain>(this, execute));
+        }
+
+        /// <summary>
         /// 提交
         /// </summary>
         /// <returns></returns>

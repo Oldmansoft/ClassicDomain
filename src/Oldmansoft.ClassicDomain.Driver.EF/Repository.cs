@@ -81,16 +81,25 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
             if (domain == null) return;
             Context.RegisterRemove(domain);
         }
-        
+
+        /// <summary>
+        /// 提交时执行
+        /// </summary>
+        /// <param name="func"></param>
+        public void Execute(Func<Context, bool> func)
+        {
+            Context.RegisterExecute<TDomain>(func);
+        }
+
         /// <summary>
         /// 立即执行并返回结果
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="func"></param>
         /// <returns></returns>
-        public TResult Execute<TResult>(Func<System.Data.Entity.DbSet<TDomain>, TResult> func)
+        public TResult Execute<TResult>(Func<Context, TResult> func)
         {
-            return func(Context.Set<TDomain>());
+            return func(Context);
         }
     }
 }

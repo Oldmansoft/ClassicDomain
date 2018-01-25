@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -33,6 +34,33 @@ namespace UnitTest.ClassicDomain.Drvier.EntityFramework
 
             domain = repository.Get(domain.Id);
             Assert.IsNull(domain);
+        }
+
+        [TestMethod]
+        public void TestExecuteOrder()
+        {
+            var factory = new Factory();
+            var repository = factory.CreateBookRepository();
+
+            var domain = new Domain.Book();
+            domain.Name = "hello";
+            repository.Add(domain);
+
+            repository.Execute((context) => {
+                var find = context.Set<Domain.Book>().Find(domain.Id);
+                Assert.AreEqual("hello", find.Name);
+                return true;
+            });
+
+            domain.Name = "world";
+            repository.Replace(domain);
+            factory.GetUnitOfWork().Commit();
+
+            domain = repository.Get(domain.Id);
+            Assert.AreEqual("world", domain.Name);
+
+            repository.Remove(domain);
+            factory.GetUnitOfWork().Commit();
         }
 
         [TestMethod]

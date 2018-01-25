@@ -27,6 +27,11 @@ namespace UnitTest.ClassicDomain.Drvier.EntityFramework
             return new Oldmansoft.ClassicDomain.Driver.EF.Repository<Book, Guid, Mapping>(Uow);
         }
 
+        public Oldmansoft.ClassicDomain.Driver.EF.Repository<Book, Guid, Mapping> CreateBookRepository()
+        {
+            return new Oldmansoft.ClassicDomain.Driver.EF.Repository<Book, Guid, Mapping>(Uow);
+        }
+
         public IRepository<Book, Guid> CreateBook(string connectionName)
         {
             throw new NotImplementedException();
