@@ -143,7 +143,7 @@ namespace Sample
 }
 ```
 
-#### Modify Domain From Repository
+#### Replace Domain From Repository
 ```C#
 using Oldmansoft.ClassicDomain;
 namespace Sample

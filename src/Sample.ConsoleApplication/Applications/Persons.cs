@@ -9,15 +9,16 @@ namespace Sample.ConsoleApplication.Applications
 {
     public class Persons
     {
+        private Infrastructure.IRepositoryFactory Factory = Infrastructure.Container.Create<Infrastructure.IRepositoryFactory>();
+
         public bool Add(string firstName, string lastName, out Guid id)
         {
-            var factory = new Repositories.RepositoryFactory();
-            var repository = factory.CreatePerson();
+            var repository = Factory.CreatePerson();
             var domain = Domain.Person.Create(firstName, lastName);
             repository.Add(domain);
             try
             {
-                factory.GetUnitOfWork().Commit();
+                Factory.GetUnitOfWork().Commit();
             }
             catch (UniqueException)
             {
@@ -30,15 +31,14 @@ namespace Sample.ConsoleApplication.Applications
 
         public void Change(Guid id, string firstName, string lastName)
         {
-            var factory = new Repositories.RepositoryFactory();
-            var repository = factory.CreatePerson();
+            var repository = Factory.CreatePerson();
             var domain = repository.Get(id);
             if (domain == null) return;
             domain.Change(firstName, lastName);
             repository.Replace(domain);
             try
             {
-                factory.GetUnitOfWork().Commit();
+                Factory.GetUnitOfWork().Commit();
             }
             catch (UniqueException)
             {
@@ -48,17 +48,15 @@ namespace Sample.ConsoleApplication.Applications
 
         public void Remove(Guid id)
         {
-            var factory = new Repositories.RepositoryFactory();
-            var repository = factory.CreatePerson();
+            var repository = Factory.CreatePerson();
             var domain = repository.Get(id);
             repository.Remove(domain);
-            factory.GetUnitOfWork().Commit();
+            Factory.GetUnitOfWork().Commit();
         }
 
         public IList<Data.PersonData> Page(int index, int size, out int totalCount)
         {
-            var factory = new Repositories.RepositoryFactory();
-            var repository = factory.CreatePerson();
+            var repository = Factory.CreatePerson();
             var result = repository.PageByName().Size(size).ToList(index, out totalCount);
             return result.MapTo(new List<Data.PersonData>());
         }

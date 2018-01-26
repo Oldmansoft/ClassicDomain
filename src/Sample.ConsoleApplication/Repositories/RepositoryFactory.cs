@@ -7,7 +7,7 @@ using Oldmansoft.ClassicDomain;
 
 namespace Sample.ConsoleApplication.Repositories
 {
-    public class RepositoryFactory
+    public class RepositoryFactory : Infrastructure.IRepositoryFactory
     {
         private UnitOfWork Uow { get; set; }
 
