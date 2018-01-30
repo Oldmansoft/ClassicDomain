@@ -91,7 +91,6 @@
     <Compile Include="Util\DataMapper\MapContent.cs" />
     <Compile Include="Util\DataMapper\MapProperty.cs" />
     <Compile Include="Util\DataMapper\MapArrayProperty.cs" />
-    <Compile Include="Util\DataMapper\MapConfig.cs" />
     <Compile Include="Util\DataMapper\MapDictionary.cs" />
     <Compile Include="Util\DataMapper\MapDictionaryProperty.cs" />
     <Compile Include="Util\DataMapper\MapEnumProperty.cs" />
@@ -106,7 +105,6 @@
     <Compile Include="Util\DataMapper\MapTypeBuilder.cs" />
     <Compile Include="Util\ExpressionHelper.cs" />
     <Compile Include="IPagingCondition.cs" />
-    <Compile Include="Util\DataMapper\IPropertyIgnore.cs" />
     <Compile Include="Util\DataMapper.cs" />
     <Compile Include="Util\IContent.cs" />
     <Compile Include="Util\IValue.cs" />
@@ -114,9 +112,7 @@
     <Compile Include="Util\IGetter.cs" />
     <Compile Include="Util\ISetter.cs" />
     <Compile Include="Util\PropertyWrapper.cs" />
-    <Compile Include="Util\SafeAddDictionary.cs" />
     <Compile Include="Util\ObjectCreator.cs" />
-    <Compile Include="Util\DataMapper\PropertyIgnore.cs" />
     <Compile Include="Util\ObjectCreator\EmptyCreator.cs" />
     <Compile Include="Util\ObjectCreator\GenericDictionaryCreator.cs" />
     <Compile Include="Util\ObjectCreator\GenericListCreator.cs" />

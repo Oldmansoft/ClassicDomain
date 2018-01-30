@@ -15,7 +15,7 @@ namespace Oldmansoft.ClassicDomain
         /// <summary>
         /// 管理项集
         /// </summary>
-        private Dictionary<Type, IUnitOfWorkManagedItem> ManagedItems { get; set; }
+        private ConcurrentDictionary<Type, IUnitOfWorkManagedItem> ManagedItems { get; set; }
 
         /// <summary>
         /// 数据命令集
@@ -27,7 +27,7 @@ namespace Oldmansoft.ClassicDomain
         /// </summary>
         public UnitOfWork()
         {
-            ManagedItems = new Dictionary<Type, IUnitOfWorkManagedItem>();
+            ManagedItems = new ConcurrentDictionary<Type, IUnitOfWorkManagedItem>();
             Commands = new ConcurrentQueue<Driver.ICommand>();
         }
 
@@ -39,20 +39,14 @@ namespace Oldmansoft.ClassicDomain
         public TManagedItem GetManaged<TManagedItem>() where TManagedItem : class, IUnitOfWorkManagedItem, new()
         {
             Type type = typeof(TManagedItem);
-            if (!ManagedItems.ContainsKey(type))
-            {
-                var context = new TManagedItem();
-                context.Init(Commands);
-                context.ModelCreating();
-                lock (ManagedItems)
-                {
-                    if (!ManagedItems.ContainsKey(type))
-                    {
-                        ManagedItems.Add(type, context);
-                    }
-                }
-            }
-            return ManagedItems[type] as TManagedItem;
+            IUnitOfWorkManagedItem result;
+            if (ManagedItems.TryGetValue(type, out result)) return result as TManagedItem;
+
+            var context = new TManagedItem();
+            context.Init(Commands);
+            context.ModelCreating();
+            ManagedItems.TryAdd(type, context);
+            return context;
         }
 
         /// <summary>
@@ -64,20 +58,14 @@ namespace Oldmansoft.ClassicDomain
         public TManagedItem GetManaged<TManagedItem, TInit>(TInit parameter) where TManagedItem : class, IUnitOfWorkManagedItem<TInit>, new()
         {
             Type type = typeof(TManagedItem);
-            if (!ManagedItems.ContainsKey(type))
-            {
-                var context = new TManagedItem();
-                context.Init(Commands);
-                context.ModelCreating(parameter);
-                lock (ManagedItems)
-                {
-                    if (!ManagedItems.ContainsKey(type))
-                    {
-                        ManagedItems.Add(type, context);
-                    }
-                }
-            }
-            return ManagedItems[type] as TManagedItem;
+            IUnitOfWorkManagedItem result;
+            if (ManagedItems.TryGetValue(type, out result)) return result as TManagedItem;
+
+            var context = new TManagedItem();
+            context.Init(Commands);
+            context.ModelCreating(parameter);
+            ManagedItems.TryAdd(type, context);
+            return context;
         }
 
         /// <summary>

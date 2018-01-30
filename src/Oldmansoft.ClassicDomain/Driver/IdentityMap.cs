@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +12,7 @@ namespace Oldmansoft.ClassicDomain.Driver
     /// <typeparam name="TDomain"></typeparam>
     public class IdentityMap<TDomain>
     {
-        private Dictionary<string, TDomain> Store;
+        private ConcurrentDictionary<object, TDomain> Store;
         
         /// <summary>
         /// 获取主键
@@ -24,7 +24,7 @@ namespace Oldmansoft.ClassicDomain.Driver
         /// </summary>
         public IdentityMap()
         {
-            Store = new Dictionary<string, TDomain>();
+            Store = new ConcurrentDictionary<object, TDomain>();
         }
 
         /// <summary>
@@ -44,8 +44,11 @@ namespace Oldmansoft.ClassicDomain.Driver
         public void Set(TDomain domain)
         {
             if (domain == null) return;
+            var key = GetKey(domain);
+            if (key == null) throw new ArgumentNullException("key");
+
             var storeDomain = ObjectCreator.CreateInstance<TDomain>();
-            Store[GetKey(domain).ToString()] = Util.DataMapper.Map(domain, storeDomain);
+            Store[key] = Util.DataMapper.Map(domain, storeDomain);
         }
 
         /// <summary>
@@ -56,16 +59,10 @@ namespace Oldmansoft.ClassicDomain.Driver
         public TDomain Get(object key)
         {
             if (key == null) throw new ArgumentNullException("key");
-
-            var index = key.ToString();
-            if (Store.ContainsKey(index))
-            {
-                return Store[index];
-            }
-            else
-            {
-                return default(TDomain);
-            }
+            
+            TDomain domain;
+            if (Store.TryGetValue(key, out domain)) return domain;
+            return default(TDomain);
         }
 
         /// <summary>
@@ -74,7 +71,10 @@ namespace Oldmansoft.ClassicDomain.Driver
         /// <param name="key"></param>
         public void Remove(object key)
         {
-            Store.Remove(key.ToString());
+            if (key == null) throw new ArgumentNullException("key");
+
+            TDomain domain;
+            Store.TryRemove(key, out domain);
         }
     }
 }

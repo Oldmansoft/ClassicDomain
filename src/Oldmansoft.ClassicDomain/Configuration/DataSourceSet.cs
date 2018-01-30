@@ -62,8 +62,8 @@ namespace Oldmansoft.ClassicDomain.Configuration
 
             if (List.Count > 0)
             {
-                this.Host = List[0].Host;
-                this.Port = List[0].Port;
+                Host = List[0].Host;
+                Port = List[0].Port;
             }
         }
 
@@ -92,7 +92,7 @@ namespace Oldmansoft.ClassicDomain.Configuration
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return ((System.Collections.IEnumerable)List).GetEnumerator();
+            return List.GetEnumerator();
         }
     }
 }

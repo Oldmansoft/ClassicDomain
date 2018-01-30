@@ -25,6 +25,33 @@ namespace Oldmansoft.ClassicDomain.Driver
         private readonly object Locker = new object();
 
         /// <summary>
+        /// 创建为内存排序用
+        /// </summary>
+        /// <returns></returns>
+        public static Guid CreateForMemory()
+        {
+            return Default.Create(StorageMapping.MemoryMapping);
+        }
+
+        /// <summary>
+        /// 创建为 MSSQL 数据库排序用
+        /// </summary>
+        /// <returns></returns>
+        public static Guid CreateForMssql()
+        {
+            return Default.Create(StorageMapping.MssqlMapping);
+        }
+
+        /// <summary>
+        /// 创建为 MongoDB 数据库排序用
+        /// </summary>
+        /// <returns></returns>
+        public static Guid CreateForMongo()
+        {
+            return Default.Create(StorageMapping.MongoMapping);
+        }
+
+        /// <summary>
         /// 创建生成器
         /// </summary>
         public GuidGenerator()
