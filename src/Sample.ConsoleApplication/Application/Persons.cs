@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Oldmansoft.ClassicDomain;
 
-namespace Sample.ConsoleApplication.Applications
+namespace Sample.ConsoleApplication.Application
 {
     public class Persons
     {

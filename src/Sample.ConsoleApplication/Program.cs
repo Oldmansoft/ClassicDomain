@@ -13,11 +13,11 @@ namespace Sample.ConsoleApplication
             Guid id;
             Console.Write("开始添加");
             Console.ReadLine();
-            if (new Applications.Persons().Add("A", "Oldman", out id))
+            if (new Application.Persons().Add("A", "Oldman", out id))
             {
                 Console.Write("开始修改");
                 Console.ReadLine();
-                new Applications.Persons().Change(id, "B", "Oldmansoft");
+                new Application.Persons().Change(id, "B", "Oldmansoft");
             }
             else
             {
@@ -25,7 +25,7 @@ namespace Sample.ConsoleApplication
             }
 
             int totalCount;
-            var persons = new Applications.Persons().Page(1, 10, out totalCount);
+            var persons = new Application.Persons().Page(1, 10, out totalCount);
             foreach (var person in persons)
             {
                 Console.Write(person.Id);
@@ -34,7 +34,7 @@ namespace Sample.ConsoleApplication
             }
             Console.Write("开始移除");
             Console.ReadLine();
-            new Applications.Persons().Remove(id);
+            new Application.Persons().Remove(id);
             Console.WriteLine("移除完成");
             Console.ReadLine();
         }
