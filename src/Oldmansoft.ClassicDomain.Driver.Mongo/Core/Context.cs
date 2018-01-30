@@ -46,7 +46,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
             Type type = typeof(TDomain);
             if (DbSet.ContainsKey(type))
             {
-                throw new ArgumentException("已添加了此实体类型。");
+                throw new ClassicDomainException(type, string.Format("重复添加实体类型 {0}。", type.FullName));
             }
             if (keyExpression == null)
             {
@@ -54,7 +54,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
             }
             if (keyExpression.GetProperty().Name != "Id")
             {
-                throw new ArgumentException("主键表达式必须为 Id");
+                throw new ClassicDomainException(type, string.Format("{0} 的主键表达式必须为 Id", type.FullName));
             }
             var dbSet = CreateDbSet(Commands, keyExpression);
             DbSet.Add(type, dbSet);

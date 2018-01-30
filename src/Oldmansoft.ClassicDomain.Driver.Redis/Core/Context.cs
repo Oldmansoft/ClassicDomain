@@ -60,7 +60,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
             var type = typeof(TDomain);
             if (DbSet.ContainsKey(type))
             {
-                throw new ArgumentException("已添加了具有相同键的项。");
+                throw new ClassicDomainException(type, string.Format("重复添加实体类型 {0}。", type.FullName));
             }
 
             var dbSet = CreateDbSet(GetConfig(), GetDatabase(), Commands, keyExpression);
