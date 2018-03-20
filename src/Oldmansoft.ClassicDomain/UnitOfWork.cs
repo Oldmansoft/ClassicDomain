@@ -78,7 +78,18 @@ namespace Oldmansoft.ClassicDomain
             Driver.ICommand command;
             while (Commands.TryDequeue(out command))
             {
-                if (command.Execute()) result++;
+                try
+                {
+                    if (command.Execute())
+                    {
+                        result++;
+                    }
+                }
+                catch
+                {
+                    while (Commands.TryDequeue(out command)) { }
+                    throw;
+                }
             }
             return result;
         }
