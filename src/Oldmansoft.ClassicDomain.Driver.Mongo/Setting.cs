@@ -32,7 +32,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
 
         private string GetMember(Expression<Func<TEntity, object>> keyExpression)
         {
-            return keyExpression.GetPropertyContent();
+            return keyExpression.GetPropertyFullName();
         }
 
         private string[] GetNames(Expression<Func<TEntity, object>>[] keyExpressions)

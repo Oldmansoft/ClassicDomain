@@ -68,14 +68,13 @@ namespace Oldmansoft.ClassicDomain.Util
             return (MethodInfo)constantExpression.Value;
         }
 
-
         /// <summary>
-        /// 获取属性表达式的内容
+        /// 获取属性表达式的全名
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static string GetPropertyContent<TEntity>(this Expression<Func<TEntity, object>> expression)
+        public static string GetPropertyFullName<TEntity>(this Expression<Func<TEntity, object>> expression)
         {
             var member = expression.Body;
             if (member.NodeType == ExpressionType.Convert && expression.Body is UnaryExpression)
@@ -84,14 +83,16 @@ namespace Oldmansoft.ClassicDomain.Util
             }
             if (!(member is MemberExpression)) return null;
 
+            var names = new List<string>();
             var memberExpression = (MemberExpression)member;
-            var content = memberExpression.Member.Name;
+            names.Add(memberExpression.Member.Name);
             while (memberExpression.Expression.GetType().Name == "PropertyExpression")
             {
                 memberExpression = (MemberExpression)memberExpression.Expression;
-                content = string.Format("{0}.{1}", memberExpression.Member.Name, content);
+                names.Add(memberExpression.Member.Name);
             }
-            return content;
+            names.Reverse();
+            return string.Join(".", names);
         }
     }
 }
