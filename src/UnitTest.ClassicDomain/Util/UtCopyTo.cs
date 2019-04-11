@@ -260,25 +260,15 @@ namespace UnitTest.ClassicDomain.Util
             Assert.AreEqual(source.Array[0], target.Array[0]);
         }
 
-        class ItemObject
+        [TestMethod]
+        public void TestCopyEnumArray()
         {
-            public Dictionary<string, string> Dic { get; set; }
-
-            public string[] Array { get; set; }
-
-            public List<string> List { get; set; }
-
-            public CopySourceModel Model { get; set; }
-
-            public E? NullEnum { get; set; }
-
-            public E Enum { get; set; }
-
-            public enum E
-            {
-                A,
-                B
-            }
+            var source = new Direction[2];
+            source[0] = Direction.Up;
+            source[1] = Direction.Right;
+            var target = source.MapTo<Direction[]>();
+            Assert.AreEqual(source.Length, target.Length);
+            Assert.AreEqual(source[1], target[1]);
         }
 
         [TestMethod]

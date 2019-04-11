@@ -121,7 +121,7 @@ namespace Oldmansoft.ClassicDomain.Util
 
             if (sourceItemType.IsEnum && targetItemType.IsEnum)
             {
-                return (int)source;
+                return Enum.ToObject(targetItemType, (int)source);
             }
 
             if (sourceItemType.IsNullableEnum() && targetItemType.IsNullableEnum())
