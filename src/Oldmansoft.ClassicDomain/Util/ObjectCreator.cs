@@ -35,7 +35,9 @@ namespace Oldmansoft.ClassicDomain
                 creator = CreateCreateor(type);
                 Creators.TryAdd(type, creator);
             }
-            return creator.CreateObject();
+            var result = creator.CreateObject();
+            if (result == null) throw new ClassicDomainException(type, "无法创建对象，请提供无参构造方法");
+            return result;
         }
 
         private static ICreator CreateCreateor(Type type)
