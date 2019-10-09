@@ -17,6 +17,26 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <summary>
         /// 复制到
         /// </summary>
+        /// <param name="source">源对象</param>
+        /// <param name="target">目标对象</param>
+        /// <returns>返回目标对象</returns>
+        public static object MapObject(object source, object target)
+        {
+            if (source == null || target == null) return null;
+
+            var sourceType = source.GetType();
+            var targetType = target.GetType();
+            var maps = Mapper.GetMapper(sourceType, targetType);
+            for (var i = 0; i < maps.Length; i++)
+            {
+                maps[i].Map(source, target);
+            }
+            return target;
+        }
+
+        /// <summary>
+        /// 复制到
+        /// </summary>
         /// <typeparam name="TSource"></typeparam>
         /// <typeparam name="TTarget"></typeparam>
         /// <param name="source">源对象</param>
