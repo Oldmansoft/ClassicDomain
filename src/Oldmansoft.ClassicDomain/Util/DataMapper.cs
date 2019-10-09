@@ -20,9 +20,9 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <param name="source">源对象</param>
         /// <param name="target">目标对象</param>
         /// <returns>返回目标对象</returns>
-        public static object MapObject(object source, object target)
+        public static void MapObject(object source, object target)
         {
-            if (source == null || target == null) return null;
+            if (source == null || target == null) return;
 
             var sourceType = source.GetType();
             var targetType = target.GetType();
@@ -31,7 +31,6 @@ namespace Oldmansoft.ClassicDomain.Util
             {
                 maps[i].Map(source, target);
             }
-            return target;
         }
 
         /// <summary>

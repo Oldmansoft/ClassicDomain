@@ -10,6 +10,19 @@ namespace UnitTest.ClassicDomain.Util
     public class UtCopyTo
     {
         [TestMethod]
+        public void TestObjectContent()
+        {
+            var source = new CopySourceModel();
+            source.SetName("hello");
+            source.CreateSub();
+            source.Sub.Value = "world";
+
+            var target = new CopySourceModel();
+            Oldmansoft.ClassicDomain.Util.DataMapper.MapObject(source, target);
+            Assert.AreEqual("world", target.Sub.Value);
+        }
+
+        [TestMethod]
         public void TestPrivateContent()
         {
             var source = new CopySourceModel();
