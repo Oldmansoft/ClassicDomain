@@ -37,7 +37,16 @@ namespace Oldmansoft.ClassicDomain.Util
                 return;
             }
 
-            var targetValue = ObjectCreator.CreateInstance(TargetPropertyType) as IDictionary;
+            IDictionary targetValue;
+            try
+            {
+                targetValue = ObjectCreator.CreateInstance(TargetPropertyType) as IDictionary;
+            }
+            catch (ClassicDomainException)
+            {
+                return;
+            }
+
             foreach (var key in sourceValue.Keys)
             {
                 targetValue.Add(key, DataMapper.ItemValueCopy(SourcePropertyValueType, TargetPropertyValueType, IsNormalClass, sourceValue[key]));

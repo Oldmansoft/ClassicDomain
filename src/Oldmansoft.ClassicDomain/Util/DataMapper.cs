@@ -130,7 +130,7 @@ namespace Oldmansoft.ClassicDomain.Util
                 {
                     targetValue = ObjectCreator.CreateInstance(targetItemType);
                 }
-                catch
+                catch (ClassicDomainException)
                 {
                     return null;
                 }

@@ -29,7 +29,11 @@ namespace Oldmansoft.ClassicDomain.Util
             var targetValue = TargetGetter.Get(target);
             if (targetValue == null)
             {
-                targetValue = ObjectCreator.CreateInstance(TargetPropertyType);
+                try
+                {
+                    targetValue = ObjectCreator.CreateInstance(TargetPropertyType);
+                }
+                catch (ClassicDomainException) { }
                 if (targetValue == null) return;
             }
             DataMapper.NormalClassCopy(sourceValue, SourcePropertyType, ref targetValue, TargetPropertyType);
