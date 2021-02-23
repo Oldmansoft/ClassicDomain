@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 namespace Oldmansoft.ClassicDomain.Driver.EF
 {
@@ -19,15 +15,6 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
         where TSuperDomain : class
         where TContext : Context, new()
     {
-        /// <summary>
-        /// 创建仓储
-        /// </summary>
-        /// <param name="uow"></param>
-        public RepositoryDefinedSuperClass(UnitOfWork uow)
-            :base(uow)
-        {
-        }
-
         void IAdd<TSuperDomain>.Add(TSuperDomain domain)
         {
             Add(domain as TDomain);

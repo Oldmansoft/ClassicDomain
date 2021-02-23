@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Util
 {
@@ -14,9 +10,9 @@ namespace Oldmansoft.ClassicDomain.Util
     /// <typeparam name="TValue"></typeparam>
     public class PropertyGetter<TCaller, TValue> : IGetter
     {
-        private Type PropertyType;
+        private readonly Type PropertyType;
 
-        private string PropertyName;
+        private readonly string PropertyName;
 
         /// <summary>
         /// 获值

@@ -1,50 +1,43 @@
-﻿using System;
+﻿using StackExchange.Redis;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using StackExchange.Redis;
 
 namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
 {
     /// <summary>
-    /// 配置
+    /// 配置项
     /// </summary>
-    internal class Config
+    class Config
     {
-        public const string AlertLowServerVersion = "接口不支持旧版 Redis 服务器，请换用新的 Redis 服务器，或在配置里指定 providerName=\"2\"。";
-
-        private Dictionary<string, ConfigItem> Connections { get; set; }
+        /// <summary>
+        /// 服务
+        /// </summary>
+        private ConnectionMultiplexer Connection { get; set; }
 
         /// <summary>
-        /// 创建配置
+        /// 是否低服务器版本
         /// </summary>
-        public Config()
+        public bool IsLowServerVersion { get; private set; }
+
+        /// <summary>
+        /// 创建配置项
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="isLowServerVersion"></param>
+        public Config(ConnectionMultiplexer connection, bool isLowServerVersion)
         {
-            Connections = new Dictionary<string, ConfigItem>();
+            Connection = connection;
+            IsLowServerVersion = isLowServerVersion;
         }
 
         /// <summary>
-        /// 获取配置项
+        /// 获取数据库
         /// </summary>
-        /// <param name="callerType"></param>
-        /// <param name="name"></param>
         /// <returns></returns>
-        public ConfigItem Get(Type callerType, string name)
+        public IDatabase GetDatabase()
         {
-            ConfigItem result;
-            if (Connections.TryGetValue(name, out result)) return result;
-            lock (Connections)
-            {
-                if (Connections.TryGetValue(name, out result)) return result;
-
-                var setting = Configuration.Config.GetConnectionStringSettings(callerType, name);
-                var connection = ConnectionMultiplexer.Connect(setting.ConnectionString);
-
-                result = new ConfigItem(connection, setting.ProviderName);
-                Connections.Add(name, result);
-                return result;
-            }
+            return Connection.GetDatabase();
         }
     }
 }

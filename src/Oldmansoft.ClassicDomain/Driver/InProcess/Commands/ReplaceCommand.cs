@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Oldmansoft.ClassicDomain.Driver.InProcess.Commands
+﻿namespace Oldmansoft.ClassicDomain.Driver.InProcess.Commands
 {
     class ReplaceCommand<TDomain, TKey> : ICommand
     {
-        private StoreManager<TDomain, TKey> Store;
+        private readonly StoreManager<TDomain, TKey> Store;
 
         private TDomain Domain;
 
@@ -16,14 +10,6 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess.Commands
         {
             Store = store;
             Domain = domain;
-        }
-
-        public Type Type
-        {
-            get
-            {
-                return typeof(TDomain);
-            }
         }
 
         public bool Execute()

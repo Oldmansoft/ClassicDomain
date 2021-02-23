@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Driver.InProcess
 {
     /// <summary>
     /// 进程内上下文
     /// </summary>
-    public abstract class Context : UnitOfWorkManagedItem
+    public abstract class Context : UnitOfWorkManagedContext
     {
         private ConcurrentDictionary<Type, IDbSet> DbSet { get; set; }
-        
+
         /// <summary>
         /// 创建进程上下文
         /// </summary>

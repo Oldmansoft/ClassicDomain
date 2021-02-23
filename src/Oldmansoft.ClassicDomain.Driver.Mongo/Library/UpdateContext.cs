@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Oldmansoft.ClassicDomain.Util;
+﻿using MongoDB.Bson;
 using MongoDB.Driver.Builders;
-using MongoDB.Bson;
+using Oldmansoft.ClassicDomain.Util;
+using System;
 
 namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
 {
@@ -76,7 +72,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
             }
             result.Add(new UpdateBuilder().SetObjectWrapped(names.JoinDot(), targetValue));
         }
-        
+
         private static void DealList(UpdatedItem result, Type propertyType, string[] names, object sourceValue, object targetValue)
         {
             if (sourceValue != null && targetValue != null)
@@ -149,7 +145,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
             var targetDictionary = targetValue as System.Collections.IDictionary;
 
             foreach (var key in targetDictionary.Keys)
-            {   
+            {
                 if (!sourceDictionary.Contains(key))
                 {
                     result.Add(Update.Set(GetHashKey(names, key.ToString()), GetBsonValue(valueType, targetDictionary[key], isNormalClass)));

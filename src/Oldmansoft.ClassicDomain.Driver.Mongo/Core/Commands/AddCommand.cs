@@ -1,44 +1,42 @@
 ﻿using MongoDB.Driver;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core.Commands
 {
     class AddCommand<TDomain> : ICommand
     {
-        private MongoCollection<TDomain> Collection;
+        private readonly MongoCollection<TDomain> Collection;
 
-        protected TDomain Domain { get; private set; }
+        private readonly TDomain Domain;
 
-        public AddCommand(MongoCollection<TDomain> collection, TDomain domain)
+        private readonly IdentityMap<TDomain> IdentityMap;
+
+        public AddCommand(MongoCollection<TDomain> collection, TDomain domain, IdentityMap<TDomain> identityMap)
         {
             Collection = collection;
             Domain = domain;
+            IdentityMap = identityMap;
         }
 
-        public Type Type
-        {
-            get
-            {
-                return typeof(TDomain);
-            }
-        }
-
-        public virtual bool Execute()
+        public bool Execute()
         {
             try
             {
-                var result = Collection.Insert(Domain);
-                if (result == null) return true;
-                return !result.HasLastErrorMessage;
+                var result = ExecuteInsert();
+                if (result) IdentityMap.Set(Domain);
+                return result;
             }
             catch (MongoDuplicateKeyException ex)
             {
-                throw new UniqueException(Type, ex);
+                throw new UniqueException(typeof(TDomain), ex);
             }
+        }
+
+        private bool ExecuteInsert()
+        {
+            var result = Collection.Insert(Domain);
+            if (result == null) return true;
+            return !result.HasLastErrorMessage;
         }
     }
 }

@@ -1,10 +1,6 @@
 ﻿using Oldmansoft.ClassicDomain.Util;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain
 {
@@ -13,7 +9,7 @@ namespace Oldmansoft.ClassicDomain
     /// </summary>
     public static class ObjectCreator
     {
-        private static System.Collections.Concurrent.ConcurrentDictionary<Type, ICreator> Creators;
+        private static readonly System.Collections.Concurrent.ConcurrentDictionary<Type, ICreator> Creators;
 
         static ObjectCreator()
         {
@@ -28,7 +24,7 @@ namespace Oldmansoft.ClassicDomain
         public static object CreateInstance(Type type)
         {
             if (type == null) throw new ArgumentNullException("type");
-            
+
             ICreator creator;
             if (!Creators.TryGetValue(type, out creator))
             {
@@ -65,7 +61,7 @@ namespace Oldmansoft.ClassicDomain
             var constructor = type.GetConstructor(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance, null, new Type[0], null);
             if (constructor != null)
             {
-                return new NormalClassCreator(type, constructor);
+                return new NormalClassCreator(constructor);
 
             }
             return EmptyCreator.Instance;

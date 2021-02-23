@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Util
 {
@@ -49,7 +47,7 @@ namespace Oldmansoft.ClassicDomain.Util
             if (target == null) return false;
             return source.Equals(target);
         }
-        
+
         /// <summary>
         /// 是否为非字符串的类
         /// </summary>
@@ -71,7 +69,7 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <returns></returns>
         public static bool IsNormalClass(this IEnumerable<Type> source)
         {
-            foreach(var item in source)
+            foreach (var item in source)
             {
                 if (!item.IsNormalClass())
                 {
@@ -276,7 +274,7 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <returns></returns>
         public static bool IsNullableEnum(this IEnumerable<Type> source)
         {
-            foreach(var item in source)
+            foreach (var item in source)
             {
                 if (!item.IsNullableEnum())
                 {
@@ -370,7 +368,7 @@ namespace Oldmansoft.ClassicDomain.Util
             }
             return true;
         }
-        
+
         /// <summary>
         /// 是否为泛型列表或其接口
         /// </summary>
@@ -405,7 +403,7 @@ namespace Oldmansoft.ClassicDomain.Util
             }
             throw new NotSupportedException(string.Format("不支持获取 {0} 此类型的子项类型。", source.FullName));
         }
-        
+
         /// <summary>
         /// 转换字符串为值
         /// </summary>
@@ -416,7 +414,7 @@ namespace Oldmansoft.ClassicDomain.Util
         {
             return TypeParse.Get(source)(context);
         }
-        
+
         /// <summary>
         /// 创建属性的获值方法委托
         /// </summary>

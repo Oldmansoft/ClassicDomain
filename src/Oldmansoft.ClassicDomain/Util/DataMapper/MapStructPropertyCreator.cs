@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Util
 {
     class MapStructPropertyCreator
     {
-        private static Dictionary<long, IMap> Maps;
+        private static readonly Dictionary<long, IMap> Maps;
 
-        private static object Locker;
+        private static readonly object Locker;
 
         static MapStructPropertyCreator()
         {
@@ -19,11 +17,11 @@ namespace Oldmansoft.ClassicDomain.Util
             Locker = new object();
         }
 
-        private Type SourceType;
+        private readonly Type SourceType;
 
-        private Type TargetType;
+        private readonly Type TargetType;
 
-        private IList<PropertyInfo> Properties;
+        private readonly IList<PropertyInfo> Properties;
 
         public MapStructPropertyCreator(Type sourceType, Type targetType)
         {

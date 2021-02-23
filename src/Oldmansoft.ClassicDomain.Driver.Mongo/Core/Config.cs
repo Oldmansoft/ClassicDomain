@@ -1,92 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 
 namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
 {
-    internal abstract class Config
+    /// <summary>
+    /// 配置项
+    /// </summary>
+    internal class Config
     {
-        private Dictionary<string, ConfigItem> Items { get; set; }
+        /// <summary>
+        /// 服务
+        /// </summary>
+        private MongoServer Server { get; set; }
 
         /// <summary>
-        /// 配置
+        /// 数据库名称
         /// </summary>
-        public Config()
-        {
-            Items = new Dictionary<string, ConfigItem>();
-        }
+        private string DatabaseName { get; set; }
 
-        private ConfigItem InitItem(Type callerType, string name)
+        /// <summary>
+        /// 创建配置项
+        /// </summary>
+        /// <param name="server"></param>
+        /// <param name="databaseName"></param>
+        public Config(MongoServer server, string databaseName)
         {
-            var connectionString = Configuration.Config.GetConnectionString(callerType, name);
-            string database;
-            MongoServerSettings setting;
-            if (connectionString.IndexOf("mongodb://") > -1)
-            {
-                setting = MongoServerSettings.FromUrl(new MongoUrl(connectionString));
-                database = new Uri(connectionString).GetDatabase();
-            }
-            else
-            {
-                var connectionContext = new Configuration.ConnectionString(name, connectionString, 27017);
-                var urlBuilder = new MongoUrlBuilder();
-                var servers = new List<MongoServerAddress>();
-                foreach (var dataSource in connectionContext.DataSource)
-                {
-                    servers.Add(new MongoServerAddress(dataSource.Host, dataSource.Port));
-                }
-                urlBuilder.Servers = servers;
-                if (!string.IsNullOrEmpty(connectionContext.UserID))
-                {
-                    urlBuilder.Username = connectionContext.UserID;
-                    urlBuilder.Password = connectionContext.Password;
-                }
-
-                setting = MongoServerSettings.FromUrl(urlBuilder.ToMongoUrl());
-                setting.WriteConcern = WriteConcern.Acknowledged;
-                database = connectionContext.InitialCatalog;
-            }
-            if (string.IsNullOrEmpty(database))
-            {
-                throw new ConfigItemException(callerType, string.Format("config 文件的配置项 {0} ConnectionString 需要指定数据库名称", name));
-            }
-            return new ConfigItem(CreateMongoServer(setting), database);
+            Server = server;
+            DatabaseName = databaseName;
         }
 
         /// <summary>
-        /// 获取配置项
+        /// 获取数据库
         /// </summary>
-        /// <param name="callerType"></param>
-        /// <param name="name"></param>
         /// <returns></returns>
-        public ConfigItem Get(Type callerType, string name)
+        public MongoDatabase GetDatabase()
         {
-            if (Items.ContainsKey(name))
-            {
-                return Items[name];
-            }
-
-            ConfigItem item = InitItem(callerType, name);
-            lock (Items)
-            {
-                if (Items.ContainsKey(name))
-                {
-                    return Items[name];
-                }
-
-                Items.Add(name, item);
-                return item;
-            }
+            return Server.GetDatabase(DatabaseName);
         }
-
-        /// <summary>
-        /// 创建服务器
-        /// </summary>
-        /// <param name="setting"></param>
-        /// <returns></returns>
-        protected abstract MongoServer CreateMongoServer(MongoServerSettings setting);
     }
 }

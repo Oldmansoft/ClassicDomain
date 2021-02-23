@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Util
 {
@@ -11,7 +7,7 @@ namespace Oldmansoft.ClassicDomain.Util
         public readonly Type Source;
 
         public readonly Type Target;
-        
+
         public MapType(Type source, Type target)
         {
             Source = source;

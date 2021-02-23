@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 namespace Oldmansoft.ClassicDomain.Driver.InProcess
 {
@@ -19,10 +15,10 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
         private Context Context { get; set; }
 
         /// <summary>
-        /// 创建仓储
+        /// 设置工作单元
         /// </summary>
         /// <param name="uow"></param>
-        public Repository(UnitOfWork uow)
+        public void SetUnitOfWork(UnitOfWork uow)
         {
             Context = uow.GetManaged<TContext>();
         }
@@ -44,7 +40,7 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
         {
             return Context.Set<TDomain, TKey>().Get(id);
         }
-        
+
         /// <summary>
         /// 添加
         /// </summary>

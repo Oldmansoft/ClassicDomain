@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Driver
 {
@@ -13,7 +10,7 @@ namespace Oldmansoft.ClassicDomain.Driver
     public class IdentityMap<TDomain>
     {
         private ConcurrentDictionary<object, TDomain> Store;
-        
+
         /// <summary>
         /// 获取主键
         /// </summary>
@@ -59,10 +56,9 @@ namespace Oldmansoft.ClassicDomain.Driver
         public TDomain Get(object key)
         {
             if (key == null) throw new ArgumentNullException("key");
-            
-            TDomain domain;
-            if (Store.TryGetValue(key, out domain)) return domain;
-            return default(TDomain);
+
+            if (Store.TryGetValue(key, out TDomain domain)) return domain;
+            return default;
         }
 
         /// <summary>
@@ -72,9 +68,7 @@ namespace Oldmansoft.ClassicDomain.Driver
         public void Remove(object key)
         {
             if (key == null) throw new ArgumentNullException("key");
-
-            TDomain domain;
-            Store.TryRemove(key, out domain);
+            Store.TryRemove(key, out _);
         }
     }
 }

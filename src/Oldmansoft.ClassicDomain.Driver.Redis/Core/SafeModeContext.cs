@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using StackExchange.Redis;
+﻿using StackExchange.Redis;
+using System;
 using System.Collections.Concurrent;
 
 namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
@@ -23,7 +19,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <param name="commands"></param>
         /// <param name="keyExpression"></param>
         /// <returns></returns>
-        internal override IDbSet CreateDbSet<TDomain, TKey>(ConfigItem config, IDatabase db, ConcurrentQueue<ICommand> commands, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
+        internal override IDbSet CreateDbSet<TDomain, TKey>(Config config, IDatabase db, ConcurrentQueue<ICommand> commands, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
         {
             return new SafeModeDbSet<TDomain, TKey>(config, db, commands, keyExpression);
         }

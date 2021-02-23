@@ -1,110 +1,24 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FCBFD2DE-8923-4D4D-BCA0-644A61484DC4}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Oldmansoft.ClassicDomain.Driver.Redis</RootNamespace>
-    <AssemblyName>Oldmansoft.ClassicDomain.Driver.Redis</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>5.0.0</Version>
+    <Authors>Oldman</Authors>
+    <Company>Oldman</Company>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Oldmansoft.ClassicDomain.Driver.Redis.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\Oldmansoft.ClassicDomain.Driver.Redis.xml</DocumentationFile>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Oldmansoft.ClassicDomain.Driver.Redis.XML</DocumentationFile>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="ServiceStack.Text, Version=3.9.71.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ServiceStack.Text.3.9.71\lib\net35\ServiceStack.Text.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="StackExchange.Redis, Version=1.1.605.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\StackExchange.Redis.1.1.605\lib\net45\StackExchange.Redis.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="ServiceStack.Text" Version="5.10.4" />
+    <PackageReference Include="StackExchange.Redis" Version="2.2.4" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="..\Oldmansoft.ClassicDomain.Shared\GlobalAssemblyInfo.cs">
-      <Link>Properties\GlobalAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="Context.cs" />
-    <Compile Include="Core\Commands\ActionCommand.cs" />
-    <Compile Include="Core\Commands\SafeModeRemoveCommand.cs" />
-    <Compile Include="Core\Commands\SafeModeReplaceCommand.cs" />
-    <Compile Include="Core\Commands\SafeModeAddCommand.cs" />
-    <Compile Include="Core\Commands\FastModeRemoveCommand.cs" />
-    <Compile Include="Core\Commands\FastModeAddCommand.cs" />
-    <Compile Include="Core\Commands\FastModeReplaceCommand.cs" />
-    <Compile Include="Core\Config.cs" />
-    <Compile Include="Core\ConfigItem.cs" />
-    <Compile Include="Core\Context.cs" />
-    <Compile Include="Core\DbSet.cs" />
-    <Compile Include="Core\FastModeContext.cs" />
-    <Compile Include="Core\FastModeDbSet.cs" />
-    <Compile Include="Core\IContext.cs" />
-    <Compile Include="Core\IMergeKey.cs" />
-    <Compile Include="Core\RepositoryDefinedSuperClass.cs" />
-    <Compile Include="Core\SafeModeDbSet.cs" />
-    <Compile Include="Library\ContextGetHelper.cs" />
-    <Compile Include="Library\ContextReplaceHelper.cs" />
-    <Compile Include="Library\DataGetMapping.cs" />
-    <Compile Include="Library\ReflectionItem.cs" />
-    <Compile Include="Library\RemoveObject.cs" />
-    <Compile Include="Library\Serializer.cs" />
-    <Compile Include="FastModeContext.cs" />
-    <Compile Include="IContext.cs" />
-    <Compile Include="Core\IDbSet.cs" />
-    <Compile Include="Library\UpdatedCommand.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Core\Repository.cs" />
-    <Compile Include="Repository.cs" />
-    <Compile Include="Core\SafeModeContext.cs" />
-    <Compile Include="RepositoryDefinedSuperClass.cs" />
-    <Compile Include="_Extends.cs" />
+    <ProjectReference Include="..\Oldmansoft.ClassicDomain\Oldmansoft.ClassicDomain.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Oldmansoft.ClassicDomain\Oldmansoft.ClassicDomain.csproj">
-      <Project>{c3feeacf-f84a-469f-8be8-573dfd9fdec1}</Project>
-      <Name>Oldmansoft.ClassicDomain</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

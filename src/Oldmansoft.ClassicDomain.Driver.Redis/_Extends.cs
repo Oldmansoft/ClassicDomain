@@ -1,12 +1,9 @@
-﻿using System;
+﻿using Oldmansoft.ClassicDomain.Driver.Redis.Library;
+using Oldmansoft.ClassicDomain.Util;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Oldmansoft.ClassicDomain.Driver.Redis.Library;
-using Oldmansoft.ClassicDomain.Util;
 
 namespace Oldmansoft.ClassicDomain.Driver.Redis
 {
@@ -115,7 +112,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis
             }
             return array;
         }
-        
+
         public static IList GetListFromString(this List<string> source, Type listType, Type itemType)
         {
             var list = Activator.CreateInstance(listType) as IList;

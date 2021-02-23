@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Util
 {
@@ -11,7 +8,7 @@ namespace Oldmansoft.ClassicDomain.Util
     /// </summary>
     class TypeParse
     {
-        private static ConcurrentDictionary<Type, Func<string, object>> Store;
+        private static readonly ConcurrentDictionary<Type, Func<string, object>> Store;
 
         static TypeParse()
         {

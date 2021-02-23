@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
 
 namespace Oldmansoft.ClassicDomain.Driver.InProcess
 {
@@ -14,16 +12,16 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
     /// <typeparam name="TKey"></typeparam>
     class StoreManager<TDomain, TKey>
     {
-        private ConcurrentDictionary<TKey, TDomain> Store { get; set; }
+        private readonly ConcurrentDictionary<TKey, TDomain> Store;
 
-        private Func<TDomain, TKey> GetKey { get; set; }
+        private Func<TDomain, TKey> GetKey;
 
-        private System.Linq.Expressions.Expression<Func<TDomain, TKey>> _KeyExpression { get; set; }
+        private Expression<Func<TDomain, TKey>> _KeyExpression;
 
         /// <summary>
         /// 主键表达式
         /// </summary>
-        internal System.Linq.Expressions.Expression<Func<TDomain, TKey>> KeyExpression
+        internal Expression<Func<TDomain, TKey>> KeyExpression
         {
             get { return _KeyExpression; }
             set
@@ -40,7 +38,7 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
         {
             Store = new ConcurrentDictionary<TKey, TDomain>();
         }
-        
+
         /// <summary>
         /// 添加
         /// </summary>
@@ -78,8 +76,7 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
         public bool Remove(TDomain domain)
         {
             var key = GetKey(domain);
-            TDomain temp;
-            return Store.TryRemove(key, out temp);
+            return Store.TryRemove(key, out _);
         }
 
         /// <summary>
@@ -89,14 +86,13 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
         /// <returns></returns>
         public TDomain Get(TKey id)
         {
-            TDomain result;
-            if (Store.TryGetValue(id, out result))
+            if (Store.TryGetValue(id, out TDomain result))
             {
                 return result;
             }
             else
             {
-                return default(TDomain);
+                return default;
             }
         }
 

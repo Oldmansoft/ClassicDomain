@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
 {
     internal class MongoCursorEnumerator<TDocument> : IEnumerator<TDocument>
     {
-        private IEnumerator<TDocument> Source;
+        private readonly IEnumerator<TDocument> Source;
 
-        private IdentityMap<TDocument> IdentityMap;
+        private readonly IdentityMap<TDocument> IdentityMap;
 
         public MongoCursorEnumerator(IEnumerator<TDocument> source, IdentityMap<TDocument> identityMap)
         {

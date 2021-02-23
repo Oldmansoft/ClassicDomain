@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
 {
@@ -25,7 +19,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
             {
                 return string.Empty;
             }
-            return new ServiceStack.Text.JsonSerializer<T>().SerializeToString(value);
+            return ServiceStack.Text.JsonSerializer.SerializeToString(value);
         }
 
         /// <summary>
@@ -38,7 +32,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
         {
             if (string.IsNullOrEmpty(value))
             {
-                return default(T);
+                return default;
             }
             return ServiceStack.Text.JsonSerializer.DeserializeFromString<T>(value);
         }

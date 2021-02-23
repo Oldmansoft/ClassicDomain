@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Driver.EF
 {
@@ -22,10 +19,10 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
         protected Context Context { get; set; }
 
         /// <summary>
-        /// 创建仓储
+        /// 设置工作单元
         /// </summary>
         /// <param name="uow"></param>
-        public Repository(UnitOfWork uow)
+        public void SetUnitOfWork(UnitOfWork uow)
         {
             Context = uow.GetManaged<TContext>();
         }
@@ -60,7 +57,7 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
             domain = domain.MapTo<TDomain>();
             Context.RegisterAdd(domain);
         }
-        
+
         /// <summary>
         /// 替换
         /// </summary>

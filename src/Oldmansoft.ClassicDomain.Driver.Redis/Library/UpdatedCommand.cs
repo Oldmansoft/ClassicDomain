@@ -1,9 +1,6 @@
-﻿using System;
+﻿using StackExchange.Redis;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using StackExchange.Redis;
 
 namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
 {
@@ -25,7 +22,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
         /// <summary>
         /// 设置项在列表
         /// </summary>
-        public Dictionary<string, Dictionary<int ,string>> ListSetByIndex { get; private set; }
+        public Dictionary<string, Dictionary<int, string>> ListSetByIndex { get; private set; }
 
         /// <summary>
         /// 移除列表的项
@@ -131,7 +128,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
                     {
                         if (ex.Message == "ERR wrong number of arguments for 'rpush' command")
                         {
-                            throw new ClassicDomainException(DomainType, Core.Config.AlertLowServerVersion);
+                            throw new ClassicDomainException(DomainType, Core.ConfigStore.AlertLowServerVersion);
                         }
                         throw;
                     }

@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Util
 {
     class Mapper
     {
-        private static System.Collections.Concurrent.ConcurrentDictionary<long, IMap[]> Maps;
+        private static readonly System.Collections.Concurrent.ConcurrentDictionary<long, IMap[]> Maps;
 
         static Mapper()
         {

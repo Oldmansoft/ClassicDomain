@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Oldmansoft.ClassicDomain.Util
 {
@@ -12,7 +8,7 @@ namespace Oldmansoft.ClassicDomain.Util
     /// <typeparam name="TKey"></typeparam>
     public class OnceSet<TKey>
     {
-        private Dictionary<TKey, bool> Store { get; set; }
+        private readonly Dictionary<TKey, bool> Store;
 
         /// <summary>
         /// 创建一次性使用器

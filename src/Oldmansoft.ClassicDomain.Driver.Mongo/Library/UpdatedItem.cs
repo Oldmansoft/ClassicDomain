@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Collections.Generic;
 
 namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
 {
     internal class UpdatedItem
     {
-        private IMongoQuery Query { get; set; }
+        private readonly IMongoQuery Query;
 
-        private IMongoUpdate NormalUpdate { get; set; }
+        private IMongoUpdate NormalUpdate;
 
-        private List<IMongoUpdate> UpdateList { get; set; }
+        private readonly List<IMongoUpdate> UpdateList;
 
         public UpdatedItem(BsonValue id)
         {

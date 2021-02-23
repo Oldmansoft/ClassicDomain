@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 namespace Oldmansoft.ClassicDomain.Driver.Mongo
 {
@@ -14,43 +10,34 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
     /// <typeparam name="TSuperDomain">领域的父类</typeparam>
     /// <typeparam name="TKey">主键类型</typeparam>
     /// <typeparam name="TContext">领域上下文</typeparam>
-    public class RepositoryDefinedSuperClass<TDomain, TSuperDomain, TKey, TContext> : Core.RepositoryDefinedSuperClass<TDomain, TSuperDomain, TKey>
+    public class RepositoryDefinedSuperClass<TDomain, TSuperDomain, TKey, TContext> : Repository<TDomain, TKey, TContext>, IRepository<TSuperDomain, TKey>, IQuerySupport<TSuperDomain>
         where TDomain : class, TSuperDomain
         where TSuperDomain : class
         where TContext : class, IContext, new()
     {
-        /// <summary>
-        /// 创建仓储
-        /// </summary>
-        /// <param name="uow"></param>
-        public RepositoryDefinedSuperClass(UnitOfWork uow)
+        void IAdd<TSuperDomain>.Add(TSuperDomain domain)
         {
-            Context = uow.GetManaged<TContext>();
+            Add(domain as TDomain);
         }
-    }
 
-    /// <summary>
-    /// 可传入初始化参数的仓储库
-    /// 定义父类
-    /// </summary>
-    /// <typeparam name="TDomain">领域</typeparam>
-    /// <typeparam name="TSuperDomain">领域的父类</typeparam>
-    /// <typeparam name="TKey">主键</typeparam>
-    /// <typeparam name="TContext">带初始化的上下文</typeparam>
-    /// <typeparam name="TInit">初始化参数类型</typeparam>
-    public class RepositoryDefinedSuperClass<TDomain, TSuperDomain, TKey, TContext, TInit> : Core.RepositoryDefinedSuperClass<TDomain, TSuperDomain, TKey>
-        where TDomain : class, TSuperDomain
-        where TSuperDomain : class
-        where TContext : class, IContext<TInit>, new()
-    {
-        /// <summary>
-        /// 创建可传入初始化参数的仓储库
-        /// </summary>
-        /// <param name="uow"></param>
-        /// <param name="parameter"></param>
-        public RepositoryDefinedSuperClass(UnitOfWork uow, TInit parameter)
+        TSuperDomain IGet<TSuperDomain, TKey>.Get(TKey id)
         {
-            Context = uow.GetManaged<TContext, TInit>(parameter);
+            return Get(id);
+        }
+
+        IQueryable<TSuperDomain> IQuerySupport<TSuperDomain>.Query()
+        {
+            return Query();
+        }
+
+        void IRemove<TSuperDomain>.Remove(TSuperDomain domain)
+        {
+            Remove(domain as TDomain);
+        }
+
+        void IReplace<TSuperDomain>.Replace(TSuperDomain domain)
+        {
+            Replace(domain as TDomain);
         }
     }
 }

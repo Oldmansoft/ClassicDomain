@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Util
 {
     class GenericDictionaryCreator : ICreator
     {
-        private Type ListType;
+        private readonly Type ListType;
 
         public GenericDictionaryCreator(Type type)
         {

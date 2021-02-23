@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain
 {
@@ -39,31 +35,11 @@ namespace Oldmansoft.ClassicDomain
         public TManagedItem GetManaged<TManagedItem>() where TManagedItem : class, IUnitOfWorkManagedItem, new()
         {
             Type type = typeof(TManagedItem);
-            IUnitOfWorkManagedItem result;
-            if (ManagedItems.TryGetValue(type, out result)) return result as TManagedItem;
+            if (ManagedItems.TryGetValue(type, out IUnitOfWorkManagedItem result)) return result as TManagedItem;
 
             var context = new TManagedItem();
             context.Init(Commands);
             context.ModelCreating();
-            ManagedItems.TryAdd(type, context);
-            return context;
-        }
-
-        /// <summary>
-        /// 获取被管理的项
-        /// </summary>
-        /// <typeparam name="TManagedItem">工作单元管理项</typeparam>
-        /// <typeparam name="TInit"></typeparam>
-        /// <returns>管理项</returns>
-        public TManagedItem GetManaged<TManagedItem, TInit>(TInit parameter) where TManagedItem : class, IUnitOfWorkManagedItem<TInit>, new()
-        {
-            Type type = typeof(TManagedItem);
-            IUnitOfWorkManagedItem result;
-            if (ManagedItems.TryGetValue(type, out result)) return result as TManagedItem;
-
-            var context = new TManagedItem();
-            context.Init(Commands);
-            context.ModelCreating(parameter);
             ManagedItems.TryAdd(type, context);
             return context;
         }
@@ -75,8 +51,7 @@ namespace Oldmansoft.ClassicDomain
         public virtual int Commit()
         {
             int result = 0;
-            Driver.ICommand command;
-            while (Commands.TryDequeue(out command))
+            while (Commands.TryDequeue(out Driver.ICommand command))
             {
                 try
                 {
@@ -87,7 +62,7 @@ namespace Oldmansoft.ClassicDomain
                 }
                 catch
                 {
-                    while (Commands.TryDequeue(out command)) { }
+                    while (Commands.TryDequeue(out _)) { }
                     throw;
                 }
             }

@@ -1,23 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Oldmansoft.ClassicDomain.Driver.Redis
+﻿namespace Oldmansoft.ClassicDomain.Driver.Redis
 {
     /// <summary>
     /// 实体上下文接口
     /// </summary>
-    public interface IContext : Core.IContext
+    public interface IContext : IUnitOfWorkManagedItem
     {
-    }
-
-    /// <summary>
-    /// 可传入初始化参数的实体上下文接口
-    /// </summary>
-    /// <typeparam name="TInit">初始化参数类型</typeparam>
-    public interface IContext<TInit> : Core.IContext, IUnitOfWorkManagedItem<TInit>
-    {
+        /// <summary>
+        /// 获取实体集
+        /// </summary>
+        /// <typeparam name="TDomain"></typeparam>
+        /// <typeparam name="TKey"></typeparam>
+        /// <returns></returns>
+        Core.IDbSet<TDomain, TKey> Set<TDomain, TKey>();
     }
 }

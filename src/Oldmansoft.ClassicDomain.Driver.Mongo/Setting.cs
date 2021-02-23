@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using MongoDB.Driver.Builders;
+﻿using MongoDB.Driver.Builders;
 using Oldmansoft.ClassicDomain.Util;
+using System;
+using System.Linq.Expressions;
 
 namespace Oldmansoft.ClassicDomain.Driver.Mongo
 {
@@ -55,7 +51,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
             DbSet.SetTableName(tableName);
             return this;
         }
-        
+
         /// <summary>
         /// 设置索引
         /// </summary>
@@ -73,7 +69,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// <returns>设置</returns>
         public Setting<TEntity, TMember> SetIndex(Func<TEntity, ExpressionGroup<TEntity>> keyExpression)
         {
-            return SetIndex(keyExpression(default(TEntity)));
+            return SetIndex(keyExpression(default));
         }
 
         /// <summary>
@@ -87,7 +83,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
             if (keyExpression.Expressions.Count == 0) return this;
             return SetIndex(true, false, keyExpression.Expressions.ToArray());
         }
-        
+
         /// <summary>
         /// 设置倒序索引
         /// </summary>
@@ -105,7 +101,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// <returns>设置</returns>
         public Setting<TEntity, TMember> SetIndexDescending(Func<TEntity, ExpressionGroup<TEntity>> keyExpression)
         {
-            return SetIndexDescending(keyExpression(default(TEntity)));
+            return SetIndexDescending(keyExpression(default));
         }
 
         /// <summary>
@@ -119,7 +115,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
             if (keyExpression.Expressions.Count == 0) return this;
             return SetIndex(false, false, keyExpression.Expressions.ToArray());
         }
-        
+
         /// <summary>
         /// 设置唯一索引
         /// </summary>
@@ -137,7 +133,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// <returns>设置</returns>
         public Setting<TEntity, TMember> SetUnique(Func<TEntity, ExpressionGroup<TEntity>> keyExpression)
         {
-            return SetUnique(keyExpression(default(TEntity)));
+            return SetUnique(keyExpression(default));
         }
 
         /// <summary>
@@ -151,7 +147,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
             if (keyExpression.Expressions.Count == 0) return this;
             return SetIndex(true, true, keyExpression.Expressions.ToArray());
         }
-        
+
         /// <summary>
         /// 设置倒序唯一索引
         /// </summary>
@@ -169,7 +165,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// <returns>设置</returns>
         public Setting<TEntity, TMember> SetUniqueDescending(Func<TEntity, ExpressionGroup<TEntity>> keyExpression)
         {
-            return SetUniqueDescending(keyExpression(default(TEntity)));
+            return SetUniqueDescending(keyExpression(default));
         }
 
         /// <summary>

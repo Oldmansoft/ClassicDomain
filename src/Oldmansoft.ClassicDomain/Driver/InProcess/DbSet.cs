@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Oldmansoft.ClassicDomain.Util;
+﻿using Oldmansoft.ClassicDomain.Util;
+using System;
 using System.Collections.Concurrent;
+using System.Linq;
 
 namespace Oldmansoft.ClassicDomain.Driver.InProcess
 {
@@ -18,7 +15,7 @@ namespace Oldmansoft.ClassicDomain.Driver.InProcess
         }
 
         private ConcurrentQueue<ICommand> Commands { get; set; }
-        
+
         /// <summary>
         /// 主键表达式
         /// </summary>

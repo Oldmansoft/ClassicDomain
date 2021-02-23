@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Oldmansoft.ClassicDomain.Util;
 using StackExchange.Redis;
-using Oldmansoft.ClassicDomain.Util;
+using System;
+using System.Collections.Concurrent;
 using System.Linq.Expressions;
 
 namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
@@ -23,7 +19,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         protected string DomainName { get; private set; }
 
         protected ConcurrentQueue<ICommand> Commands { get; private set; }
-        
+
         private Expression<Func<TDomain, TKey>> KeyExpression { get; set; }
 
         /// <summary>
@@ -39,7 +35,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <summary>
         /// 配置
         /// </summary>
-        protected ConfigItem Config { get; private set; }
+        protected Config Config { get; private set; }
 
         /// <summary>
         /// 数据库
@@ -53,7 +49,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <param name="db"></param>
         /// <param name="commands"></param>
         /// <param name="keyExpression"></param>
-        public DbSet(ConfigItem config, IDatabase db, ConcurrentQueue<ICommand> commands, Expression<Func<TDomain, TKey>> keyExpression)
+        public DbSet(Config config, IDatabase db, ConcurrentQueue<ICommand> commands, Expression<Func<TDomain, TKey>> keyExpression)
         {
             DomainName = typeof(TDomain).FullName;
             Config = config;
@@ -115,7 +111,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// </summary>
         /// <param name="domain"></param>
         public abstract void RegisterRemove(TDomain domain);
-        
+
         /// <summary>
         /// 注册执行
         /// </summary>

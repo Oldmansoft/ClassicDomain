@@ -1,140 +1,19 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C3FEEACF-F84A-469F-8BE8-573DFD9FDEC1}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Oldmansoft.ClassicDomain</RootNamespace>
-    <AssemblyName>Oldmansoft.ClassicDomain</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>5.0.0</Version>
+    <Authors>Oldman</Authors>
+    <Company />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Oldmansoft.ClassicDomain.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\Oldmansoft.ClassicDomain.xml</DocumentationFile>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Oldmansoft.ClassicDomain.XML</DocumentationFile>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\Oldmansoft.ClassicDomain.Shared\GlobalAssemblyInfo.cs">
-      <Link>Properties\GlobalAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="ConfigItemException.cs" />
-    <Compile Include="ConfigItemNotFoundException.cs" />
-    <Compile Include="Configuration\Config.cs" />
-    <Compile Include="Configuration\ConnectionString.cs" />
-    <Compile Include="Configuration\DataSource.cs" />
-    <Compile Include="Configuration\DataSourceSet.cs" />
-    <Compile Include="Driver\GuidGenerator.cs" />
-    <Compile Include="Driver\ICommand.cs" />
-    <Compile Include="Driver\IDbSet.cs" />
-    <Compile Include="Driver\IdentityMap.cs" />
-    <Compile Include="Driver\InProcess\Commands\RemoveCommand.cs" />
-    <Compile Include="Driver\InProcess\Commands\ReplaceCommand.cs" />
-    <Compile Include="Driver\InProcess\Commands\AddCommand.cs" />
-    <Compile Include="Driver\InProcess\Context.cs" />
-    <Compile Include="Driver\InProcess\DbSet.cs" />
-    <Compile Include="Driver\InProcess\Repository.cs" />
-    <Compile Include="ClassicDomainException.cs" />
-    <Compile Include="Driver\StorageMappings\IStorageMapping.cs" />
-    <Compile Include="Driver\StorageMapping.cs" />
-    <Compile Include="Driver\StorageMappings\MemoryStorageMapping.cs" />
-    <Compile Include="Driver\StorageMappings\MongoStorageMapping.cs" />
-    <Compile Include="Driver\StorageMappings\MssqlStorageMapping.cs" />
-    <Compile Include="IAdd.cs" />
-    <Compile Include="IGet.cs" />
-    <Compile Include="Driver\InProcess\StoreManager.cs" />
-    <Compile Include="IPagingResult.cs" />
-    <Compile Include="IPagingOrdered.cs" />
-    <Compile Include="IPagingData.cs" />
-    <Compile Include="IQuerySupport.cs" />
-    <Compile Include="IRemove.cs" />
-    <Compile Include="IReplace.cs" />
-    <Compile Include="IRepository.cs" />
-    <Compile Include="IRepositoryAdd.cs" />
-    <Compile Include="IRepositoryAddReplace.cs" />
-    <Compile Include="IUnitOfWork.cs" />
-    <Compile Include="IUnitOfWorkManagedItem.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UniqueException.cs" />
-    <Compile Include="UnitOfWorkManagedItem.cs" />
-    <Compile Include="UnitOfWork.cs" />
-    <Compile Include="Util\DataMapper\IMap.cs" />
-    <Compile Include="Util\DataMapper\MapArray.cs" />
-    <Compile Include="Util\DataMapper\MapContent.cs" />
-    <Compile Include="Util\DataMapper\MapProperty.cs" />
-    <Compile Include="Util\DataMapper\MapArrayProperty.cs" />
-    <Compile Include="Util\DataMapper\MapDictionary.cs" />
-    <Compile Include="Util\DataMapper\MapDictionaryProperty.cs" />
-    <Compile Include="Util\DataMapper\MapEnumProperty.cs" />
-    <Compile Include="Util\DataMapper\MapListProperty.cs" />
-    <Compile Include="Util\DataMapper\MapList.cs" />
-    <Compile Include="Util\DataMapper\MapNormalClassProperty.cs" />
-    <Compile Include="Util\DataMapper\MapNullableEnumProperty.cs" />
-    <Compile Include="Util\DataMapper\Mapper.cs" />
-    <Compile Include="Util\DataMapper\MapStructPropertyCreator.cs" />
-    <Compile Include="Util\DataMapper\MapType.cs" />
-    <Compile Include="Util\DataMapper\PropertyDelegateItem.cs" />
-    <Compile Include="Util\DataMapper\MapTypeBuilder.cs" />
-    <Compile Include="Util\ExpressionHelper.cs" />
-    <Compile Include="IPagingCondition.cs" />
-    <Compile Include="Util\DataMapper.cs" />
-    <Compile Include="Util\IContent.cs" />
-    <Compile Include="Util\IValue.cs" />
-    <Compile Include="Util\PropertyGetter.cs" />
-    <Compile Include="Util\IGetter.cs" />
-    <Compile Include="Util\ISetter.cs" />
-    <Compile Include="Util\PropertyWrapper.cs" />
-    <Compile Include="Util\ObjectCreator.cs" />
-    <Compile Include="Util\ObjectCreator\EmptyCreator.cs" />
-    <Compile Include="Util\ObjectCreator\GenericDictionaryCreator.cs" />
-    <Compile Include="Util\ObjectCreator\GenericListCreator.cs" />
-    <Compile Include="Util\ObjectCreator\ICreator.cs" />
-    <Compile Include="Util\ObjectCreator\NormalClassCreator.cs" />
-    <Compile Include="Util\OnceSet.cs" />
-    <Compile Include="Util\Paging\PagingCondition.cs" />
-    <Compile Include="Util\Paging\PagingResult.cs" />
-    <Compile Include="Util\Paging\PagingOrdered.cs" />
-    <Compile Include="Util\PropertySetter.cs" />
-    <Compile Include="Util\TypeParse.cs" />
-    <Compile Include="Util\_Extends.cs" />
-    <Compile Include="Util\TypePublicInstancePropertyInfoStore.cs" />
-    <Compile Include="_Extends.cs" />
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

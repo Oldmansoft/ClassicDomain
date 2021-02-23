@@ -1,10 +1,6 @@
-﻿using System;
+﻿using Oldmansoft.ClassicDomain.Util;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Oldmansoft.ClassicDomain.Util;
 
 namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
 {
@@ -45,13 +41,13 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
 
         public static T GetContext<T>(DataGetMapping mapping) where T : class, new()
         {
-            if (mapping == null || mapping.Fields.Count == 0) return default(T);
+            if (mapping == null || mapping.Fields.Count == 0) return default;
             var result = new T();
-            SetContext(mapping, typeof(T), result, string.Empty, new string[0]);
+            SetContext(mapping, typeof(T), result, new string[0]);
             return result;
         }
 
-        private static void SetContext<T>(DataGetMapping mapping, Type type, T instance, string prefixName, string[] prefixNames)
+        private static void SetContext<T>(DataGetMapping mapping, Type type, T instance, string[] prefixNames)
         {
             foreach (var property in TypePublicInstancePropertyInfoStore.GetValues(type))
             {
@@ -80,7 +76,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
                 if (propertyType.IsNormalClass())
                 {
                     var obj = ObjectCreator.CreateInstance(propertyType);
-                    SetContext(mapping, propertyType, obj, string.Format("{0}.", name), currentNames);
+                    SetContext(mapping, propertyType, obj, currentNames);
                     property.Set(instance, obj);
                     continue;
                 }

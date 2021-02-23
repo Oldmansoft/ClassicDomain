@@ -1,17 +1,13 @@
-﻿using System;
+﻿using StackExchange.Redis;
+using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using StackExchange.Redis;
 
 namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
 {
     internal class SafeModeDbSet<TDomain, TKey> : DbSet<TDomain, TKey>, IMergeKey<TKey> where TDomain : class, new()
     {
         private IdentityMap<TDomain> IdentityMap { get; set; }
-        
+
         /// <summary>
         /// 创建实体集
         /// </summary>
@@ -19,7 +15,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <param name="db"></param>
         /// <param name="commands"></param>
         /// <param name="keyExpression"></param>
-        public SafeModeDbSet(ConfigItem config, IDatabase db, ConcurrentQueue<ICommand> commands, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
+        public SafeModeDbSet(Config config, IDatabase db, ConcurrentQueue<ICommand> commands, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
             : base(config, db, commands, keyExpression)
         {
             IdentityMap = new IdentityMap<TDomain>();
@@ -34,7 +30,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         {
             TrySetDomainKey(domain);
             domain = domain.MapTo<TDomain>();
-            Commands.Enqueue(new Commands.SafeModeAddCommand<TDomain, TKey>(Db, MergeKey, this, IdentityMap, KeyExpressionCompile(domain), domain));
+            Commands.Enqueue(new Commands.AddCommand<TDomain, TKey>(Db, MergeKey, this, IdentityMap, KeyExpressionCompile(domain), domain));
         }
 
         /// <summary>
@@ -44,7 +40,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         public override void RegisterReplace(TDomain domain)
         {
             domain = domain.MapTo<TDomain>();
-            Commands.Enqueue(new Commands.SafeModeReplaceCommand<TDomain, TKey>(Db, MergeKey, this, IdentityMap, KeyExpressionCompile(domain), domain));
+            Commands.Enqueue(new Commands.ReplaceCommand<TDomain, TKey>(Db, MergeKey, this, IdentityMap, KeyExpressionCompile(domain), domain));
         }
 
         /// <summary>
@@ -53,7 +49,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <param name="domain"></param>
         public override void RegisterRemove(TDomain domain)
         {
-            Commands.Enqueue(new Commands.SafeModeRemoveCommand<TDomain, TKey>(Db, MergeKey, this, IdentityMap, KeyExpressionCompile(domain)));
+            Commands.Enqueue(new Commands.RemoveCommand<TDomain, TKey>(Db, MergeKey, this, IdentityMap, KeyExpressionCompile(domain)));
         }
 
         /// <summary>

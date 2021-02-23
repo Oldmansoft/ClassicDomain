@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Driver.Builders;
+using System;
 
 namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
 {
@@ -16,9 +12,8 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
             if (name == null) { throw new ArgumentNullException("name"); }
 
             var wrappedValue = BsonDocumentWrapper.Create(value.GetType(), value);
-            BsonElement element;
             var document = source.ToBsonDocument();
-            if (document.TryGetElement("$set", out element))
+            if (document.TryGetElement("$set", out BsonElement element))
             {
                 element.Value.AsBsonDocument.Add(name, wrappedValue);
             }
@@ -35,9 +30,8 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
             if (name == null) { throw new ArgumentNullException("name"); }
 
             var wrappedValue = BsonDocumentWrapper.Create(value.GetType(), value);
-            BsonElement element;
             var document = source.ToBsonDocument();
-            if (document.TryGetElement("$pull", out element))
+            if (document.TryGetElement("$pull", out BsonElement element))
             {
                 element.Value.AsBsonDocument.Add(name, wrappedValue);
             }
@@ -47,7 +41,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
             }
             return source;
         }
-        
+
         public static BsonValue ToBsonValue(this object source)
         {
             if (source is decimal)

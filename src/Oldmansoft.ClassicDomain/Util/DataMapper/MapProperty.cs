@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Util
 {
@@ -16,7 +12,7 @@ namespace Oldmansoft.ClassicDomain.Util
         protected Type SourcePropertyType { get; private set; }
 
         protected Type TargetPropertyType { get; private set; }
-        
+
         public virtual IMap Init(Type sourceType, Type targetType, PropertyInfo sourceProperty, PropertyInfo targetProperty)
         {
             Getter = (IGetter)Activator.CreateInstance(typeof(PropertyGetter<,>).MakeGenericType(sourceType, sourceProperty.PropertyType), sourceProperty);

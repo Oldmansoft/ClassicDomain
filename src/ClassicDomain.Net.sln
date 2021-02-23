@@ -1,21 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{64246EAC-CFC6-4BA0-822F-5965D791A460}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oldmansoft.ClassicDomain", "Oldmansoft.ClassicDomain\Oldmansoft.ClassicDomain.csproj", "{B782E792-059C-46CA-92C9-F2A1CF5FCA24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest.ClassicDomain", "UnitTest.ClassicDomain\UnitTest.ClassicDomain.csproj", "{77069DE4-F56A-4A0D-AB2D-44DE8C3BE536}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oldmansoft.ClassicDomain.Driver.Mongo", "Oldmansoft.ClassicDomain.Driver.Mongo\Oldmansoft.ClassicDomain.Driver.Mongo.csproj", "{72842575-0080-47E7-8BFE-CA2EA6E81C19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oldmansoft.ClassicDomain", "Oldmansoft.ClassicDomain\Oldmansoft.ClassicDomain.csproj", "{C3FEEACF-F84A-469F-8BE8-573DFD9FDEC1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oldmansoft.ClassicDomain.Driver.Redis", "Oldmansoft.ClassicDomain.Driver.Redis\Oldmansoft.ClassicDomain.Driver.Redis.csproj", "{1047C332-F973-4ED8-A3F2-D0B723870645}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oldmansoft.ClassicDomain.Driver.EF", "Oldmansoft.ClassicDomain.Driver.EF\Oldmansoft.ClassicDomain.Driver.EF.csproj", "{9870AD2F-6FBB-4CF4-944E-40AE3FE8BFE5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oldmansoft.ClassicDomain.Driver.Mongo", "Oldmansoft.ClassicDomain.Driver.Mongo\Oldmansoft.ClassicDomain.Driver.Mongo.csproj", "{4932C605-579E-49D1-9696-A1FD904A3DCC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oldmansoft.ClassicDomain.Driver.Redis", "Oldmansoft.ClassicDomain.Driver.Redis\Oldmansoft.ClassicDomain.Driver.Redis.csproj", "{FCBFD2DE-8923-4D4D-BCA0-644A61484DC4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.ConsoleApplication", "Sample.ConsoleApplication\Sample.ConsoleApplication.csproj", "{26C1A2D6-2FE5-44B7-A6F9-7046ABB78F47}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oldmansoft.ClassicDomain.Driver.EF", "Oldmansoft.ClassicDomain.Driver.EF\Oldmansoft.ClassicDomain.Driver.EF.csproj", "{60780333-CFDF-4D4F-A446-FE1544865170}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,36 +17,27 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{77069DE4-F56A-4A0D-AB2D-44DE8C3BE536}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{77069DE4-F56A-4A0D-AB2D-44DE8C3BE536}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{77069DE4-F56A-4A0D-AB2D-44DE8C3BE536}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{77069DE4-F56A-4A0D-AB2D-44DE8C3BE536}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C3FEEACF-F84A-469F-8BE8-573DFD9FDEC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C3FEEACF-F84A-469F-8BE8-573DFD9FDEC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C3FEEACF-F84A-469F-8BE8-573DFD9FDEC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C3FEEACF-F84A-469F-8BE8-573DFD9FDEC1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9870AD2F-6FBB-4CF4-944E-40AE3FE8BFE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9870AD2F-6FBB-4CF4-944E-40AE3FE8BFE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9870AD2F-6FBB-4CF4-944E-40AE3FE8BFE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9870AD2F-6FBB-4CF4-944E-40AE3FE8BFE5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4932C605-579E-49D1-9696-A1FD904A3DCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4932C605-579E-49D1-9696-A1FD904A3DCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4932C605-579E-49D1-9696-A1FD904A3DCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4932C605-579E-49D1-9696-A1FD904A3DCC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FCBFD2DE-8923-4D4D-BCA0-644A61484DC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FCBFD2DE-8923-4D4D-BCA0-644A61484DC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FCBFD2DE-8923-4D4D-BCA0-644A61484DC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FCBFD2DE-8923-4D4D-BCA0-644A61484DC4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{26C1A2D6-2FE5-44B7-A6F9-7046ABB78F47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{26C1A2D6-2FE5-44B7-A6F9-7046ABB78F47}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{26C1A2D6-2FE5-44B7-A6F9-7046ABB78F47}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{26C1A2D6-2FE5-44B7-A6F9-7046ABB78F47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B782E792-059C-46CA-92C9-F2A1CF5FCA24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B782E792-059C-46CA-92C9-F2A1CF5FCA24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B782E792-059C-46CA-92C9-F2A1CF5FCA24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B782E792-059C-46CA-92C9-F2A1CF5FCA24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72842575-0080-47E7-8BFE-CA2EA6E81C19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72842575-0080-47E7-8BFE-CA2EA6E81C19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72842575-0080-47E7-8BFE-CA2EA6E81C19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72842575-0080-47E7-8BFE-CA2EA6E81C19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1047C332-F973-4ED8-A3F2-D0B723870645}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1047C332-F973-4ED8-A3F2-D0B723870645}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1047C332-F973-4ED8-A3F2-D0B723870645}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1047C332-F973-4ED8-A3F2-D0B723870645}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60780333-CFDF-4D4F-A446-FE1544865170}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60780333-CFDF-4D4F-A446-FE1544865170}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60780333-CFDF-4D4F-A446-FE1544865170}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60780333-CFDF-4D4F-A446-FE1544865170}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{77069DE4-F56A-4A0D-AB2D-44DE8C3BE536} = {64246EAC-CFC6-4BA0-822F-5965D791A460}
-		{26C1A2D6-2FE5-44B7-A6F9-7046ABB78F47} = {64246EAC-CFC6-4BA0-822F-5965D791A460}
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {419D291D-4372-4AC1-8566-7F2DA04D71E2}
 	EndGlobalSection
 EndGlobal

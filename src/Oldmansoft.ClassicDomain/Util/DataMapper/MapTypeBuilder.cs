@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Util
 {
@@ -12,13 +8,13 @@ namespace Oldmansoft.ClassicDomain.Util
     {
         private const string Namespace = "Oldmansoft.ClassicDomain.Util.DynamicMapper";
 
-        private static AssemblyBuilder AssemblyBuilder;
+        private static readonly AssemblyBuilder AssemblyBuilder;
 
-        private static ModuleBuilder ModuleBuilder;
+        private static readonly ModuleBuilder ModuleBuilder;
 
         static MapTypeBuilder()
         {
-            AssemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName(Namespace), AssemblyBuilderAccess.Run);
+            AssemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName(Namespace), AssemblyBuilderAccess.Run);
             ModuleBuilder = AssemblyBuilder.DefineDynamicModule(Namespace);
         }
 
@@ -45,7 +41,7 @@ namespace Oldmansoft.ClassicDomain.Util
             DefineConstructor(typeBuilder, genericParameters[0], genericParameters[1], properties, fieldBuilders);
             var setContent = DefineSetContentMethod(typeBuilder, genericParameters[0], genericParameters[1], properties, fieldBuilders);
             DefineMapMethod(typeBuilder, setContent, genericParameters[0], genericParameters[1]);
-            return typeBuilder.CreateType().MakeGenericType(sourceType, targetType);
+            return typeBuilder.CreateTypeInfo().MakeGenericType(sourceType, targetType);
         }
 
         private static void DefineConstructor(TypeBuilder typeBuilder, GenericTypeParameterBuilder sourceType, GenericTypeParameterBuilder targetType, PropertyInfo[] properties, FieldBuilder[] fieldBuilders)

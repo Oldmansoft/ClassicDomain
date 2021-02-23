@@ -1,11 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Oldmansoft.ClassicDomain
+﻿namespace Oldmansoft.ClassicDomain
 {
+    /// <summary>
+    /// 仓储
+    /// </summary>
+    public interface IRepository
+    {
+        /// <summary>
+        /// 设置工作单元
+        /// </summary>
+        /// <param name="uow"></param>
+        void SetUnitOfWork(UnitOfWork uow);
+    }
+
     /// <summary>
     /// 全部
     /// </summary>

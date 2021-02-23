@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using Oldmansoft.ClassicDomain.Util;
+using System;
+using System.Collections.Concurrent;
+using System.Linq;
 
 namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
 {
-    internal abstract class DbSet<TDomain, TKey> : IDbSet<TDomain, TKey>
+    internal class DbSet<TDomain, TKey> : IDbSet<TDomain, TKey>
     {
-        private MongoDatabase Database;
+        private readonly MongoDatabase Database;
 
         private MongoCollection<TDomain> Collection;
 
@@ -20,7 +17,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// 表名
         /// </summary>
         protected string TableName { get; private set; }
-        
+
         protected ConcurrentQueue<ICommand> Commands { get; private set; }
 
         /// <summary>
@@ -39,6 +36,11 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         private ISetter PropertySetter { get; set; }
 
         /// <summary>
+        /// 标识映射
+        /// </summary>
+        public IdentityMap<TDomain> IdentityMap { get; private set; }
+
+        /// <summary>
         /// 创建实体集
         /// </summary>
         /// <param name="database"></param>
@@ -55,6 +57,8 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
             {
                 PropertySetter = new PropertySetter<TDomain, TKey>(KeyExpression.GetProperty());
             }
+            IdentityMap = new IdentityMap<TDomain>();
+            IdentityMap.SetKey(keyExpression.Compile());
         }
 
         /// <summary>
@@ -76,19 +80,32 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// 注册添加
         /// </summary>
         /// <param name="domain"></param>
-        public abstract void RegisterAdd(TDomain domain);
+        public void RegisterAdd(TDomain domain)
+        {
+            TrySetDomainKey(domain);
+            domain = domain.MapTo<TDomain>();
+            Commands.Enqueue(new Commands.AddCommand<TDomain>(GetCollection(), domain, IdentityMap));
+        }
 
         /// <summary>
         /// 注册替换
         /// </summary>
         /// <param name="domain"></param>
-        public abstract void RegisterReplace(TDomain domain);
+        public void RegisterReplace(TDomain domain)
+        {
+            domain = domain.MapTo<TDomain>();
+            Commands.Enqueue(new Commands.ReplaceCommand<TDomain, TKey>(GetCollection(), KeyExpressionCompile(domain), domain, IdentityMap));
+        }
 
         /// <summary>
         /// 注册移除
         /// </summary>
         /// <param name="domain"></param>
-        public abstract void RegisterRemove(TDomain domain);
+        public void RegisterRemove(TDomain domain)
+        {
+            domain = domain.MapTo<TDomain>();
+            Commands.Enqueue(new Commands.RemoveCommand<TDomain, TKey>(GetCollection(), KeyExpression, KeyExpressionCompile(domain), IdentityMap));
+        }
 
         /// <summary>
         /// 注册执行
