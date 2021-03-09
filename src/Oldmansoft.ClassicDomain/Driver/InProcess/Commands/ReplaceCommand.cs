@@ -4,7 +4,7 @@
     {
         private readonly StoreManager<TDomain, TKey> Store;
 
-        private TDomain Domain;
+        private readonly TDomain Domain;
 
         public ReplaceCommand(StoreManager<TDomain, TKey> store, TDomain domain)
         {

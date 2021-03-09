@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Oldmansoft.ClassicDomain
+﻿namespace Oldmansoft.ClassicDomain
 {
     /// <summary>
     /// 工作单元

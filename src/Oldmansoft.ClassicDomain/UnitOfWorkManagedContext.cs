@@ -1,8 +1,6 @@
 ﻿using Oldmansoft.ClassicDomain.Driver;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Oldmansoft.ClassicDomain
 {
@@ -16,11 +14,11 @@ namespace Oldmansoft.ClassicDomain
         /// <summary>
         /// 设置连接字符串
         /// </summary>
-        /// <typeparam name="TContext"></typeparam>
+        /// <param name="contextType"></param>
         /// <param name="connectionString"></param>
-        public static void SetConnectionString<TContext>(string connectionString)
+        public static void SetConnectionString(Type contextType, string connectionString)
         {
-            ConnectionStringStore.AddOrUpdate(typeof(TContext), connectionString, (oldkey, oldvalue) => connectionString);
+            ConnectionStringStore.AddOrUpdate(contextType, connectionString, (oldkey, oldvalue) => connectionString);
         }
 
         /// <summary>

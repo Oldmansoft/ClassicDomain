@@ -36,7 +36,7 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <returns>返回目标对象</returns>
         public static TTarget Map<TSource, TTarget>(TSource source, TTarget target)
         {
-            if (source == null || target == null) return default(TTarget);
+            if (source == null || target == null) return default;
 
             var sourceType = typeof(TSource);
             var targetType = typeof(TTarget);
@@ -56,7 +56,7 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <returns>返回目标对象</returns>
         public static TTarget Map<TTarget>(object source)
         {
-            if (source == null) return default(TTarget);
+            if (source == null) return default;
 
             var sourceType = source.GetType();
             var targetType = typeof(TTarget);
@@ -69,7 +69,7 @@ namespace Oldmansoft.ClassicDomain.Util
                 }
                 else
                 {
-                    return default(TTarget);
+                    return default;
                 }
             }
             else
@@ -118,7 +118,7 @@ namespace Oldmansoft.ClassicDomain.Util
             if (isNormalClass)
             {
                 if (targetItemType.IsAbstract) return null;
-                object targetValue = null;
+                object targetValue;
                 try
                 {
                     targetValue = ObjectCreator.CreateInstance(targetItemType);

@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain
 {
@@ -34,11 +30,21 @@ namespace Oldmansoft.ClassicDomain
         /// <summary>
         /// 设置连接字符串
         /// </summary>
+        /// <param name="contextType"></param>
+        /// <param name="connectionString"></param>
+        public static void SetConnectionString(Type contextType, string connectionString)
+        {
+            UnitOfWorkManagedContext.SetConnectionString(contextType, connectionString);
+        }
+
+        /// <summary>
+        /// 设置连接字符串
+        /// </summary>
         /// <typeparam name="TContext"></typeparam>
         /// <param name="connectionString"></param>
         public static void SetConnectionString<TContext>(string connectionString)
         {
-            UnitOfWorkManagedContext.SetConnectionString<TContext>(connectionString);
+            UnitOfWorkManagedContext.SetConnectionString(typeof(TContext), connectionString);
         }
 
         private readonly ConcurrentDictionary<Type, IRepository> RepositoryStore;
