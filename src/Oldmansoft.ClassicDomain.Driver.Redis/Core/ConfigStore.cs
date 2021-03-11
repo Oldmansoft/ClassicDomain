@@ -36,7 +36,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
             {
                 if (Connections.TryGetValue(name, out result)) return result;
 
-                var connectionString = UnitOfWorkManagedContext.GetConnectionString(callerType);
+                var connectionString = ConnectionString.Get(callerType);
                 var connection = ConnectionMultiplexer.Connect(connectionString);
                 result = new Config(connection, isLowServerVersion);
                 Connections.Add(name, result);

@@ -1,5 +1,4 @@
 ﻿using Oldmansoft.ClassicDomain.Driver;
-using System;
 using System.Collections.Concurrent;
 
 namespace Oldmansoft.ClassicDomain
@@ -9,29 +8,6 @@ namespace Oldmansoft.ClassicDomain
     /// </summary>
     public abstract class UnitOfWorkManagedContext : IUnitOfWorkManagedItem
     {
-        private static readonly ConcurrentDictionary<Type, string> ConnectionStringStore = new ConcurrentDictionary<Type, string>();
-
-        /// <summary>
-        /// 设置连接字符串
-        /// </summary>
-        /// <param name="contextType"></param>
-        /// <param name="connectionString"></param>
-        public static void SetConnectionString(Type contextType, string connectionString)
-        {
-            ConnectionStringStore.AddOrUpdate(contextType, connectionString, (oldkey, oldvalue) => connectionString);
-        }
-
-        /// <summary>
-        /// 获取连接字符串
-        /// </summary>
-        /// <param name="contextType"></param>
-        /// <returns></returns>
-        public static string GetConnectionString(Type contextType)
-        {
-            if (ConnectionStringStore.TryGetValue(contextType, out string result)) return result;
-            throw new ClassicDomainException(contextType, string.Format("{0} 需要配置连接字符串，请使用 RepositoryFactory.SetConnectionString 静态方法。", contextType.FullName));
-        }
-
         /// <summary>
         /// 更新命令集
         /// </summary>

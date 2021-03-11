@@ -18,13 +18,13 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
 
         private Config InitItem(Type callerType)
         {
-            var connectionString = UnitOfWorkManagedContext.GetConnectionString(callerType);
+            var connectionString = ConnectionString.Get(callerType);
             var setting = MongoServerSettings.FromUrl(new MongoUrl(connectionString));
             var databaseName = new Uri(connectionString).GetDatabaseName();
 
             if (string.IsNullOrEmpty(databaseName))
             {
-                throw new ConfigItemException(callerType, string.Format("config 文件的配置项 {0} ConnectionString 需要指定数据库名称", callerType.Name));
+                throw new ConfigItemException(callerType, string.Format("ConnectionString 需要指定数据库名称", callerType.Name));
             }
             return new Config(CreateMongoServer(setting), databaseName);
         }
