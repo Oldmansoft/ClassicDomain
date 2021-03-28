@@ -24,7 +24,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
 
             if (string.IsNullOrEmpty(databaseName))
             {
-                throw new ConfigItemException(callerType, string.Format("ConnectionString 需要指定数据库名称", callerType.Name));
+                databaseName = "DefaultDatabase";
             }
             return new Config(CreateMongoServer(setting), databaseName);
         }

@@ -16,6 +16,12 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis
         /// </summary>
         private static ConfigStore ConfigStore { get; set; }
 
+        /// <summary>
+        /// 是否运行在低版本的服务器上
+        /// 低版本的服务器不支持命令 rpush
+        /// </summary>
+        public static bool IsLowServerVersion { get; set; }
+
         static Context()
         {
             ConfigStore = new ConfigStore();
@@ -23,14 +29,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis
 
         private readonly Dictionary<Type, IDbSet> DbSetStore;
 
-        private Config Config { get; set; }
+        private Config Config;
 
-        private IDatabase Database { get; set; }
-
-        /// <summary>
-        /// 是否低服务器版本
-        /// </summary>
-        public bool IsLowServerVersion { get; set; }
+        private IDatabase Database;
 
         /// <summary>
         /// 创建实体上下文
