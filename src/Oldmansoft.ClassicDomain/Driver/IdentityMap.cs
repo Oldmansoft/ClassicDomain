@@ -9,7 +9,7 @@ namespace Oldmansoft.ClassicDomain.Driver
     /// <typeparam name="TDomain"></typeparam>
     public class IdentityMap<TDomain>
     {
-        private ConcurrentDictionary<object, TDomain> Store;
+        private readonly ConcurrentDictionary<object, TDomain> Store;
 
         /// <summary>
         /// 获取主键
