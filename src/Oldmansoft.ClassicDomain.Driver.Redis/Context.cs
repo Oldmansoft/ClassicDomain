@@ -101,6 +101,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis
         /// <param name="commands"></param>
         /// <param name="keyExpression"></param>
         /// <returns></returns>
-        internal abstract IDbSet CreateDbSet<TDomain, TKey>(Config config, IDatabase db, ConcurrentQueue<ICommand> commands, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression) where TDomain : class, new();
+        internal IDbSet CreateDbSet<TDomain, TKey>(Config config, IDatabase db, ConcurrentQueue<ICommand> commands, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression) where TDomain : class, new()
+        {
+            return new SafeModeDbSet<TDomain, TKey>(config, db, commands, keyExpression);
+        }
     }
 }

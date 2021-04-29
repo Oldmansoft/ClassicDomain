@@ -22,8 +22,7 @@ namespace Oldmansoft.ClassicDomain.Util
         /// <returns></returns>
         public static Func<string, object> Get(Type type)
         {
-            Func<string, object> result;
-            if (Store.TryGetValue(type, out result))
+            if (Store.TryGetValue(type, out Func<string, object> result))
             {
                 return result;
             }
