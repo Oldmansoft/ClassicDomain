@@ -5,13 +5,13 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core.Commands
 {
     class AddCommand<TDomain> : ICommand
     {
-        private readonly MongoCollection<TDomain> Collection;
+        private readonly IMongoCollection<TDomain> Collection;
 
         private readonly TDomain Domain;
 
         private readonly IdentityMap<TDomain> IdentityMap;
 
-        public AddCommand(MongoCollection<TDomain> collection, TDomain domain, IdentityMap<TDomain> identityMap)
+        public AddCommand(IMongoCollection<TDomain> collection, TDomain domain, IdentityMap<TDomain> identityMap)
         {
             Collection = collection;
             Domain = domain;
@@ -30,13 +30,23 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core.Commands
             {
                 throw new UniqueException(typeof(TDomain), ex);
             }
+            catch (MongoWriteException ex)
+            {
+                if (ex.WriteError.Code == 11000)
+                {
+                    throw new UniqueException(typeof(TDomain), ex.WriteError.Message);
+                }
+                else
+                {
+                    throw new ClassicDomainException(typeof(TDomain), ex.Message);
+                }
+            }
         }
 
         private bool ExecuteInsert()
         {
-            var result = Collection.Insert(Domain);
-            if (result == null) return true;
-            return !result.HasLastErrorMessage;
+            Collection.InsertOne(Domain);
+            return true;
         }
     }
 }

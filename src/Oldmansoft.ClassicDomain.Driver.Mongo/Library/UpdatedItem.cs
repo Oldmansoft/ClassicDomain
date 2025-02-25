@@ -4,21 +4,21 @@ using System.Collections.Generic;
 
 namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
 {
-    internal class UpdatedItem
+    internal class UpdatedItem<TDomain>
     {
-        private readonly IMongoQuery Query;
+        private readonly FilterDefinition<TDomain> Filter;
 
-        private IMongoUpdate NormalUpdate;
+        private UpdateDefinition<TDomain> NormalUpdate;
 
-        private readonly List<IMongoUpdate> UpdateList;
+        private readonly List<UpdateDefinition<TDomain>> UpdateList;
 
         public UpdatedItem(BsonValue id)
         {
-            Query = MongoDB.Driver.Builders.Query.EQ("_id", id);
-            UpdateList = new List<IMongoUpdate>();
+            Filter = Builders<TDomain>.Filter.Eq("_id", id);
+            UpdateList = new List<UpdateDefinition<TDomain>>();
         }
 
-        public void Add(IMongoUpdate update)
+        public void Combine(UpdateDefinition<TDomain> update)
         {
             if (NormalUpdate == null)
             {
@@ -26,11 +26,11 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
             }
             else
             {
-                NormalUpdate = MongoDB.Driver.Builders.Update.Combine(NormalUpdate, update);
+                NormalUpdate = Builders<TDomain>.Update.Combine(NormalUpdate, update);
             }
         }
 
-        public void AddOther(IMongoUpdate update)
+        public void AddOne(UpdateDefinition<TDomain> update)
         {
             UpdateList.Add(update);
         }
@@ -40,31 +40,31 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
             return NormalUpdate != null || UpdateList.Count > 0;
         }
 
-        public bool Execute<TEntity>(MongoDB.Driver.MongoCollection<TEntity> collection)
+        public bool Execute(IMongoCollection<TDomain> collection)
         {
             bool result = false;
             if (NormalUpdate != null)
             {
-                var writeResult = collection.Update(Query, NormalUpdate);
+                var writeResult = collection.UpdateOne(Filter, NormalUpdate);
                 if (writeResult == null)
                 {
                     result = true;
                 }
                 else
                 {
-                    result = writeResult.DocumentsAffected > 0;
+                    result = writeResult.ModifiedCount > 0;
                 }
             }
             foreach (var update in UpdateList)
             {
-                var writeResult = collection.Update(Query, update);
+                var writeResult = collection.UpdateOne(Filter, update);
                 if (writeResult == null)
                 {
                     result = true;
                 }
                 else
                 {
-                    result = writeResult.DocumentsAffected > 0 || result;
+                    result = writeResult.ModifiedCount > 0 || result;
                 }
             }
             return result;

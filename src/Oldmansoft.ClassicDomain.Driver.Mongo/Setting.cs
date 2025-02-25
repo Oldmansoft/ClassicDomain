@@ -1,7 +1,9 @@
-﻿using MongoDB.Driver.Builders;
-using Oldmansoft.ClassicDomain.Util;
+﻿using Oldmansoft.ClassicDomain.Util;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using MongoDB.Driver;
 
 namespace Oldmansoft.ClassicDomain.Driver.Mongo
 {
@@ -181,6 +183,24 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         }
 
         /// <summary>
+        /// 判断索引存在
+        /// </summary>
+        /// <param name="indexs"></param>
+        /// <param name="keyNames"></param>
+        /// <returns></returns>
+        private bool IndexExists(IMongoIndexManager<TEntity> indexs, string[] keyNames)
+        {
+            foreach(var bson in indexs.List().ToList())
+            {
+                if (keyNames.SequenceEqual(bson["key"].AsBsonDocument.Names))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// 设置索引
         /// </summary>
         /// <param name="isAscending">是否顺序排序</param>
@@ -194,24 +214,30 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
             if (!OnceSet.Use(string.Format("SetIndex{0}:{1}", DbSet.GetTableName(), string.Join(",", keyNames)))) return this;
 
             var collection = DbSet.GetCollection();
-            if (!collection.IndexExists(keyNames))
+            if (!IndexExists(collection.Indexes, keyNames))
             {
-                IndexKeysBuilder keys;
+                var keys = new List<IndexKeysDefinition<TEntity>>();
                 if (isAscending)
                 {
-                    keys = IndexKeys.Ascending(keyNames);
+                    foreach (var keyExpression in keyExpressions)
+                    {
+                        keys.Add(Builders<TEntity>.IndexKeys.Ascending(keyExpression));
+                    }
                 }
                 else
                 {
-                    keys = IndexKeys.Descending(keyNames);
+                    foreach (var keyExpression in keyExpressions)
+                    {
+                        keys.Add(Builders<TEntity>.IndexKeys.Descending(keyExpression));
+                    }
                 }
                 if (isUnique)
                 {
-                    collection.CreateIndex(keys, IndexOptions.SetUnique(true));
+                    collection.Indexes.CreateOne(new CreateIndexModel<TEntity>(Builders<TEntity>.IndexKeys.Combine(keys), new CreateIndexOptions { Unique = true }));
                 }
                 else
                 {
-                    collection.CreateIndex(keys);
+                    collection.Indexes.CreateOne(new CreateIndexModel<TEntity>(Builders<TEntity>.IndexKeys.Combine(keys)));
                 }
             }
             return this;
@@ -228,9 +254,10 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
             if (!OnceSet.Use(string.Format("SetIndex{0}:{1}", DbSet.GetTableName(), key))) return this;
 
             var collection = DbSet.GetCollection();
-            if (!collection.IndexExists(key))
+            if (!IndexExists(collection.Indexes, new string[] { key }))
             {
-                collection.CreateIndex(IndexKeys.GeoSpatial(key));
+                var model = new CreateIndexModel<TEntity>(Builders<TEntity>.IndexKeys.Geo2D(keyExpression));
+                collection.Indexes.CreateOne(model);
             }
             return this;
         }
@@ -246,9 +273,10 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
             if (!OnceSet.Use(string.Format("SetIndex{0}:{1}", DbSet.GetTableName(), key))) return this;
 
             var collection = DbSet.GetCollection();
-            if (!collection.IndexExists(key))
+            if (!IndexExists(collection.Indexes, new string[] { key }))
             {
-                collection.CreateIndex(IndexKeys.GeoSpatialSpherical(key));
+                var model = new CreateIndexModel<TEntity>(Builders<TEntity>.IndexKeys.Geo2DSphere(keyExpression));
+                collection.Indexes.CreateOne(model);
             }
             return this;
         }

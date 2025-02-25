@@ -1,4 +1,7 @@
-﻿using MongoDB.Driver;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 
@@ -19,14 +22,13 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         private Config InitItem(Type callerType)
         {
             var connectionString = ConnectionString.Get(callerType);
-            var setting = MongoServerSettings.FromUrl(new MongoUrl(connectionString));
             var databaseName = new Uri(connectionString).GetDatabaseName();
-
             if (string.IsNullOrEmpty(databaseName))
             {
                 databaseName = "DefaultDatabase";
             }
-            return new Config(CreateMongoServer(setting), databaseName);
+            BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
+            return new Config(new MongoClient(new MongoUrl(connectionString)), databaseName);
         }
 
         /// <summary>
@@ -53,16 +55,6 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
                 Items.Add(name, item);
                 return item;
             }
-        }
-
-        /// <summary>
-        /// 创建服务器
-        /// </summary>
-        /// <param name="setting"></param>
-        /// <returns></returns>
-        private MongoServer CreateMongoServer(MongoServerSettings setting)
-        {
-            return new Library.MongoServer(setting);
         }
     }
 }

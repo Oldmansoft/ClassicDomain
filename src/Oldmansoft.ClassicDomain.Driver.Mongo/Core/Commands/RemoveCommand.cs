@@ -6,35 +6,31 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core.Commands
 {
     class RemoveCommand<TDomain, TKey> : ICommand
     {
-        private readonly MongoCollection<TDomain> Collection;
-
-        private readonly Expression<Func<TDomain, TKey>> KeyExpression;
+        private readonly IMongoCollection<TDomain> Collection;
 
         private readonly TKey Id;
 
-        private readonly IdentityMap<TDomain> IdentityMap;
+        private readonly DbSet<TDomain, TKey> DbSet;
 
-        public RemoveCommand(MongoCollection<TDomain> collection, Expression<Func<TDomain, TKey>> keyExpression, TKey id, IdentityMap<TDomain> identityMap)
+        public RemoveCommand(IMongoCollection<TDomain> collection, TKey id, DbSet<TDomain, TKey> dbSet)
         {
             Collection = collection;
-            KeyExpression = keyExpression;
             Id = id;
-            IdentityMap = identityMap;
+            DbSet = dbSet;
         }
 
         public bool Execute()
         {
             var result = ExecuteRemove();
-            if (result) IdentityMap.Remove(Id);
+            if (result) DbSet.IdentityMap.Remove(Id);
             return result;
         }
 
         private bool ExecuteRemove()
         {
-            var query = MongoDB.Driver.Builders.Query<TDomain>.EQ(KeyExpression, Id);
-            var result = Collection.Remove(query);
-            if (result == null) return true;
-            return result.DocumentsAffected > 0;
+            var filter = Builders<TDomain>.Filter.Eq(DbSet.KeyExpression, Id);
+            Collection.DeleteOne(filter);
+            return true;
         }
     }
 }

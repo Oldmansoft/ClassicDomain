@@ -39,22 +39,6 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         }
 
         /// <summary>
-        /// 创建实体集
-        /// </summary>
-        /// <typeparam name="TDomain"></typeparam>
-        /// <typeparam name="TKey"></typeparam>
-        /// <param name="commands"></param>
-        /// <param name="keyExpression"></param>
-        /// <returns></returns>
-        internal IDbSet<TDomain, TKey> CreateDbSet<TDomain, TKey>(ConcurrentQueue<ICommand> commands, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
-        {
-            var database = GetConfig().GetDatabase() as Library.MongoDatabase;
-            var result = new DbSet<TDomain, TKey>(database, commands, keyExpression);
-            database.SetIdentityMap(result.IdentityMap);
-            return result;
-        }
-
-        /// <summary>
         /// 添加领域上下文
         /// 主键表达式必须为 Id
         /// </summary>
@@ -77,7 +61,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
             {
                 throw new ClassicDomainException(type, string.Format("{0} 的主键表达式必须为 Id", type.FullName));
             }
-            var dbSet = CreateDbSet(Commands, keyExpression);
+            var dbSet = new DbSet<TDomain, TKey>(GetConfig().GetDatabase(), Commands, keyExpression);
             DbSet.Add(type, dbSet);
             return new Setting<TDomain, TKey>(dbSet);
         }

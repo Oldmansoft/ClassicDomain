@@ -48,13 +48,13 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// 注册执行
         /// </summary>
         /// <param name="execute"></param>
-        void RegisterExecute(Func<MongoCollection<TDomain>, bool> execute);
+        void RegisterExecute(Func<IMongoCollection<TDomain>, bool> execute);
 
         /// <summary>
         /// 获取 Mongo 集
         /// </summary>
         /// <returns></returns>
-        MongoCollection<TDomain> GetCollection();
+        IMongoCollection<TDomain> GetCollection();
 
         /// <summary>
         /// 设置表名

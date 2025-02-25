@@ -8,9 +8,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
     internal class Config
     {
         /// <summary>
-        /// 服务
+        /// 连接客户端
         /// </summary>
-        private MongoServer Server { get; set; }
+        private MongoClient Client { get; set; }
 
         /// <summary>
         /// 数据库名称
@@ -20,11 +20,11 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// <summary>
         /// 创建配置项
         /// </summary>
-        /// <param name="server"></param>
+        /// <param name="client"></param>
         /// <param name="databaseName"></param>
-        public Config(MongoServer server, string databaseName)
+        public Config(MongoClient client, string databaseName)
         {
-            Server = server;
+            Client = client;
             DatabaseName = databaseName;
         }
 
@@ -32,9 +32,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// 获取数据库
         /// </summary>
         /// <returns></returns>
-        public MongoDatabase GetDatabase()
+        public IMongoDatabase GetDatabase()
         {
-            return Server.GetDatabase(DatabaseName);
+            return Client.GetDatabase(DatabaseName);
         }
     }
 }

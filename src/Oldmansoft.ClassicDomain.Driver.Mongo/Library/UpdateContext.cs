@@ -1,5 +1,5 @@
 ﻿using MongoDB.Bson;
-using MongoDB.Driver.Builders;
+using MongoDB.Driver;
 using Oldmansoft.ClassicDomain.Util;
 using System;
 
@@ -8,7 +8,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
     /// <summary>
     /// 更新内容上下文
     /// </summary>
-    internal class UpdateContext
+    internal class UpdateContext<TDomain>
     {
         /// <summary>
         /// 获取上下文
@@ -18,14 +18,14 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
         /// <param name="compareSource"></param>
         /// <param name="compareTarget"></param>
         /// <returns></returns>
-        public static UpdatedItem GetContext(object id, Type type, object compareSource, object compareTarget)
+        public static UpdatedItem<TDomain> GetContext(object id, Type type, object compareSource, object compareTarget)
         {
-            var result = new UpdatedItem(id.ToBsonValue());
+            var result = new UpdatedItem<TDomain>(id.ToBsonValue());
             GetUpdateContext(type, result, new string[0], compareSource, compareTarget);
             return result;
         }
 
-        private static void GetUpdateContext(Type type, UpdatedItem result, string[] names, object compareSource, object compareTarget)
+        private static void GetUpdateContext(Type type, UpdatedItem<TDomain> result, string[] names, object compareSource, object compareTarget)
         {
             foreach (var property in TypePublicInstancePropertyInfoStore.GetValues(type))
             {
@@ -58,32 +58,32 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
 
                 if (!sourceValue.IsEquals(targetValue))
                 {
-                    result.Add(Update.Set(currentNames.JoinDot(), targetValue.ToBsonValue()));
+                    result.Combine(Builders<TDomain>.Update.Set(currentNames.JoinDot(), targetValue.ToBsonValue()));
                 }
             }
         }
 
-        private static void DealNormalClass(UpdatedItem result, Type type, string[] names, object sourceValue, object targetValue)
+        private static void DealNormalClass(UpdatedItem<TDomain> result, Type type, string[] names, object sourceValue, object targetValue)
         {
             if (sourceValue != null && targetValue != null)
             {
                 GetUpdateContext(type, result, names, sourceValue, targetValue);
                 return;
             }
-            result.Add(new UpdateBuilder().SetObjectWrapped(names.JoinDot(), targetValue));
+            result.Combine(SetObjectWrapped(names.JoinDot(), targetValue));
         }
 
-        private static void DealList(UpdatedItem result, Type propertyType, string[] names, object sourceValue, object targetValue)
+        private static void DealList(UpdatedItem<TDomain> result, Type propertyType, string[] names, object sourceValue, object targetValue)
         {
             if (sourceValue != null && targetValue != null)
             {
                 DealListChange(result, propertyType, names, sourceValue, targetValue);
                 return;
             }
-            result.Add(new UpdateBuilder().SetObjectWrapped(names.JoinDot(), targetValue));
+            result.Combine(SetObjectWrapped(names.JoinDot(), targetValue));
         }
 
-        private static void DealListChange(UpdatedItem result, Type propertyType, string[] names, object sourceValue, object targetValue)
+        private static void DealListChange(UpdatedItem<TDomain> result, Type propertyType, string[] names, object sourceValue, object targetValue)
         {
             var itemType = propertyType.IsArray ? propertyType.GetMethod("Set").GetParameters()[1].ParameterType : propertyType.GetGenericArguments()[0];
             var isNormalClass = itemType.IsNormalClass();
@@ -95,7 +95,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
             {
                 if (IsByteArrayContentDifferent(sourceList, targetList))
                 {
-                    result.Add(new UpdateBuilder().SetObjectWrapped(name, targetValue));
+                    result.Combine(SetObjectWrapped(name, targetValue));
                 }
                 return;
             }
@@ -104,7 +104,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
             {
                 if (i >= sourceList.Count)
                 {
-                    result.AddOther(Update.Push(name, GetBsonValue(itemType, targetList[i], isNormalClass)));
+                    result.AddOne(Builders<TDomain>.Update.Push(name, GetBsonValue(itemType, targetList[i], isNormalClass)));
                     continue;
                 }
                 if (isNormalClass)
@@ -114,7 +114,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
                 }
                 if (!sourceList[i].IsEquals(targetList[i]))
                 {
-                    result.Add(Update.Set(GetListKey(names, i), GetBsonValue(itemType, targetList[i])));
+                    result.Combine(Builders<TDomain>.Update.Set(GetListKey(names, i), GetBsonValue(itemType, targetList[i])));
                 }
             }
 
@@ -122,22 +122,23 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
             for (var i = targetList.Count; i < sourceList.Count; i++)
             {
                 isRemoveObject = true;
-                result.AddOther(new UpdateBuilder().SetObjectWrapped(GetListKey(names, i), RemoveObject.Instance));
+                result.AddOne(SetObjectWrapped(GetListKey(names, i), RemoveObject.Instance));
             }
-            if (isRemoveObject) result.AddOther(new UpdateBuilder().PullObjectWrapped(name, RemoveObject.Instance));
+            if (isRemoveObject) result.AddOne(PullObjectWrapped(name, RemoveObject.Instance));
         }
 
-        private static void DealDictionary(UpdatedItem result, Type propertyType, string[] names, object sourceValue, object targetValue)
+        private static void DealDictionary(UpdatedItem<TDomain> result, Type propertyType, string[] names, object sourceValue, object targetValue)
         {
             if (sourceValue != null && targetValue != null)
             {
                 DealDictionaryChange(result, propertyType, names, sourceValue, targetValue);
                 return;
             }
-            result.Add(new UpdateBuilder().SetObjectWrapped(names.JoinDot(), targetValue));
+            new UpdateDefinitionBuilder<TDomain>().Set(names.JoinDot(), targetValue);
+            result.Combine(SetObjectWrapped(names.JoinDot(), targetValue));
         }
 
-        private static void DealDictionaryChange(UpdatedItem result, Type propertyType, string[] names, object sourceValue, object targetValue)
+        private static void DealDictionaryChange(UpdatedItem<TDomain> result, Type propertyType, string[] names, object sourceValue, object targetValue)
         {
             var valueType = propertyType.GetGenericArguments()[1];
             var isNormalClass = valueType.IsNormalClass();
@@ -148,7 +149,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
             {
                 if (!sourceDictionary.Contains(key))
                 {
-                    result.Add(Update.Set(GetHashKey(names, key.ToString()), GetBsonValue(valueType, targetDictionary[key], isNormalClass)));
+                    result.Combine(Builders<TDomain>.Update.Set(GetHashKey(names, key.ToString()), GetBsonValue(valueType, targetDictionary[key], isNormalClass)));
                     continue;
                 }
                 if (isNormalClass)
@@ -158,14 +159,14 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
                 }
                 if (!sourceDictionary[key].IsEquals(targetDictionary[key]))
                 {
-                    result.Add(Update.Set(GetHashKey(names, key.ToString()), GetBsonValue(valueType, targetDictionary[key], isNormalClass)));
+                    result.Combine(Builders<TDomain>.Update.Set(GetHashKey(names, key.ToString()), GetBsonValue(valueType, targetDictionary[key], isNormalClass)));
                 }
             }
             foreach (var key in sourceDictionary.Keys)
             {
                 if (!targetDictionary.Contains(key))
                 {
-                    result.AddOther(Update.Unset(GetHashKey(names, key.ToString())));
+                    result.AddOne(Builders<TDomain>.Update.Unset(GetHashKey(names, key.ToString())));
                 }
             }
         }
@@ -208,6 +209,20 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
         private static string GetListKey(string[] source, int index)
         {
             return source.AddToNew(index.ToString()).JoinDot();
+        }
+
+        public static UpdateDefinition<TDomain> SetObjectWrapped(string name, object value)
+        {
+            if (value == null) return Builders<TDomain>.Update.Set(name, BsonValue.Create(null));
+            if (name == null) { throw new ArgumentNullException("name"); }
+            return Builders<TDomain>.Update.Set(name, BsonDocumentWrapper.Create(value.GetType(), value));
+        }
+
+        public static UpdateDefinition<TDomain> PullObjectWrapped(string name, object value)
+        {
+            if (value == null) return Builders<TDomain>.Update.Pull(name, BsonValue.Create(null));
+            if (name == null) { throw new ArgumentNullException("name"); }
+            return Builders<TDomain>.Update.Pull(name, BsonDocumentWrapper.Create(value.GetType(), value));
         }
     }
 }

@@ -5,11 +5,11 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core.Commands
 {
     class ActionCommand<TDomain> : ICommand
     {
-        private readonly MongoCollection<TDomain> Collection;
+        private readonly IMongoCollection<TDomain> Collection;
 
-        private readonly Func<MongoCollection<TDomain>, bool> Action;
+        private readonly Func<IMongoCollection<TDomain>, bool> Action;
 
-        public ActionCommand(MongoCollection<TDomain> collection, Func<MongoCollection<TDomain>, bool> action)
+        public ActionCommand(IMongoCollection<TDomain> collection, Func<IMongoCollection<TDomain>, bool> action)
         {
             Collection = collection;
             Action = action;
