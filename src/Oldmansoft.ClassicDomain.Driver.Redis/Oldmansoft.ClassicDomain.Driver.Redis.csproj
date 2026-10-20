@@ -22,4 +22,8 @@
     <ProjectReference Include="..\Oldmansoft.ClassicDomain\Oldmansoft.ClassicDomain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Oldmansoft.ClassicDomain.Tests" />
+  </ItemGroup>
+
 </Project>

@@ -1,15 +1,20 @@
 ﻿using Oldmansoft.ClassicDomain.Util;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
 {
     class ContextGetHelper
     {
+        private static readonly ConcurrentDictionary<Type, ReflectionItem> ReflectionCache = new ConcurrentDictionary<Type, ReflectionItem>();
+
         public static ReflectionItem GetReflection(Type type)
         {
+            if (ReflectionCache.TryGetValue(type, out ReflectionItem cached)) return cached;
             var result = new ReflectionItem();
             SetReflection(type, result, new string[0]);
+            ReflectionCache.TryAdd(type, result);
             return result;
         }
 
@@ -19,29 +24,38 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
             {
                 var currentNames = prefixNames.AddToNew(property.Name);
                 var propertyType = property.PropertyType;
-                if (propertyType.IsArrayOrGenericList())
+                var name = currentNames.JoinDot();
+                if (TypeKind.IsByteArray(propertyType))
                 {
-                    result.ListNames.Add(currentNames.JoinDot());
+                    result.ByteNames.Add(name);
                     continue;
                 }
 
-                if (propertyType.IsGenericDictionary())
+                if (TypeKind.IsList(propertyType))
                 {
-                    result.HashNames.Add(currentNames.JoinDot());
+                    result.ListNames.Add(name);
                     continue;
                 }
 
-                if (propertyType.IsNormalClass())
+                if (TypeKind.IsDictionary(propertyType))
+                {
+                    result.HashNames.Add(name);
+                    continue;
+                }
+
+                if (TypeKind.IsNormalClass(propertyType))
                 {
                     SetReflection(propertyType, result, currentNames);
                     continue;
                 }
+
+                result.ScalarNames.Add(name);
             }
         }
 
         public static T GetContext<T>(DataGetMapping mapping) where T : class, new()
         {
-            if (mapping == null || mapping.Fields.Count == 0) return default;
+            if (mapping == null || (mapping.Fields.Count == 0 && mapping.Bytes.Count == 0)) return default;
             var result = new T();
             SetContext(mapping, typeof(T), result, new string[0]);
             return result;
@@ -54,13 +68,19 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
                 var currentNames = prefixNames.AddToNew(property.Name);
                 var name = currentNames.JoinDot();
                 var propertyType = property.Type;
+                if (TypeKind.IsByteArray(propertyType))
+                {
+                    if (mapping.Bytes.ContainsKey(name)) property.Set(instance, mapping.Bytes[name]);
+                    continue;
+                }
+
                 if (propertyType.IsArray)
                 {
                     SetArray(mapping, instance, property, name);
                     continue;
                 }
 
-                if (propertyType.IsGenericDictionary())
+                if (TypeKind.IsDictionary(propertyType))
                 {
                     SetDictionary(mapping, instance, property, name);
                     continue;
@@ -73,7 +93,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
                 }
 
                 if (!mapping.Fields.ContainsKey(name)) continue;
-                if (propertyType.IsNormalClass())
+                if (TypeKind.IsNormalClass(propertyType))
                 {
                     var obj = ObjectCreator.CreateInstance(propertyType);
                     SetContext(mapping, propertyType, obj, currentNames);

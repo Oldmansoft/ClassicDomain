@@ -1,5 +1,6 @@
 ﻿using MongoDB.Driver;
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core.Commands
@@ -28,7 +29,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core.Commands
             var source = DbSet.IdentityMap.Get(Id);
             if (source == null)
             {
-                throw new ClassicDomainException(type, "修改的实例必须经过加载。");
+                return ExecuteReplaceOne();
             }
             var context = Library.UpdateContext<TDomain>.GetContext(Id, type, source, Domain);
             if (!context.HasValue()) return false;
@@ -45,15 +46,29 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core.Commands
             }
             catch (MongoWriteException ex)
             {
-                if (ex.WriteError.Code == 11000)
-                {
-                    throw new UniqueException(typeof(TDomain), ex.WriteError.Message);
-                }
-                else
-                {
-                    throw new ClassicDomainException(typeof(TDomain), ex.Message);
-                }
+                throw WriteError(ex.WriteError.Code, ex.WriteError.Message, ex.Message);
             }
+            catch (MongoBulkWriteException<TDomain> ex)
+            {
+                var error = ex.WriteErrors.FirstOrDefault();
+                if (error == null) throw new ClassicDomainException(type, ex.Message);
+                throw WriteError(error.Code, error.Message, ex.Message);
+            }
+        }
+
+        private bool ExecuteReplaceOne()
+        {
+            var filter = Builders<TDomain>.Filter.Eq(DbSet.KeyExpression, Id);
+            var writeResult = Collection.ReplaceOne(filter, Domain);
+            var modified = writeResult != null && writeResult.ModifiedCount > 0;
+            if (modified) DbSet.IdentityMap.Set(Domain);
+            return modified;
+        }
+
+        private Exception WriteError(int code, string writeMessage, string fallback)
+        {
+            if (code == 11000) return new UniqueException(typeof(TDomain), writeMessage);
+            return new ClassicDomainException(typeof(TDomain), fallback);
         }
     }
 }

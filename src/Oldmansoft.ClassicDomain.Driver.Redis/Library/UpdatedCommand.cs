@@ -1,6 +1,8 @@
 ﻿using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
 {
@@ -35,6 +37,11 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
         public Dictionary<string, string> HashSet { get; private set; }
 
         /// <summary>
+        /// 主哈希里的二进制字段
+        /// </summary>
+        public Dictionary<string, byte[]> HashSetBinary { get; private set; }
+
+        /// <summary>
         /// 设置范围在集合列表
         /// </summary>
         public Dictionary<string, Dictionary<string, string>> HashSetList { get; private set; }
@@ -59,6 +66,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
             ListSetByIndex = new Dictionary<string, Dictionary<int, string>>();
             ListRemove = new Dictionary<string, string>();
             HashSet = new Dictionary<string, string>();
+            HashSetBinary = new Dictionary<string, byte[]>();
             HashSetList = new Dictionary<string, Dictionary<string, string>>();
             HashDelete = new List<string>();
             HashDeleteList = new Dictionary<string, List<string>>();
@@ -90,73 +98,95 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
         }
 
         /// <summary>
-        /// 执行
+        /// 把本实体的写入放进同一次 pipeline
         /// </summary>
-        /// <param name="db"></param>
+        /// <param name="target"></param>
         /// <param name="dbSet"></param>
-        public void Execute(IDatabase db, Core.IMergeKey<TKey> dbSet)
+        /// <param name="tasks"></param>
+        public void Queue(IDatabaseAsync target, Core.IMergeKey<TKey> dbSet, ICollection<Task> tasks)
         {
             foreach (var item in KeyDelete)
             {
-                db.KeyDelete(dbSet.MergeKey(Key, item));
+                tasks.Add(target.KeyDeleteAsync(dbSet.MergeKey(Key, item)));
             }
-            foreach (var item in HashDelete)
+            if (HashDelete.Count > 0)
             {
-                db.HashDelete(dbSet.MergeKey(Key), item);
+                tasks.Add(target.HashDeleteAsync(dbSet.MergeKey(Key), HashDelete.Select(name => (RedisValue)name).ToArray()));
             }
-            if (HashSet.Count > 0)
+            var entries = new List<HashEntry>();
+            foreach (var item in HashSet)
             {
-                db.HashSet(dbSet.MergeKey(Key), HashSet.ToHashEntries());
+                entries.Add(new HashEntry(item.Key, item.Value));
+            }
+            foreach (var item in HashSetBinary)
+            {
+                entries.Add(new HashEntry(item.Key, item.Value));
+            }
+            if (entries.Count > 0)
+            {
+                tasks.Add(target.HashSetAsync(dbSet.MergeKey(Key), entries.ToArray()));
             }
             foreach (var item in ListRightPush)
             {
                 if (item.Value.Count == 0) continue;
+                var listKey = dbSet.MergeKey(Key, item.Key);
                 if (dbSet.IsLowServerVersion())
                 {
                     foreach (var subItem in item.Value)
                     {
-                        db.ListRightPush(dbSet.MergeKey(Key, item.Key), subItem);
+                        tasks.Add(target.ListRightPushAsync(listKey, subItem));
                     }
                 }
                 else
                 {
-                    try
-                    {
-                        db.ListRightPush(dbSet.MergeKey(Key, item.Key), item.Value.ToRedisValues());
-                    }
-                    catch (RedisServerException ex)
-                    {
-                        if (ex.Message == "ERR wrong number of arguments for 'rpush' command")
-                        {
-                            throw new ClassicDomainException(DomainType, Core.ConfigStore.AlertLowServerVersion);
-                        }
-                        throw;
-                    }
+                    tasks.Add(target.ListRightPushAsync(listKey, item.Value.ToRedisValues()));
                 }
             }
             foreach (var line in ListSetByIndex)
             {
+                var listKey = dbSet.MergeKey(Key, line.Key);
                 foreach (var item in line.Value)
                 {
-                    try
-                    {
-                        db.ListSetByIndex(dbSet.MergeKey(Key, line.Key), item.Key, item.Value);
-                    }
-                    catch (RedisServerException) { }
+                    tasks.Add(target.ListSetByIndexAsync(listKey, item.Key, item.Value));
                 }
             }
             foreach (var item in ListRemove)
             {
-                db.ListRemove(dbSet.MergeKey(Key, item.Key), item.Value);
+                tasks.Add(target.ListRemoveAsync(dbSet.MergeKey(Key, item.Key), item.Value));
             }
             foreach (var item in HashSetList)
             {
                 if (item.Value.Count == 0) continue;
-                db.HashSet(dbSet.MergeKey(Key, item.Key), item.Value.ToHashEntries());
+                tasks.Add(target.HashSetAsync(dbSet.MergeKey(Key, item.Key), item.Value.ToHashEntries()));
             }
             foreach (var item in HashDeleteList)
             {
-                db.HashDelete(dbSet.MergeKey(Key, item.Key), item.Value.ToRedisValues());
+                tasks.Add(target.HashDeleteAsync(dbSet.MergeKey(Key, item.Key), item.Value.ToRedisValues()));
+            }
+        }
+
+        /// <summary>
+        /// 等待 pipeline，并把旧版 Redis 的 rpush 错误翻译出来
+        /// </summary>
+        /// <param name="tasks"></param>
+        public void Wait(ICollection<Task> tasks)
+        {
+            if (tasks.Count == 0) return;
+            try
+            {
+                Task.WaitAll(tasks.ToArray());
+            }
+            catch (AggregateException ex)
+            {
+                foreach (var inner in ex.InnerExceptions)
+                {
+                    var redisError = inner as RedisServerException ?? inner.InnerException as RedisServerException;
+                    if (redisError != null && redisError.Message == "ERR wrong number of arguments for 'rpush' command")
+                    {
+                        throw new ClassicDomainException(DomainType, Core.ConfigStore.AlertLowServerVersion);
+                    }
+                }
+                throw;
             }
         }
     }

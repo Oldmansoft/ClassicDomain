@@ -42,32 +42,19 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
 
         public bool Execute(IMongoCollection<TDomain> collection)
         {
-            bool result = false;
+            var models = new List<WriteModel<TDomain>>();
             if (NormalUpdate != null)
             {
-                var writeResult = collection.UpdateOne(Filter, NormalUpdate);
-                if (writeResult == null)
-                {
-                    result = true;
-                }
-                else
-                {
-                    result = writeResult.ModifiedCount > 0;
-                }
+                models.Add(new UpdateOneModel<TDomain>(Filter, NormalUpdate));
             }
             foreach (var update in UpdateList)
             {
-                var writeResult = collection.UpdateOne(Filter, update);
-                if (writeResult == null)
-                {
-                    result = true;
-                }
-                else
-                {
-                    result = writeResult.ModifiedCount > 0 || result;
-                }
+                models.Add(new UpdateOneModel<TDomain>(Filter, update));
             }
-            return result;
+            if (models.Count == 0) return false;
+
+            var writeResult = collection.BulkWrite(models, new BulkWriteOptions { IsOrdered = true });
+            return writeResult != null && writeResult.ModifiedCount > 0;
         }
     }
 }

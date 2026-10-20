@@ -3,6 +3,7 @@ using Oldmansoft.ClassicDomain.Util;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
 
 namespace Oldmansoft.ClassicDomain.Driver.Redis
@@ -18,6 +19,16 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis
                 return Serializer.Serialize(value);
             }
 
+            return FormatScalar(value);
+        }
+
+        public static string FormatScalar(object value)
+        {
+            if (value is Guid guid) return guid.ToString("N");
+            if (value is DateTime dateTime) return dateTime.ToString("o", CultureInfo.InvariantCulture);
+            if (value is DateTimeOffset dateTimeOffset) return dateTimeOffset.ToString("o", CultureInfo.InvariantCulture);
+            if (value is bool || value is string || value is char || value.GetType().IsEnum) return value.ToString();
+            if (value is IFormattable formattable) return formattable.ToString(null, CultureInfo.InvariantCulture);
             return value.ToString();
         }
 

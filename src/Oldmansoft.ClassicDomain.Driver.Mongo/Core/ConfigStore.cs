@@ -2,6 +2,7 @@
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using System;
 using System.Collections.Generic;
 
@@ -9,6 +10,10 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
 {
     internal class ConfigStore
     {
+        private static readonly object SerializerGate = new object();
+
+        private static bool GuidSerializerRegistered;
+
         private Dictionary<string, Config> Items { get; set; }
 
         /// <summary>
@@ -19,6 +24,32 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
             Items = new Dictionary<string, Config>();
         }
 
+        private static void EnsureGuidSerializer()
+        {
+            if (GuidSerializerRegistered) return;
+            lock (SerializerGate)
+            {
+                if (GuidSerializerRegistered) return;
+                try
+                {
+#pragma warning disable CS0618
+                    BsonDefaults.GuidRepresentationMode = GuidRepresentationMode.V3;
+#pragma warning restore CS0618
+                }
+                catch (BsonSerializationException)
+                {
+                }
+                try
+                {
+                    BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
+                }
+                catch (BsonSerializationException)
+                {
+                }
+                GuidSerializerRegistered = true;
+            }
+        }
+
         private Config InitItem(Type callerType)
         {
             var connectionString = ConnectionString.Get(callerType);
@@ -27,8 +58,11 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
             {
                 databaseName = "DefaultDatabase";
             }
-            BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
-            return new Config(new MongoClient(new MongoUrl(connectionString)), databaseName);
+            var settings = MongoClientSettings.FromUrl(new MongoUrl(connectionString));
+#pragma warning disable CS0618
+            settings.LinqProvider = LinqProvider.V3;
+#pragma warning restore CS0618
+            return new Config(new MongoClient(settings), databaseName);
         }
 
         /// <summary>
@@ -39,19 +73,15 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         public Config Get(Type callerType)
         {
             var name = callerType.FullName;
-            if (Items.ContainsKey(name))
-            {
-                return Items[name];
-            }
-
-            var item = InitItem(callerType);
             lock (Items)
             {
-                if (Items.ContainsKey(name))
+                if (Items.TryGetValue(name, out Config existing))
                 {
-                    return Items[name];
+                    return existing;
                 }
 
+                EnsureGuidSerializer();
+                var item = InitItem(callerType);
                 Items.Add(name, item);
                 return item;
             }

@@ -1,10 +1,13 @@
 ﻿using StackExchange.Redis;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
 {
-    internal class SafeModeDbSet<TDomain, TKey> : DbSet<TDomain, TKey>, IMergeKey<TKey> where TDomain : class, new()
+    internal class SafeModeDbSet<TDomain, TKey> : DbSet<TDomain, TKey>, IMergeKey<TKey>, IClearIdentityMap where TDomain : class, new()
     {
         private IdentityMap<TDomain> IdentityMap { get; set; }
 
@@ -67,20 +70,56 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
             return string.Format("{0}_{1}:{2}", DomainName, subName, id);
         }
 
+        /// <summary>
+        /// 清空标识映射
+        /// </summary>
+        public void ClearIdentityMap()
+        {
+            IdentityMap.Clear();
+        }
+
         private Library.DataGetMapping FromRedis(IDatabase db, TKey key)
         {
             var reflection = Library.ContextGetHelper.GetReflection(typeof(TDomain));
-            var result = new Library.DataGetMapping(db.HashGetAll(MergeKey(key)).ToStringDictionary());
-            for (var i = 0; i < reflection.ListNames.Count; i++)
+            var batch = db.CreateBatch();
+            var hashTask = batch.HashGetAllAsync(MergeKey(key));
+            var listTasks = new Dictionary<string, Task<RedisValue[]>>();
+            foreach (var name in reflection.ListNames)
             {
-                if (!result.Fields.ContainsKey(reflection.ListNames[i])) continue;
-                result.Lists.Add(reflection.ListNames[i], db.ListRange(MergeKey(key, reflection.ListNames[i])).ToStringList());
+                listTasks.Add(name, batch.ListRangeAsync(MergeKey(key, name)));
             }
-            for (var i = 0; i < reflection.HashNames.Count; i++)
+            var hashTasks = new Dictionary<string, Task<HashEntry[]>>();
+            foreach (var name in reflection.HashNames)
             {
-                if (!result.Fields.ContainsKey(reflection.HashNames[i])) continue;
-                var hash = db.HashGetAll(MergeKey(key, reflection.HashNames[i])).ToStringDictionary();
-                result.Hashs.Add(reflection.HashNames[i], hash);
+                hashTasks.Add(name, batch.HashGetAllAsync(MergeKey(key, name)));
+            }
+            batch.Execute();
+
+            var byteNames = new HashSet<string>(reflection.ByteNames);
+            var fields = new Dictionary<string, string>();
+            var bytes = new Dictionary<string, byte[]>();
+            foreach (var entry in hashTask.Result)
+            {
+                var name = (string)entry.Name;
+                if (byteNames.Contains(name))
+                {
+                    if (!entry.Value.IsNull) bytes[name] = (byte[])entry.Value;
+                    continue;
+                }
+                fields[name] = entry.Value;
+            }
+
+            var result = new Library.DataGetMapping(fields);
+            foreach (var item in bytes) result.Bytes[item.Key] = item.Value;
+            foreach (var item in listTasks)
+            {
+                if (!fields.ContainsKey(item.Key)) continue;
+                result.Lists.Add(item.Key, item.Value.Result.ToStringList());
+            }
+            foreach (var item in hashTasks)
+            {
+                if (!fields.ContainsKey(item.Key)) continue;
+                result.Hashs.Add(item.Key, item.Value.Result.ToStringDictionary());
             }
             return result;
         }

@@ -70,5 +70,13 @@ namespace Oldmansoft.ClassicDomain.Driver
             if (key == null) throw new ArgumentNullException("key");
             Store.TryRemove(key, out _);
         }
+
+        /// <summary>
+        /// 清空本次工作单元里的快照
+        /// </summary>
+        public void Clear()
+        {
+            Store.Clear();
+        }
     }
 }

@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
 {
-    internal class DbSet<TDomain, TKey> : IDbSet<TDomain, TKey>
+    internal class DbSet<TDomain, TKey> : IDbSet<TDomain, TKey>, IClearIdentityMap
     {
         private readonly IMongoDatabase Database;
 
@@ -103,8 +103,15 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// <param name="domain"></param>
         public void RegisterRemove(TDomain domain)
         {
-            domain = domain.MapTo<TDomain>();
             Commands.Enqueue(new Commands.RemoveCommand<TDomain, TKey>(GetCollection(), KeyExpressionCompile(domain), this));
+        }
+
+        /// <summary>
+        /// 清空标识映射
+        /// </summary>
+        public void ClearIdentityMap()
+        {
+            IdentityMap.Clear();
         }
 
         /// <summary>
@@ -164,8 +171,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         public TDomain Get(TKey id)
         {
             var filter = Builders<TDomain>.Filter.Eq(KeyExpression, id);
-            var result = GetCollection().Find(filter);
-            return result.FirstOrDefault();
+            var result = GetCollection().Find(filter).FirstOrDefault();
+            if (result != null) IdentityMap.Set(result);
+            return result;
         }
     }
 }

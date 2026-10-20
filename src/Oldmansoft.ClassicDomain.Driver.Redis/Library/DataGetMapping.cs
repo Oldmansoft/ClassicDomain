@@ -21,11 +21,17 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
         /// </summary>
         public Dictionary<string, Dictionary<string, string>> Hashs { get; set; }
 
+        /// <summary>
+        /// 主哈希里的二进制字段
+        /// </summary>
+        public Dictionary<string, byte[]> Bytes { get; private set; }
+
         public DataGetMapping(Dictionary<string, string> fields)
         {
             Fields = fields;
             Lists = new Dictionary<string, List<string>>();
             Hashs = new Dictionary<string, Dictionary<string, string>>();
+            Bytes = new Dictionary<string, byte[]>();
         }
     }
 }

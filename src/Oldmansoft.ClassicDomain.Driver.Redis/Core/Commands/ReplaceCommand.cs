@@ -1,6 +1,8 @@
 ﻿using Oldmansoft.ClassicDomain.Driver.Redis.Library;
 using StackExchange.Redis;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Driver.Redis.Core.Commands
 {
@@ -37,8 +39,12 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core.Commands
                 throw new ClassicDomainException(type, "修改的实例必须经过加载");
             }
             var command = ContextReplaceHelper.GetContext(Key, type, source, Domain);
-            if (string.IsNullOrEmpty(Db.HashGet(MergeKey(command.Key), "this"))) return false;
-            command.Execute(Db, Merge);
+            var transaction = Db.CreateTransaction();
+            transaction.AddCondition(Condition.HashExists(MergeKey(command.Key), "this"));
+            var tasks = new List<Task>();
+            command.Queue(transaction, Merge, tasks);
+            if (!transaction.Execute()) return false;
+            command.Wait(tasks);
             IdentityMap.Set(Domain);
             return true;
         }

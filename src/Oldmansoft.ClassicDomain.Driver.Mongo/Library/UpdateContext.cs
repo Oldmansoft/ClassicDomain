@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using Oldmansoft.ClassicDomain.Util;
 using System;
+using System.Linq;
 
 namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
 {
@@ -93,7 +94,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
 
             if (IsByteArray(propertyType, itemType))
             {
-                if (IsByteArrayContentDifferent(sourceList, targetList))
+                if (IsByteArrayContentDifferent(sourceValue, targetValue))
                 {
                     result.Combine(SetObjectWrapped(name, targetValue));
                 }
@@ -176,17 +177,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
             return propertyType.IsArray && itemType == typeof(byte);
         }
 
-        private static bool IsByteArrayContentDifferent(System.Collections.IList sourceList, System.Collections.IList targetList)
+        private static bool IsByteArrayContentDifferent(object sourceValue, object targetValue)
         {
-            if (targetList.Count != sourceList.Count) return true;
-            for (var i = 0; i < targetList.Count; i++)
-            {
-                if ((byte)sourceList[i] != (byte)targetList[i])
-                {
-                    return true;
-                }
-            }
-            return false;
+            return !((byte[])sourceValue).SequenceEqual((byte[])targetValue);
         }
 
         private static BsonValue GetBsonValue(Type type, object value, bool isNormalClass = false)

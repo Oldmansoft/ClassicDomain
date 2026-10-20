@@ -9,7 +9,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis
     /// <summary>
     /// 实体上下文
     /// </summary>
-    public abstract class Context : UnitOfWorkManagedContext, IContext
+    public abstract class Context : UnitOfWorkManagedContext, IContext, IDisposable
     {
         /// <summary>
         /// 配置
@@ -104,6 +104,17 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis
         internal IDbSet CreateDbSet<TDomain, TKey>(Config config, IDatabase db, ConcurrentQueue<ICommand> commands, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression) where TDomain : class, new()
         {
             return new SafeModeDbSet<TDomain, TKey>(config, db, commands, keyExpression);
+        }
+
+        /// <summary>
+        /// 清空本次工作单元的标识映射
+        /// </summary>
+        public void Dispose()
+        {
+            foreach (var item in DbSetStore.Values)
+            {
+                if (item is IClearIdentityMap map) map.ClearIdentityMap();
+            }
         }
     }
 }

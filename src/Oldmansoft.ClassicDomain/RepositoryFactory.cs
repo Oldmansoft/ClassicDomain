@@ -6,7 +6,7 @@ namespace Oldmansoft.ClassicDomain
     /// <summary>
     /// 仓储工厂
     /// </summary>
-    public class RepositoryFactory : IRepositoryFactory
+    public class RepositoryFactory : IRepositoryFactory, IDisposable
     {
         private static readonly ConcurrentDictionary<Type, Func<UnitOfWork, IRepository>> Registers = new ConcurrentDictionary<Type, Func<UnitOfWork, IRepository>>();
 
@@ -29,6 +29,8 @@ namespace Oldmansoft.ClassicDomain
 
         private readonly ConcurrentDictionary<Type, IRepository> RepositoryStore;
 
+        private bool Disposed;
+
         /// <summary>
         /// 工作单元
         /// </summary>
@@ -50,6 +52,7 @@ namespace Oldmansoft.ClassicDomain
         /// <returns></returns>
         public TRepository GetRepository<TRepository>() where TRepository : IRepository
         {
+            ThrowIfDisposed();
             var type = typeof(TRepository);
             if (RepositoryStore.TryGetValue(type, out IRepository value))
             {
@@ -71,7 +74,24 @@ namespace Oldmansoft.ClassicDomain
         /// <returns></returns>
         public UnitOfWork GetUnitOfWork()
         {
+            ThrowIfDisposed();
             return Uow;
+        }
+
+        /// <summary>
+        /// 释放内部工作单元
+        /// </summary>
+        public void Dispose()
+        {
+            if (Disposed) return;
+            Disposed = true;
+            Uow.Dispose();
+            RepositoryStore.Clear();
+        }
+
+        private void ThrowIfDisposed()
+        {
+            if (Disposed) throw new ClassicDomainException(typeof(RepositoryFactory), "仓储工厂已经释放。");
         }
     }
 }

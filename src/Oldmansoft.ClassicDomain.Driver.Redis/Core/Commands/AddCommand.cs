@@ -2,6 +2,8 @@
 using Oldmansoft.ClassicDomain.Util;
 using StackExchange.Redis;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Driver.Redis.Core.Commands
 {
@@ -33,9 +35,14 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core.Commands
         {
             var type = typeof(TDomain);
             var command = GetContext(Key, type, Domain);
+            var transaction = Db.CreateTransaction();
+            transaction.AddCondition(Condition.HashNotExists(MergeKey(command.Key), "this"));
+            var tasks = new List<Task>();
+            tasks.Add(transaction.HashSetAsync(MergeKey(command.Key), "this", type.FullName));
+            command.Queue(transaction, Merge, tasks);
             try
             {
-                if (!Db.HashSet(MergeKey(command.Key), "this", typeof(TDomain).FullName)) return false;
+                if (!transaction.Execute()) return false;
             }
             catch (RedisServerException ex)
             {
@@ -43,12 +50,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core.Commands
                 {
                     throw new ClassicDomainException(type, "数据冲突：存在着相同记录的不同类型数据，可能是之前使用过快速模式保存过。");
                 }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
-            command.Execute(Db, Merge);
+            command.Wait(tasks);
             IdentityMap.Set(Domain);
             return true;
         }
@@ -78,28 +82,34 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core.Commands
                 var currentNames = prefixNames.AddToNew(property.Name);
                 var name = currentNames.JoinDot();
 
-                if (propertyType.IsArrayOrGenericList())
+                if (TypeKind.IsByteArray(propertyType))
+                {
+                    result.HashSetBinary[name] = (byte[])value;
+                    continue;
+                }
+
+                if (TypeKind.IsList(propertyType))
                 {
                     result.HashSet.Add(name, propertyType.FullName);
                     result.ListRightPush.Add(name, propertyType.ConvertToList(value));
                     continue;
                 }
 
-                if (propertyType.IsGenericDictionary())
+                if (TypeKind.IsDictionary(propertyType))
                 {
                     result.HashSet.Add(name, propertyType.FullName);
                     result.HashSetList.Add(name, propertyType.ConvertToDictionary(value));
                     continue;
                 }
 
-                if (propertyType.IsNormalClass())
+                if (TypeKind.IsNormalClass(propertyType))
                 {
                     result.HashSet.Add(name, propertyType.FullName);
                     SetContext(propertyType, value, result, currentNames);
                     continue;
                 }
 
-                result.HashSet.Add(name, value.ToString());
+                result.HashSet.Add(name, Extends.FormatScalar(value));
             }
         }
     }

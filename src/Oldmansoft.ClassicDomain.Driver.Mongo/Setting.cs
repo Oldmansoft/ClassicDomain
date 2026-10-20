@@ -187,17 +187,45 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         /// </summary>
         /// <param name="indexs"></param>
         /// <param name="keyNames"></param>
+        /// <param name="direction">1 为升序，-1 为降序；空表示不比较方向</param>
+        /// <param name="unique">空表示不比较唯一约束</param>
         /// <returns></returns>
-        private bool IndexExists(IMongoIndexManager<TEntity> indexs, string[] keyNames)
+        private bool IndexExists(IMongoIndexManager<TEntity> indexs, string[] keyNames, int? direction, bool? unique)
         {
-            foreach(var bson in indexs.List().ToList())
+            foreach (var bson in indexs.List().ToList())
             {
-                if (keyNames.SequenceEqual(bson["key"].AsBsonDocument.Names))
+                var key = bson["key"].AsBsonDocument;
+                if (key.ElementCount != keyNames.Length) continue;
+                var matched = true;
+                var index = 0;
+                foreach (var element in key)
                 {
-                    return true;
+                    if (element.Name != keyNames[index])
+                    {
+                        matched = false;
+                        break;
+                    }
+                    if (direction.HasValue && (!element.Value.IsNumeric || element.Value.ToInt32() != direction.Value))
+                    {
+                        matched = false;
+                        break;
+                    }
+                    index++;
                 }
+                if (!matched) continue;
+                if (unique.HasValue)
+                {
+                    var isUnique = bson.Contains("unique") && bson["unique"].ToBoolean();
+                    if (isUnique != unique.Value) continue;
+                }
+                return true;
             }
             return false;
+        }
+
+        private static string StableIndexName(string tableName, string[] keyNames, bool isAscending, bool isUnique)
+        {
+            return tableName + "_" + string.Join("_", keyNames) + "_" + (isAscending ? "asc" : "desc") + (isUnique ? "_unique" : "");
         }
 
         /// <summary>
@@ -211,10 +239,11 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
         {
             if (keyExpressions == null || keyExpressions.Length == 0) return this;
             string[] keyNames = GetNames(keyExpressions);
-            if (!OnceSet.Use(string.Format("SetIndex{0}:{1}", DbSet.GetTableName(), string.Join(",", keyNames)))) return this;
+            var tableName = DbSet.GetTableName();
+            if (!OnceSet.Use(string.Format("SetIndex:{0}:{1}:{2}:{3}", tableName, string.Join(",", keyNames), isAscending, isUnique))) return this;
 
             var collection = DbSet.GetCollection();
-            if (!IndexExists(collection.Indexes, keyNames))
+            if (!IndexExists(collection.Indexes, keyNames, isAscending ? 1 : -1, isUnique))
             {
                 var keys = new List<IndexKeysDefinition<TEntity>>();
                 if (isAscending)
@@ -231,14 +260,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
                         keys.Add(Builders<TEntity>.IndexKeys.Descending(keyExpression));
                     }
                 }
-                if (isUnique)
-                {
-                    collection.Indexes.CreateOne(new CreateIndexModel<TEntity>(Builders<TEntity>.IndexKeys.Combine(keys), new CreateIndexOptions { Unique = true }));
-                }
-                else
-                {
-                    collection.Indexes.CreateOne(new CreateIndexModel<TEntity>(Builders<TEntity>.IndexKeys.Combine(keys)));
-                }
+                var options = new CreateIndexOptions { Name = StableIndexName(tableName, keyNames, isAscending, isUnique) };
+                if (isUnique) options.Unique = true;
+                collection.Indexes.CreateOne(new CreateIndexModel<TEntity>(Builders<TEntity>.IndexKeys.Combine(keys), options));
             }
             return this;
         }
@@ -254,7 +278,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
             if (!OnceSet.Use(string.Format("SetIndex{0}:{1}", DbSet.GetTableName(), key))) return this;
 
             var collection = DbSet.GetCollection();
-            if (!IndexExists(collection.Indexes, new string[] { key }))
+            if (!IndexExists(collection.Indexes, new string[] { key }, null, null))
             {
                 var model = new CreateIndexModel<TEntity>(Builders<TEntity>.IndexKeys.Geo2D(keyExpression));
                 collection.Indexes.CreateOne(model);
@@ -273,7 +297,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
             if (!OnceSet.Use(string.Format("SetIndex{0}:{1}", DbSet.GetTableName(), key))) return this;
 
             var collection = DbSet.GetCollection();
-            if (!IndexExists(collection.Indexes, new string[] { key }))
+            if (!IndexExists(collection.Indexes, new string[] { key }, null, null))
             {
                 var model = new CreateIndexModel<TEntity>(Builders<TEntity>.IndexKeys.Geo2DSphere(keyExpression));
                 collection.Indexes.CreateOne(model);

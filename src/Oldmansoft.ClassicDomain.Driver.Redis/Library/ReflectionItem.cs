@@ -10,10 +10,16 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
 
         public List<string> HashNames { get; private set; }
 
+        public List<string> ByteNames { get; private set; }
+
+        public List<string> ScalarNames { get; private set; }
+
         public ReflectionItem()
         {
             ListNames = new List<string>();
             HashNames = new List<string>();
+            ByteNames = new List<string>();
+            ScalarNames = new List<string>();
         }
     }
 }

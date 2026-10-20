@@ -17,8 +17,8 @@ namespace Oldmansoft.ClassicDomain.Driver.EF.Commands
 
         public bool Execute()
         {
-            Context.Set<TDomain>().Add(Domain);
-            return Context.SaveChanges(typeof(TDomain)) > 0;
+            Context.AttachForCommit(typeof(TDomain), () => Context.Set<TDomain>().Add(Domain));
+            return false;
         }
     }
 }

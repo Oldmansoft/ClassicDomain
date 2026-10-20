@@ -6,7 +6,7 @@ namespace Oldmansoft.ClassicDomain
     /// <summary>
     /// 工作单元
     /// </summary>
-    public class UnitOfWork : IUnitOfWork
+    public class UnitOfWork : IUnitOfWork, IDisposable
     {
         /// <summary>
         /// 管理项集
@@ -17,6 +17,8 @@ namespace Oldmansoft.ClassicDomain
         /// 数据命令集
         /// </summary>
         private ConcurrentQueue<Driver.ICommand> Commands { get; set; }
+
+        private bool Disposed;
 
         /// <summary>
         /// 创建工作单元
@@ -34,6 +36,7 @@ namespace Oldmansoft.ClassicDomain
         /// <returns>管理项</returns>
         public TManagedItem GetManaged<TManagedItem>() where TManagedItem : class, IUnitOfWorkManagedItem, new()
         {
+            ThrowIfDisposed();
             Type type = typeof(TManagedItem);
             if (ManagedItems.TryGetValue(type, out IUnitOfWorkManagedItem result)) return result as TManagedItem;
 
@@ -50,23 +53,54 @@ namespace Oldmansoft.ClassicDomain
         /// <returns>受影响的数量</returns>
         public virtual int Commit()
         {
+            ThrowIfDisposed();
             int result = 0;
-            while (Commands.TryDequeue(out Driver.ICommand command))
+            try
             {
-                try
+                while (Commands.TryDequeue(out Driver.ICommand command))
                 {
                     if (command.Execute())
                     {
                         result++;
                     }
                 }
-                catch
+                foreach (var item in ManagedItems.Values)
                 {
-                    while (Commands.TryDequeue(out _)) { }
-                    throw;
+                    if (item is Driver.IUnitOfWorkFlushable flushable)
+                    {
+                        result += flushable.Flush();
+                    }
                 }
             }
+            catch
+            {
+                while (Commands.TryDequeue(out _)) { }
+                throw;
+            }
             return result;
+        }
+
+        /// <summary>
+        /// 释放上下文，并清空标识映射
+        /// </summary>
+        public void Dispose()
+        {
+            if (Disposed) return;
+            Disposed = true;
+            foreach (var item in ManagedItems.Values)
+            {
+                if (item is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+            }
+            ManagedItems.Clear();
+            while (Commands.TryDequeue(out _)) { }
+        }
+
+        private void ThrowIfDisposed()
+        {
+            if (Disposed) throw new ClassicDomainException(typeof(UnitOfWork), "工作单元已经释放。");
         }
     }
 }

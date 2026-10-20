@@ -1,9 +1,8 @@
 ﻿using Oldmansoft.ClassicDomain.Driver.Redis.Library;
-using Oldmansoft.ClassicDomain.Util;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Driver.Redis.Core.Commands
 {
@@ -31,8 +30,14 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core.Commands
         public bool Execute()
         {
             var command = GetContext(Key, typeof(TDomain));
-            command.Execute(Db, Merge);
-            if (!Db.KeyDelete(MergeKey(command.Key))) return false;
+            var batch = Db.CreateBatch();
+            var tasks = new List<Task>();
+            command.Queue(batch, Merge, tasks);
+            var deleted = batch.KeyDeleteAsync(MergeKey(command.Key));
+            tasks.Add(deleted);
+            batch.Execute();
+            command.Wait(tasks);
+            if (!deleted.Result) return false;
             IdentityMap.Remove(command.Key);
             return true;
         }
@@ -46,28 +51,10 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core.Commands
         private UpdatedCommand<TKey> GetContext(TKey key, Type domainType)
         {
             var result = new UpdatedCommand<TKey>(key, domainType);
-            SetContext(domainType, result, new string[0]);
+            var reflection = ContextGetHelper.GetReflection(domainType);
+            foreach (var name in reflection.ListNames) result.KeyDelete.Add(name);
+            foreach (var name in reflection.HashNames) result.KeyDelete.Add(name);
             return result;
-        }
-
-        private void SetContext(Type type, UpdatedCommand result, string[] prefixNames)
-        {
-            foreach (var property in TypePublicInstancePropertyInfoStore.GetPropertys(type))
-            {
-                var currentNames = prefixNames.AddToNew(property.Name);
-                var propertyType = property.PropertyType;
-                if (propertyType.IsArrayOrGenericList() || propertyType.IsGenericDictionary())
-                {
-                    result.KeyDelete.Add(currentNames.JoinDot());
-                    continue;
-                }
-
-                if (propertyType.IsNormalClass())
-                {
-                    SetContext(propertyType, result, currentNames);
-                    continue;
-                }
-            }
         }
     }
 }

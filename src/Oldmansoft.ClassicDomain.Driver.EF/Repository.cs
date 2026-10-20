@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Linq;
 
 namespace Oldmansoft.ClassicDomain.Driver.EF
@@ -37,6 +38,15 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
         }
 
         /// <summary>
+        /// 只读查询，不把结果放进跟踪
+        /// </summary>
+        /// <returns></returns>
+        public IQueryable<TDomain> QueryNoTracking()
+        {
+            return Context.Set<TDomain>().AsNoTracking();
+        }
+
+        /// <summary>
         /// 获取
         /// </summary>
         /// <param name="id"></param>
@@ -54,7 +64,7 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
         {
             if (domain == null) return;
             if (typeof(TKey) == typeof(Guid)) PrimaryKeyManager.Instance.TrySetDomainGuidEmptyKey(domain, Context);
-            domain = domain.MapTo<TDomain>();
+            if (Context.Entry(domain).State == EntityState.Detached) domain = domain.MapTo<TDomain>();
             Context.RegisterAdd(domain);
         }
 
@@ -65,7 +75,7 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
         public void Replace(TDomain domain)
         {
             if (domain == null) return;
-            domain = domain.MapTo<TDomain>();
+            if (Context.Entry(domain).State == EntityState.Detached) domain = domain.MapTo<TDomain>();
             Context.RegisterReplace(domain);
         }
 

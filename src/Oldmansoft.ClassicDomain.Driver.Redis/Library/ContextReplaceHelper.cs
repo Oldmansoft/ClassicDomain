@@ -1,6 +1,7 @@
 ﻿using Oldmansoft.ClassicDomain.Util;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
 {
@@ -21,19 +22,25 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
                 var sourceValue = compareSource == null ? null : property.Get(compareSource);
                 var targetValue = compareTarget == null ? null : property.Get(compareTarget);
                 var propertyType = property.Type;
-                if (propertyType.IsArrayOrGenericList())
+                if (TypeKind.IsByteArray(propertyType))
+                {
+                    DealBytes(result, currentNames.JoinDot(), sourceValue, targetValue);
+                    continue;
+                }
+
+                if (TypeKind.IsList(propertyType))
                 {
                     DealList(result, propertyType, currentNames.JoinDot(), sourceValue, targetValue);
                     continue;
                 }
 
-                if (propertyType.IsGenericDictionary())
+                if (TypeKind.IsDictionary(propertyType))
                 {
                     DealDictionary(result, propertyType, currentNames.JoinDot(), sourceValue, targetValue);
                     continue;
                 }
 
-                if (propertyType.IsNormalClass())
+                if (TypeKind.IsNormalClass(propertyType))
                 {
                     DealNormalClass(result, propertyType, currentNames, sourceValue, targetValue);
                     continue;
@@ -68,8 +75,22 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
             }
             else
             {
-                result.HashSet.Add(name, targetValue.ToString());
+                result.HashSet.Add(name, Extends.FormatScalar(targetValue));
             }
+        }
+
+        private static void DealBytes(UpdatedCommand result, string name, object sourceValue, object targetValue)
+        {
+            var source = sourceValue as byte[];
+            var target = targetValue as byte[];
+            if (source == null && target == null) return;
+            if (target == null)
+            {
+                result.HashDelete.Add(name);
+                return;
+            }
+            if (source != null && source.SequenceEqual(target)) return;
+            result.HashSetBinary[name] = target;
         }
 
         private static void DealList(UpdatedCommand result, Type propertyType, string name, object sourceValue, object targetValue)

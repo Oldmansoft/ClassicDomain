@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Globalization;
 
 namespace Oldmansoft.ClassicDomain.Util
 {
@@ -56,11 +57,11 @@ namespace Oldmansoft.ClassicDomain.Util
             }
             if (type == typeof(DateTime))
             {
-                return x => DateTime.Parse(x);
+                return x => DateTime.Parse(x, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
             }
             if (type == typeof(TimeSpan))
             {
-                return x => TimeSpan.Parse(x);
+                return x => TimeSpan.Parse(x, CultureInfo.InvariantCulture);
             }
             if (type == typeof(bool))
             {
@@ -68,7 +69,7 @@ namespace Oldmansoft.ClassicDomain.Util
             }
             if (type == typeof(byte))
             {
-                return x => byte.Parse(x);
+                return x => byte.Parse(x, CultureInfo.InvariantCulture);
             }
             if (type == typeof(char))
             {
@@ -76,43 +77,43 @@ namespace Oldmansoft.ClassicDomain.Util
             }
             if (type == typeof(decimal))
             {
-                return x => decimal.Parse(x);
+                return x => decimal.Parse(x, CultureInfo.InvariantCulture);
             }
             if (type == typeof(double))
             {
-                return x => double.Parse(x);
+                return x => double.Parse(x, CultureInfo.InvariantCulture);
             }
             if (type == typeof(float))
             {
-                return x => float.Parse(x);
+                return x => float.Parse(x, CultureInfo.InvariantCulture);
             }
             if (type == typeof(int))
             {
-                return x => int.Parse(x);
+                return x => int.Parse(x, CultureInfo.InvariantCulture);
             }
             if (type == typeof(long))
             {
-                return x => long.Parse(x);
+                return x => long.Parse(x, CultureInfo.InvariantCulture);
             }
             if (type == typeof(sbyte))
             {
-                return x => sbyte.Parse(x);
+                return x => sbyte.Parse(x, CultureInfo.InvariantCulture);
             }
             if (type == typeof(short))
             {
-                return x => short.Parse(x);
+                return x => short.Parse(x, CultureInfo.InvariantCulture);
             }
             if (type == typeof(uint))
             {
-                return x => uint.Parse(x);
+                return x => uint.Parse(x, CultureInfo.InvariantCulture);
             }
             if (type == typeof(ulong))
             {
-                return x => ulong.Parse(x);
+                return x => ulong.Parse(x, CultureInfo.InvariantCulture);
             }
             if (type == typeof(ushort))
             {
-                return x => ushort.Parse(x);
+                return x => ushort.Parse(x, CultureInfo.InvariantCulture);
             }
             throw new NotSupportedException(string.Format("不支持此类型 {0} 转换数据", type.FullName));
         }

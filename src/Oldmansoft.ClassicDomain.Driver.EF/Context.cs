@@ -7,9 +7,31 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
     /// <summary>
     /// Entity Framework 的实体上下文
     /// </summary>
-    public abstract class Context : System.Data.Entity.DbContext, IUnitOfWorkManagedItem
+    public abstract class Context : System.Data.Entity.DbContext, IUnitOfWorkManagedItem, IUnitOfWorkFlushable
     {
         private ConcurrentQueue<ICommand> Commands { get; set; }
+
+        private bool Attaching;
+
+        private bool PreviousDetectChanges;
+
+        private Type FlushDomainType;
+
+        /// <summary>
+        /// 创建实体上下文
+        /// </summary>
+        protected Context()
+        {
+        }
+
+        /// <summary>
+        /// 创建实体上下文
+        /// </summary>
+        /// <param name="nameOrConnectionString">连接名称或连接字符串</param>
+        protected Context(string nameOrConnectionString)
+            : base(nameOrConnectionString)
+        {
+        }
 
         /// <summary>
         /// 保存改变
@@ -56,6 +78,28 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
 
         void IUnitOfWorkManagedItem.ModelCreating()
         {
+        }
+
+        int IUnitOfWorkFlushable.Flush()
+        {
+            if (Attaching)
+            {
+                Configuration.AutoDetectChangesEnabled = PreviousDetectChanges;
+                Attaching = false;
+            }
+            return SaveChanges(FlushDomainType ?? GetType());
+        }
+
+        internal void AttachForCommit(Type domainType, Action attach)
+        {
+            if (!Attaching)
+            {
+                PreviousDetectChanges = Configuration.AutoDetectChangesEnabled;
+                Configuration.AutoDetectChangesEnabled = false;
+                Attaching = true;
+            }
+            FlushDomainType = domainType;
+            attach();
         }
 
         /// <summary>

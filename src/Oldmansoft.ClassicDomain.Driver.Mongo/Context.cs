@@ -11,7 +11,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
     /// 数据库连接串格式 mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database][?options]]
     /// 更多请参考 https://docs.mongodb.com/manual/reference/connection-string/
     /// </summary>
-    public abstract class Context : UnitOfWorkManagedContext, IContext
+    public abstract class Context : UnitOfWorkManagedContext, IContext, IDisposable
     {
         private static readonly ConfigStore ConfigStore;
 
@@ -78,6 +78,17 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
                 throw new ClassicDomainException(type, "Set 获取的主键类型与 Add 添加的主键类型不一致。");
             }
             return result;
+        }
+
+        /// <summary>
+        /// 清空本次工作单元的标识映射。连接由配置缓存持有，这里不关闭客户端。
+        /// </summary>
+        public void Dispose()
+        {
+            foreach (var item in DbSet.Values)
+            {
+                if (item is IClearIdentityMap map) map.ClearIdentityMap();
+            }
         }
     }
 }
