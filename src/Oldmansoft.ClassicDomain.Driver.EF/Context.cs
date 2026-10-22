@@ -90,6 +90,10 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
             return SaveChanges(FlushDomainType ?? GetType());
         }
 
+        void IUnitOfWorkFlushable.Abandon()
+        {
+        }
+
         internal void AttachForCommit(Type domainType, Action attach)
         {
             if (!Attaching)

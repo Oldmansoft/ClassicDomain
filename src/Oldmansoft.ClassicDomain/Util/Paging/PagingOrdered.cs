@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace Oldmansoft.ClassicDomain.Util.Paging
 {
@@ -9,25 +11,32 @@ namespace Oldmansoft.ClassicDomain.Util.Paging
 
         private IOrderedQueryable<TSource> OrderedQuery { get; set; }
 
-        public PagingOrdered(IQueryable<TSource> query, IOrderedQueryable<TSource> orderedQuery)
+        private List<SortKey> Orders { get; set; }
+
+        public PagingOrdered(IQueryable<TSource> query, IOrderedQueryable<TSource> orderedQuery, List<SortKey> orders)
         {
             Query = query;
             OrderedQuery = orderedQuery;
+            Orders = orders;
         }
 
         public IPagingResult<TSource> Size(int value)
         {
-            return new PagingResult<TSource>(Query, OrderedQuery, value);
+            return new PagingResult<TSource>(Query, OrderedQuery, Orders, value);
         }
 
-        public IPagingOrdered<TSource> ThenBy<TKey>(System.Linq.Expressions.Expression<Func<TSource, TKey>> keySelector)
+        public IPagingOrdered<TSource> ThenBy<TKey>(Expression<Func<TSource, TKey>> keySelector)
         {
-            return new PagingOrdered<TSource>(Query, OrderedQuery.ThenBy(keySelector));
+            var orders = new List<SortKey>(Orders);
+            orders.Add(new SortKey { Selector = keySelector, Descending = false });
+            return new PagingOrdered<TSource>(Query, OrderedQuery.ThenBy(keySelector), orders);
         }
 
-        public IPagingOrdered<TSource> ThenByDescending<TKey>(System.Linq.Expressions.Expression<Func<TSource, TKey>> keySelector)
+        public IPagingOrdered<TSource> ThenByDescending<TKey>(Expression<Func<TSource, TKey>> keySelector)
         {
-            return new PagingOrdered<TSource>(Query, OrderedQuery.ThenByDescending(keySelector));
+            var orders = new List<SortKey>(Orders);
+            orders.Add(new SortKey { Selector = keySelector, Descending = true });
+            return new PagingOrdered<TSource>(Query, OrderedQuery.ThenByDescending(keySelector), orders);
         }
     }
 }

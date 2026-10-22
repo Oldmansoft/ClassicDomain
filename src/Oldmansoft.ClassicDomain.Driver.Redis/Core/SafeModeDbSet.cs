@@ -18,8 +18,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <param name="db"></param>
         /// <param name="commands"></param>
         /// <param name="keyExpression"></param>
-        public SafeModeDbSet(Config config, IDatabase db, ConcurrentQueue<ICommand> commands, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression)
-            : base(config, db, commands, keyExpression)
+        /// <param name="flush"></param>
+        public SafeModeDbSet(Config config, IDatabase db, ConcurrentQueue<ICommand> commands, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression, IRedisFlush flush)
+            : base(config, db, commands, keyExpression, flush)
         {
             IdentityMap = new IdentityMap<TDomain>();
             IdentityMap.SetKey(KeyExpressionCompile);
@@ -33,7 +34,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         {
             TrySetDomainKey(domain);
             domain = domain.MapTo<TDomain>();
-            Commands.Enqueue(new Commands.AddCommand<TDomain, TKey>(Db, MergeKey, this, IdentityMap, KeyExpressionCompile(domain), domain));
+            Commands.Enqueue(new Commands.AddCommand<TDomain, TKey>(this, IdentityMap, Flush, KeyExpressionCompile(domain), domain));
         }
 
         /// <summary>
@@ -43,7 +44,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         public override void RegisterReplace(TDomain domain)
         {
             domain = domain.MapTo<TDomain>();
-            Commands.Enqueue(new Commands.ReplaceCommand<TDomain, TKey>(Db, MergeKey, this, IdentityMap, KeyExpressionCompile(domain), domain));
+            Commands.Enqueue(new Commands.ReplaceCommand<TDomain, TKey>(this, IdentityMap, Flush, KeyExpressionCompile(domain), domain));
         }
 
         /// <summary>
@@ -52,7 +53,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <param name="domain"></param>
         public override void RegisterRemove(TDomain domain)
         {
-            Commands.Enqueue(new Commands.RemoveCommand<TDomain, TKey>(Db, MergeKey, this, IdentityMap, KeyExpressionCompile(domain)));
+            Commands.Enqueue(new Commands.RemoveCommand<TDomain, TKey>(this, IdentityMap, Flush, KeyExpressionCompile(domain)));
         }
 
         /// <summary>

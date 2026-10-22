@@ -64,7 +64,6 @@ namespace Oldmansoft.ClassicDomain.Driver.EF
         {
             if (domain == null) return;
             if (typeof(TKey) == typeof(Guid)) PrimaryKeyManager.Instance.TrySetDomainGuidEmptyKey(domain, Context);
-            if (Context.Entry(domain).State == EntityState.Detached) domain = domain.MapTo<TDomain>();
             Context.RegisterAdd(domain);
         }
 

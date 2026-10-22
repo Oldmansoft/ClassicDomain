@@ -75,6 +75,10 @@ namespace Oldmansoft.ClassicDomain
             catch
             {
                 while (Commands.TryDequeue(out _)) { }
+                foreach (var item in ManagedItems.Values)
+                {
+                    if (item is Driver.IUnitOfWorkFlushable flushable) flushable.Abandon();
+                }
                 throw;
             }
             return result;

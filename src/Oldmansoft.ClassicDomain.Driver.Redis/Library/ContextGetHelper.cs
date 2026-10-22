@@ -57,7 +57,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Library
         {
             if (mapping == null || (mapping.Fields.Count == 0 && mapping.Bytes.Count == 0)) return default;
             var result = new T();
-            SetContext(mapping, typeof(T), result, new string[0]);
+            if (!RedisAccessCompiler.TryRead(typeof(T), result, mapping)) SetContext(mapping, typeof(T), result, new string[0]);
             return result;
         }
 

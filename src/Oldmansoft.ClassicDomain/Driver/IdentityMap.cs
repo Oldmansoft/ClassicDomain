@@ -49,6 +49,18 @@ namespace Oldmansoft.ClassicDomain.Driver
         }
 
         /// <summary>
+        /// 保存已经复制好的实例，不再深拷贝
+        /// </summary>
+        /// <param name="domain"></param>
+        public void SetReference(TDomain domain)
+        {
+            if (domain == null) return;
+            var key = GetKey(domain);
+            if (key == null) throw new ArgumentNullException("key");
+            Store[key] = domain;
+        }
+
+        /// <summary>
         /// 获取值
         /// </summary>
         /// <param name="key"></param>

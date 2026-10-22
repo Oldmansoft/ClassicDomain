@@ -9,7 +9,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis
     /// <summary>
     /// 实体上下文
     /// </summary>
-    public abstract class Context : UnitOfWorkManagedContext, IContext, IDisposable
+    public abstract class Context : UnitOfWorkManagedContext, IContext, IDisposable, IUnitOfWorkFlushable, Core.IRedisFlush
     {
         /// <summary>
         /// 配置
@@ -28,6 +28,10 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis
         }
 
         private readonly Dictionary<Type, IDbSet> DbSetStore;
+
+        private readonly List<Library.RedisPendingWrite> Pending = new List<Library.RedisPendingWrite>();
+
+        private int FlushedCount;
 
         private Config Config;
 
@@ -103,7 +107,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis
         /// <returns></returns>
         internal IDbSet CreateDbSet<TDomain, TKey>(Config config, IDatabase db, ConcurrentQueue<ICommand> commands, System.Linq.Expressions.Expression<Func<TDomain, TKey>> keyExpression) where TDomain : class, new()
         {
-            return new SafeModeDbSet<TDomain, TKey>(config, db, commands, keyExpression);
+            return new SafeModeDbSet<TDomain, TKey>(config, db, commands, keyExpression, this);
         }
 
         /// <summary>
@@ -111,10 +115,90 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis
         /// </summary>
         public void Dispose()
         {
+            Pending.Clear();
+            FlushedCount = 0;
             foreach (var item in DbSetStore.Values)
             {
                 if (item is IClearIdentityMap map) map.ClearIdentityMap();
             }
+        }
+
+        void Core.IRedisFlush.Enqueue(Library.RedisPendingWrite write)
+        {
+            Pending.Add(write);
+        }
+
+        void Core.IRedisFlush.Send()
+        {
+            SendPending();
+        }
+
+        int IUnitOfWorkFlushable.Flush()
+        {
+            SendPending();
+            var count = FlushedCount;
+            FlushedCount = 0;
+            return count;
+        }
+
+        void IUnitOfWorkFlushable.Abandon()
+        {
+            for (var i = Pending.Count - 1; i >= 0; i--)
+            {
+                if (Pending[i].OnFailure != null) Pending[i].OnFailure();
+            }
+            Pending.Clear();
+            FlushedCount = 0;
+        }
+
+        void SendPending()
+        {
+            if (Pending.Count == 0) return;
+            var batch = GetDatabase().CreateBatch();
+            var tasks = new List<System.Threading.Tasks.Task<StackExchange.Redis.RedisResult>>(Pending.Count);
+            foreach (var write in Pending)
+            {
+                tasks.Add(batch.ScriptEvaluateAsync(Library.RedisScript.Source, write.Keys, write.Arguments));
+            }
+            batch.Execute();
+            Exception first = null;
+            for (var i = 0; i < tasks.Count; i++)
+            {
+                try
+                {
+                    var result = tasks[i].GetAwaiter().GetResult();
+                    if (Succeeded(result)) FlushedCount++;
+                    else if (Pending[i].OnFailure != null) Pending[i].OnFailure();
+                }
+                catch (Exception ex)
+                {
+                    if (Pending[i].OnFailure != null) Pending[i].OnFailure();
+                    if (first == null) first = Translate(ex, Pending[i].DomainType);
+                }
+            }
+            Pending.Clear();
+            if (first != null) throw first;
+        }
+
+        static bool Succeeded(StackExchange.Redis.RedisResult result)
+        {
+            if (result == null || result.IsNull) return false;
+            var value = (StackExchange.Redis.RedisValue)result;
+            return !value.IsNull && (long)value == 1;
+        }
+
+        static Exception Translate(Exception ex, Type domainType)
+        {
+            var redis = ex as StackExchange.Redis.RedisServerException ?? ex.InnerException as StackExchange.Redis.RedisServerException;
+            if (redis != null && redis.Message.IndexOf("wrong kind of value", StringComparison.Ordinal) >= 0)
+            {
+                return new ClassicDomainException(domainType, "数据冲突：存在着相同记录的不同类型数据，可能是之前使用过快速模式保存过。");
+            }
+            if (redis != null && redis.Message == "ERR wrong number of arguments for 'rpush' command")
+            {
+                return new ClassicDomainException(domainType, Core.ConfigStore.AlertLowServerVersion);
+            }
+            return ex;
         }
     }
 }

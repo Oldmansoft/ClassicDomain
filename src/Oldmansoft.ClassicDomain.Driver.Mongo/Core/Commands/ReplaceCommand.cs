@@ -29,15 +29,28 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core.Commands
             var source = DbSet.IdentityMap.Get(Id);
             if (source == null)
             {
-                return ExecuteReplaceOne();
+                Queue(new ReplaceOneModel<TDomain>(Builders<TDomain>.Filter.Eq(DbSet.KeyExpression, Id), Domain) { IsUpsert = false });
+                return true;
             }
+
+            var buffer = new Library.UpdateBuffer<TDomain>();
+            if (!Library.DiffCompiler<TDomain>.TryApply(source, Domain, buffer))
+            {
+                return ExecuteReflection(type, source);
+            }
+            if (!buffer.HasValue) return false;
+            Queue(new UpdateOneModel<TDomain>(Builders<TDomain>.Filter.Eq(DbSet.KeyExpression, Id), buffer.ToUpdate()));
+            return true;
+        }
+
+        bool ExecuteReflection(Type type, TDomain source)
+        {
             var context = Library.UpdateContext<TDomain>.GetContext(Id, type, source, Domain);
             if (!context.HasValue()) return false;
-
             try
             {
                 var result = context.Execute(Collection);
-                if (result) DbSet.IdentityMap.Set(Domain);
+                if (result) DbSet.IdentityMap.SetReference(Domain);
                 return result;
             }
             catch (MongoDuplicateKeyException ex)
@@ -56,13 +69,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core.Commands
             }
         }
 
-        private bool ExecuteReplaceOne()
+        void Queue(WriteModel<TDomain> model)
         {
-            var filter = Builders<TDomain>.Filter.Eq(DbSet.KeyExpression, Id);
-            var writeResult = Collection.ReplaceOne(filter, Domain);
-            var modified = writeResult != null && writeResult.ModifiedCount > 0;
-            if (modified) DbSet.IdentityMap.Set(Domain);
-            return modified;
+            DbSet.QueueWrite(model, Domain);
         }
 
         private Exception WriteError(int code, string writeMessage, string fallback)

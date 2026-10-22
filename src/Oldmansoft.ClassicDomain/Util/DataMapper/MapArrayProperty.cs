@@ -29,6 +29,21 @@ namespace Oldmansoft.ClassicDomain.Util
                 return;
             }
 
+            if (SourceItemType == typeof(byte) && TargetItemType == typeof(byte))
+            {
+                var copy = new byte[sourceValue.Length];
+                Buffer.BlockCopy(sourceValue, 0, copy, 0, sourceValue.Length);
+                Setter.Set(target, copy);
+                return;
+            }
+            if (SourceItemType.IsValueType && SourceItemType == TargetItemType)
+            {
+                var copy = Array.CreateInstance(TargetItemType, sourceValue.Length);
+                Array.Copy(sourceValue, copy, sourceValue.Length);
+                Setter.Set(target, copy);
+                return;
+            }
+
             var targetValue = Array.CreateInstance(TargetItemType, sourceValue.Length);
             for (var i = 0; i < sourceValue.Length; i++)
             {

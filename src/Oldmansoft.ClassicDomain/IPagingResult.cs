@@ -22,5 +22,13 @@ namespace Oldmansoft.ClassicDomain
         /// <param name="totalCount">所有记录数</param>
         /// <returns></returns>
         IList<TSource> ToList(int number, out int totalCount);
+
+        /// <summary>
+        /// 从上一页最后一条之后继续取一页。last 为空时取第一页。
+        /// 条件写在排序键上，不再跳过前面的行。
+        /// </summary>
+        /// <param name="last">上一页的最后一条</param>
+        /// <returns></returns>
+        IList<TSource> ToListAfter(TSource last);
     }
 }

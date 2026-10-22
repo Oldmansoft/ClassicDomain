@@ -10,5 +10,10 @@ namespace Oldmansoft.ClassicDomain.Driver
         /// </summary>
         /// <returns></returns>
         int Flush();
+
+        /// <summary>
+        /// 提交失败时丢掉尚未发出的写入
+        /// </summary>
+        void Abandon();
     }
 }

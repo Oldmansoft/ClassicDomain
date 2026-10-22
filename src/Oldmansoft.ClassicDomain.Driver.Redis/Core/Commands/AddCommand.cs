@@ -1,32 +1,26 @@
 ﻿using Oldmansoft.ClassicDomain.Driver.Redis.Library;
 using Oldmansoft.ClassicDomain.Util;
-using StackExchange.Redis;
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Driver.Redis.Core.Commands
 {
     class AddCommand<TDomain, TKey> : ICommand
     {
-        private readonly IDatabase Db;
-
-        private readonly Func<TKey, string> MergeKey;
-
         private readonly IMergeKey<TKey> Merge;
 
         private readonly IdentityMap<TDomain> IdentityMap;
+
+        private readonly IRedisFlush Flush;
 
         private readonly TKey Key;
 
         private readonly TDomain Domain;
 
-        public AddCommand(IDatabase db, Func<TKey, string> mergeKey, IMergeKey<TKey> merge, IdentityMap<TDomain> identityMap, TKey key, TDomain domain)
+        public AddCommand(IMergeKey<TKey> merge, IdentityMap<TDomain> identityMap, IRedisFlush flush, TKey key, TDomain domain)
         {
-            Db = db;
-            MergeKey = mergeKey;
             Merge = merge;
             IdentityMap = identityMap;
+            Flush = flush;
             Key = key;
             Domain = domain;
         }
@@ -35,26 +29,16 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core.Commands
         {
             var type = typeof(TDomain);
             var command = GetContext(Key, type, Domain);
-            var transaction = Db.CreateTransaction();
-            transaction.AddCondition(Condition.HashNotExists(MergeKey(command.Key), "this"));
-            var tasks = new List<Task>();
-            tasks.Add(transaction.HashSetAsync(MergeKey(command.Key), "this", type.FullName));
-            command.Queue(transaction, Merge, tasks);
-            try
-            {
-                if (!transaction.Execute()) return false;
-            }
-            catch (RedisServerException ex)
-            {
-                if (ex.Message == "ERR Operation against a key holding the wrong kind of value")
-                {
-                    throw new ClassicDomainException(type, "数据冲突：存在着相同记录的不同类型数据，可能是之前使用过快速模式保存过。");
-                }
-                throw;
-            }
-            command.Wait(tasks);
-            IdentityMap.Set(Domain);
-            return true;
+            var previous = IdentityMap.Get(Key);
+            IdentityMap.SetReference(Domain);
+            Flush.Enqueue(RedisScript.Encode("notexists", Key, command, Merge, type.FullName, () => Restore(previous), type));
+            return false;
+        }
+
+        void Restore(TDomain previous)
+        {
+            if (previous == null) IdentityMap.Remove(Key);
+            else IdentityMap.SetReference(previous);
         }
 
         /// <summary>
@@ -67,6 +51,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core.Commands
         private UpdatedCommand<TKey> GetContext(TKey key, Type domainType, object context)
         {
             var result = new UpdatedCommand<TKey>(key, domainType);
+            if (RedisAccessCompiler.TryWrite(domainType, context, result)) return result;
             SetContext(domainType, context, result, new string[0]);
             return result;
         }

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>5.2.2</Version>
+    <Version>5.3.0</Version>
     <Authors>Oldman</Authors>
     <Company>Oldman</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -16,6 +16,7 @@
   <ItemGroup>
     <PackageReference Include="ServiceStack.Text" Version="5.10.4" />
     <PackageReference Include="StackExchange.Redis" Version="2.2.4" />
+    <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,6 +25,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="Oldmansoft.ClassicDomain.Tests" />
+    <InternalsVisibleTo Include="Oldmansoft.ClassicDomain.Driver.Redis.DynamicAccess" />
   </ItemGroup>
 
 </Project>

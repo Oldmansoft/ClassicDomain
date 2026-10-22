@@ -3,11 +3,12 @@ using MongoDB.Driver.Linq;
 using Oldmansoft.ClassicDomain.Util;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
 {
-    internal class DbSet<TDomain, TKey> : IDbSet<TDomain, TKey>, IClearIdentityMap
+    internal class DbSet<TDomain, TKey> : IDbSet<TDomain, TKey>, IClearIdentityMap, IFlushWrites
     {
         private readonly IMongoDatabase Database;
 
@@ -39,6 +40,10 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         /// 标识映射
         /// </summary>
         public IdentityMap<TDomain> IdentityMap { get; private set; }
+
+        readonly List<WriteModel<TDomain>> PendingWrites = new List<WriteModel<TDomain>>();
+
+        readonly List<TDomain> PendingDomains = new List<TDomain>();
 
         /// <summary>
         /// 创建实体集
@@ -84,7 +89,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         {
             TrySetDomainKey(domain);
             domain = domain.MapTo<TDomain>();
-            Commands.Enqueue(new Commands.AddCommand<TDomain>(GetCollection(), domain, IdentityMap));
+            Commands.Enqueue(new Commands.AddCommand<TDomain, TKey>(domain, this));
         }
 
         /// <summary>
@@ -112,6 +117,43 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Core
         public void ClearIdentityMap()
         {
             IdentityMap.Clear();
+        }
+
+        internal void QueueWrite(WriteModel<TDomain> model, TDomain domain)
+        {
+            PendingWrites.Add(model);
+            PendingDomains.Add(domain);
+        }
+
+        public int FlushWrites()
+        {
+            if (PendingWrites.Count == 0) return 0;
+            try
+            {
+                GetCollection().BulkWrite(PendingWrites, new BulkWriteOptions { IsOrdered = true });
+                for (var i = 0; i < PendingDomains.Count; i++)
+                {
+                    if (PendingDomains[i] != null) IdentityMap.SetReference(PendingDomains[i]);
+                }
+                return 0;
+            }
+            catch (MongoBulkWriteException<TDomain> ex)
+            {
+                var error = ex.WriteErrors.FirstOrDefault();
+                if (error != null && error.Code == 11000) throw new UniqueException(typeof(TDomain), error.Message);
+                throw;
+            }
+            finally
+            {
+                PendingWrites.Clear();
+                PendingDomains.Clear();
+            }
+        }
+
+        public void AbandonWrites()
+        {
+            PendingWrites.Clear();
+            PendingDomains.Clear();
         }
 
         /// <summary>

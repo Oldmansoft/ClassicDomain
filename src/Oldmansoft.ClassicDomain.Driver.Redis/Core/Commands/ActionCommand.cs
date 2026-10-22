@@ -9,14 +9,18 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core.Commands
 
         private readonly Func<IDatabase, bool> Action;
 
-        public ActionCommand(IDatabase db, Func<IDatabase, bool> action)
+        private readonly IRedisFlush Flush;
+
+        public ActionCommand(IDatabase db, Func<IDatabase, bool> action, IRedisFlush flush)
         {
             Db = db;
             Action = action;
+            Flush = flush;
         }
 
         public bool Execute()
         {
+            Flush.Send();
             return Action(Db);
         }
     }

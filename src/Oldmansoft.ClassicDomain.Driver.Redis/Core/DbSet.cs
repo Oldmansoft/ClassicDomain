@@ -43,13 +43,19 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         protected IDatabase Db { get; private set; }
 
         /// <summary>
+        /// 提交时合并写入
+        /// </summary>
+        protected IRedisFlush Flush { get; private set; }
+
+        /// <summary>
         /// 创建实体集
         /// </summary>
         /// <param name="config"></param>
         /// <param name="db"></param>
         /// <param name="commands"></param>
         /// <param name="keyExpression"></param>
-        public DbSet(Config config, IDatabase db, ConcurrentQueue<ICommand> commands, Expression<Func<TDomain, TKey>> keyExpression)
+        /// <param name="flush"></param>
+        public DbSet(Config config, IDatabase db, ConcurrentQueue<ICommand> commands, Expression<Func<TDomain, TKey>> keyExpression, IRedisFlush flush)
         {
             DomainName = typeof(TDomain).FullName;
             Config = config;
@@ -57,6 +63,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
             Commands = commands;
             KeyExpression = keyExpression;
             KeyExpressionCompile = keyExpression.Compile();
+            Flush = flush;
             if (typeof(TKey) == typeof(Guid))
             {
                 PropertySetter = new PropertySetter<TDomain, TKey>(KeyExpression.GetProperty());
@@ -118,7 +125,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Redis.Core
         /// <param name="execute"></param>
         public void RegisterExecute(Func<IDatabase, bool> execute)
         {
-            Commands.Enqueue(new Commands.ActionCommand<TDomain>(Db, execute));
+            Commands.Enqueue(new Commands.ActionCommand<TDomain>(Db, execute, Flush));
         }
 
         /// <summary>

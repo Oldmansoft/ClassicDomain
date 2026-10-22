@@ -1,45 +1,37 @@
 ﻿using Oldmansoft.ClassicDomain.Driver.Redis.Library;
-using StackExchange.Redis;
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Oldmansoft.ClassicDomain.Driver.Redis.Core.Commands
 {
     class RemoveCommand<TDomain, TKey> : ICommand
     {
-        private readonly IDatabase Db;
-
-        private readonly Func<TKey, string> MergeKey;
-
         private readonly IMergeKey<TKey> Merge;
 
         private readonly IdentityMap<TDomain> IdentityMap;
 
+        private readonly IRedisFlush Flush;
+
         private readonly TKey Key;
 
-        public RemoveCommand(IDatabase db, Func<TKey, string> mergeKey, IMergeKey<TKey> merge, IdentityMap<TDomain> identityMap, TKey key)
+        public RemoveCommand(IMergeKey<TKey> merge, IdentityMap<TDomain> identityMap, IRedisFlush flush, TKey key)
         {
-            Db = db;
-            MergeKey = mergeKey;
             Merge = merge;
             IdentityMap = identityMap;
+            Flush = flush;
             Key = key;
         }
 
         public bool Execute()
         {
-            var command = GetContext(Key, typeof(TDomain));
-            var batch = Db.CreateBatch();
-            var tasks = new List<Task>();
-            command.Queue(batch, Merge, tasks);
-            var deleted = batch.KeyDeleteAsync(MergeKey(command.Key));
-            tasks.Add(deleted);
-            batch.Execute();
-            command.Wait(tasks);
-            if (!deleted.Result) return false;
-            IdentityMap.Remove(command.Key);
-            return true;
+            var type = typeof(TDomain);
+            var command = GetContext(Key, type);
+            var previous = IdentityMap.Get(Key);
+            IdentityMap.Remove(Key);
+            Flush.Enqueue(RedisScript.Encode("delete", Key, command, Merge, null, () =>
+            {
+                if (previous != null) IdentityMap.SetReference(previous);
+            }, type));
+            return false;
         }
 
         /// <summary>

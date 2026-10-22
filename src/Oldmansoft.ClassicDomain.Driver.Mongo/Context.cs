@@ -11,7 +11,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
     /// 数据库连接串格式 mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database][?options]]
     /// 更多请参考 https://docs.mongodb.com/manual/reference/connection-string/
     /// </summary>
-    public abstract class Context : UnitOfWorkManagedContext, IContext, IDisposable
+    public abstract class Context : UnitOfWorkManagedContext, IContext, IDisposable, IUnitOfWorkFlushable
     {
         private static readonly ConfigStore ConfigStore;
 
@@ -88,6 +88,23 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
             foreach (var item in DbSet.Values)
             {
                 if (item is IClearIdentityMap map) map.ClearIdentityMap();
+            }
+        }
+
+        int IUnitOfWorkFlushable.Flush()
+        {
+            foreach (var item in DbSet.Values)
+            {
+                if (item is Core.IFlushWrites writes) writes.FlushWrites();
+            }
+            return 0;
+        }
+
+        void IUnitOfWorkFlushable.Abandon()
+        {
+            foreach (var item in DbSet.Values)
+            {
+                if (item is Core.IFlushWrites writes) writes.AbandonWrites();
             }
         }
     }
