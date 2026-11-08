@@ -2,8 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>5.3.0</Version>
+    <Version>5.3.2</Version>
     <Authors>Oldman</Authors>
+    <Description>Oldmansoft.ClassicDomain 的 MongoDB 驱动。用仓储和工作单元访问 MongoDB，查询走 LINQ，提交时批量写入。</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
@@ -11,6 +13,10 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DocumentationFile>bin\Debug\Oldmansoft.ClassicDomain.Driver.Mongo.xml</DocumentationFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MongoDB.Driver" Version="2.30.0" />

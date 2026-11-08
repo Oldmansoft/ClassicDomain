@@ -18,12 +18,18 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
 
         static readonly HashSet<Type> SameStack = new HashSet<Type>();
 
-        static readonly ModuleBuilder Module = CreateModule();
+        static readonly HashSet<string> IgnoredAssemblies = new HashSet<string>();
 
-        static ModuleBuilder CreateModule()
+        static readonly AssemblyBuilder DynamicAssembly;
+
+        static readonly ModuleBuilder Module;
+
+        static readonly ConstructorInfo IgnoreAccessConstructor = typeof(System.Runtime.CompilerServices.IgnoresAccessChecksToAttribute).GetConstructor(new[] { typeof(string) });
+
+        static DiffEmitter()
         {
-            var assembly = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("Oldmansoft.ClassicDomain.Driver.Mongo.DynamicDiff"), AssemblyBuilderAccess.Run);
-            return assembly.DefineDynamicModule("DynamicDiff");
+            DynamicAssembly = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("Oldmansoft.ClassicDomain.Driver.Mongo.DynamicDiff"), AssemblyBuilderAccess.Run);
+            Module = DynamicAssembly.DefineDynamicModule("DynamicDiff");
         }
 
         public static bool IsByteArray(Type type)
@@ -86,6 +92,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
 
         static Delegate EmitDiff(Type type)
         {
+            GrantAccess(type);
             PrepareChildren(type);
             var properties = Properties(type);
             var draft = Begin(type, "Diff", typeof(void), new[] { type, type, typeof(string), typeof(IUpdateBuffer) });
@@ -98,6 +105,7 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
 
         static Delegate EmitSame(Type type)
         {
+            GrantAccess(type);
             PrepareChildren(type);
             var properties = Properties(type);
             var draft = Begin(type, "Same", typeof(bool), new[] { type, type });
@@ -230,6 +238,25 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo.Library
             }
             if (IsClass(type)) return typeof(DiffOperations).GetMethod("SameClass").MakeGenericMethod(type);
             return typeof(DiffOperations).GetMethod("SameScalar").MakeGenericMethod(type);
+        }
+
+        static void GrantAccess(Type type)
+        {
+            IgnoreAssembly(type.Assembly);
+            foreach (var property in Properties(type))
+            {
+                var getter = property.GetGetMethod(true);
+                if (getter != null) IgnoreAssembly(getter.DeclaringType.Assembly);
+                IgnoreAssembly(property.PropertyType.Assembly);
+            }
+        }
+
+        static void IgnoreAssembly(Assembly assembly)
+        {
+            if (assembly == null) return;
+            var name = assembly.GetName().Name;
+            if (string.IsNullOrEmpty(name) || !IgnoredAssemblies.Add(name)) return;
+            DynamicAssembly.SetCustomAttribute(new CustomAttributeBuilder(IgnoreAccessConstructor, new object[] { name }));
         }
 
         static PropertyInfo[] Properties(Type type)

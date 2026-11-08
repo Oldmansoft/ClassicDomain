@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using Oldmansoft.ClassicDomain.Driver.Mongo.Library;
+using System.Linq;
 
 namespace Oldmansoft.ClassicDomain.Driver.Mongo
 {
@@ -27,7 +28,9 @@ namespace Oldmansoft.ClassicDomain.Driver.Mongo
 
         IQueryable<TSuperDomain> IQuerySupport<TSuperDomain>.Query()
         {
-            return Query();
+            var source = Query();
+            if (typeof(TDomain) == typeof(TSuperDomain)) return source;
+            return SuperClassQueryable<TDomain, TSuperDomain>.Create(source);
         }
 
         void IRemove<TSuperDomain>.Remove(TSuperDomain domain)
